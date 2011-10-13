@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="testsrc"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/guava-10.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/javacpp.jar"/>
+	<classpathentry kind="lib" path="lib/javacv-macosx-x86_64.jar"/>
+	<classpathentry kind="lib" path="lib/javacv.jar"/>
+	<classpathentry kind="lib" path="lib/encog-engine-2.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/JOCL-0.1.3a-beta.jar"/>
+	<classpathentry kind="lib" path="lib/joone-engine.jar"/>
+	<classpathentry kind="lib" path="lib/neuroph-2.5.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
