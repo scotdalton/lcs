@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
+import edu.nyu.cs.sysproj.google_earth.features.Color;
+
 //import javax.media.jai.RenderedOp;
 
 /**
@@ -11,23 +13,17 @@ package edu.nyu.cs.sysproj.google_earth;
  */
 public class ImageFeatures {
 
-	private ImageMeanPixels meanPixels;
-    private ImageHistogram histogram;
-    private EarthImage earthImage;
+	private Color color;
+    private Image image;
 //    private RenderedOp javaAiImage;
 	
-	public ImageFeatures(EarthImage earthImage) {
-		this.earthImage = earthImage;
+	public ImageFeatures(Image image) {
+		this.image = image;
 		setMeanPixels();
-		histogram = new ImageHistogram(this.earthImage);
 	}
 
-	public ImageMeanPixels getMeanPixels() {
-		return meanPixels;
-	}
-
-	public ImageHistogram getHistorgram() {
-		return histogram;
+	public Color getMeanPixels() {
+		return color;
 	}
 
 	private void setMeanPixels() {
