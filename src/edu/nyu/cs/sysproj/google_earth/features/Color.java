@@ -22,7 +22,7 @@ public class Color implements FeatureInterface {
 		// Set up the parameter block for the source image and
 		// the three parameters.
 		ParameterBlock pb = new ParameterBlock();
-		pb.addSource(image.getJavaAiImage()); // The source image
+		pb.addSource(image.getOriginalImage()); // The source image
 		pb.add(null); // null ROI means whole image
 		pb.add(1); // check every pixel horizontally
 		pb.add(1); // check every pixel vertically
