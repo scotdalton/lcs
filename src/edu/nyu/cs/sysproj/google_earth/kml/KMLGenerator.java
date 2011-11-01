@@ -20,7 +20,7 @@ public class KMLGenerator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int numberOfDates = 5;
+		int numberOfDates = 1;
 		int yearlyInterval = -2;
 		Calendar cal = Calendar.getInstance();
 		List<Date> dates = new ArrayList<Date>();
@@ -53,13 +53,18 @@ public class KMLGenerator {
 //				placemarks(placemarks).build();
 		Document document = 
 			new Document.Builder().name("CSCI-GA 3033-011").
-				placemarks(placemarks).build();
+			placemarks(placemarks).build();
+//		Document document = 
+//			new Document.Builder().name("Test Data").
+//			placemarks(placemarks).build();
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(document);
 		Kml kml = new Kml.Builder().documents(documents).build();
 		try {
 //			kml.persistToFile(name.replace(" ", "_")+".kml");
 			kml.persistToFile("csci-ga3033-011.kml");
+//			kml.persistToFile("training_data.kml");
+//			kml.persistToFile("test_data.kml");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

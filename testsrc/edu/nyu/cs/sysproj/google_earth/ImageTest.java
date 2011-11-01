@@ -2,8 +2,7 @@ package edu.nyu.cs.sysproj.google_earth;
 /**
  * 
  */
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getArableTrainingImageFiles;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestFile;
+import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -42,13 +41,10 @@ public class ImageTest {
 		RenderedImage originalImage = croppedImage.getOriginalImage();
 		assertEquals(3, originalImage.getColorModel().
 				getColorSpace().getNumComponents());
-		assertEquals(1000, originalImage.getHeight());
-		assertEquals(1000, originalImage.getWidth());
-		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
-		ParameterBlock fileStoreParams = 
-			new ParameterBlock().addSource(originalImage).
-				add(outputFile).add("PNG");
-		JAI.create("filestore", fileStoreParams);
+		assertEquals(1000, croppedImage.getHeight());
+		assertEquals(1000, croppedImage.getWidth());
+//		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
+//		persistImage(outputFile, croppedImage.getOriginalImage());
 	}
 
 	@Test
@@ -56,43 +52,49 @@ public class ImageTest {
 		Image image = new Image(getTestFile());
 		List<Image> choppedImages = image.getChoppedImages();
 		for (Image choppedImage:choppedImages) {
-			RenderedImage originalImage = choppedImage.getOriginalImage();
-			assertEquals(100, originalImage.getHeight());
-			assertEquals(100, originalImage.getWidth());
-			int x = originalImage.getMinX();
-			int y = originalImage.getMinY();
-			String outputFile = 
-				TestUtility.IMAGE_PATH + "/chop/testChop"+x+"-"+y+".png";
-			ParameterBlock fileStoreParams = new ParameterBlock();
-			fileStoreParams.addSource(originalImage);
-			fileStoreParams.add(outputFile);
-			fileStoreParams.add("PNG");
-			JAI.create("filestore", fileStoreParams);
+			assertEquals(100, choppedImage.getHeight());
+			assertEquals(100, choppedImage.getWidth());
+//			String outputFile = 
+//				TestUtility.IMAGE_PATH + "/chop/testChop"+
+//					choppedImage.getMinX()+"-"+
+//						choppedImage.getMinY()+".png";
+//			persistImage(outputFile, choppedImage.getOriginalImage());
 		}
 	}
 	
 	@Test
-	public void testArableTrainingData() {
+	public void testTrainingData() {
 		for(File file: getArableTrainingImageFiles()) {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
-			for (Image choppedImage:choppedImages) {
-				RenderedImage originalImage = 
-					choppedImage.getOriginalImage();
-				int x = originalImage.getMinX();
-				int y = originalImage.getMinY();
+			for (Image choppedImage: choppedImages) {
+				int x = choppedImage.getMinX();
+				int y = choppedImage.getMinY();
 				String outputFile = 
 					TestUtility.ARABLE_TRAINING_IMAGE_PATH + 
-						"/chop/"+ file.getName() +
+						"/chop/"+ file.getName() + 
 							"_Chop_"+x+"_"+y+".png";
-				ParameterBlock fileStoreParams = new ParameterBlock();
-				fileStoreParams.addSource(choppedImage);
-				fileStoreParams.add(outputFile);
-				fileStoreParams.add("PNG");
-				System.out.println(outputFile);
-				JAI.create("filestore", fileStoreParams);
+				persistImage(outputFile, choppedImage.getOriginalImage());
 			}
 		}
-
+		for(File file: getNonArableTrainingImageFiles()) {
+			Image image = new Image(file);
+			List<Image> choppedImages = image.getChoppedImages();
+			for (Image choppedImage: choppedImages) {
+				int x = choppedImage.getMinX();
+				int y = choppedImage.getMinY();
+				String outputFile = 
+					TestUtility.NON_ARABLE_TRAINING_IMAGE_PATH + 
+						"/chop/"+ file.getName() + 
+							"_Chop_"+x+"_"+y+".png";
+				persistImage(outputFile, choppedImage.getOriginalImage());
+			}
+		}
+	}
+	
+	private void persistImage(String filename, RenderedImage source) {
+		ParameterBlock fileStoreParams = (new ParameterBlock()).
+			addSource(source).add(filename).add("PNG");
+		JAI.create("filestore", fileStoreParams);
 	}
 }

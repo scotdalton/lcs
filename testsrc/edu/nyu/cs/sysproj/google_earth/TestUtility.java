@@ -20,35 +20,33 @@ public class TestUtility {
 		IMAGE_PATH+"/training";
 	public final static String ARABLE_TRAINING_IMAGE_PATH = 
 		TRAINING_IMAGE_PATH+"/arable";
+	public final static String NON_ARABLE_TRAINING_IMAGE_PATH = 
+		TRAINING_IMAGE_PATH+"/non_arable";
 
 	public static File getTestFile() {
 		return new File(IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png" );
 	}
 
 	public static List<File> getImageFiles() {
-		List<File> fileList = Lists.newArrayList();
-		File directory = new File(IMAGE_PATH);
-		if (directory.isDirectory()) {
-			String[] filenames = directory.list();
-			for (String filename: filenames) {
-				File file = new File(IMAGE_PATH + "/" + filename);
-				if(file.isFile() && !file.isHidden()) {
-					fileList.add(file);
-				}
-			}
-		}
-		return fileList;
+		return getFiles(IMAGE_PATH);
 	}
 
 	public static List<File> getArableTrainingImageFiles() {
+		return getFiles(ARABLE_TRAINING_IMAGE_PATH);
+	}
+	
+	public static List<File> getNonArableTrainingImageFiles() {
+		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH);
+	}
+	
+	private static List<File> getFiles(String directoryName) {
 		List<File> fileList = Lists.newArrayList();
-		File directory = new File(ARABLE_TRAINING_IMAGE_PATH);
+		File directory = new File(directoryName);
 		if (directory.isDirectory()) {
 			String[] filenames = directory.list();
 			for (String filename: filenames) {
-				System.out.println(filename);
 				File file = 
-					new File(ARABLE_TRAINING_IMAGE_PATH + "/" + filename);
+					new File(directoryName + "/" + filename);
 				if(file.isFile() && !file.isHidden()) {
 					fileList.add(file);
 				}
