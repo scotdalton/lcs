@@ -90,6 +90,13 @@ public class Image {
 		return minY;
 	}
 	
+	public boolean isValid() {
+		for(ValidityCharacteristic valididityCharacteristic : ValidityCharacteristic.values())
+			if(valididityCharacteristic.isInvalid(this))
+				return false;
+		return true;
+	}
+	
 	public List<Image> getChoppedImages() {
 		return Collections.unmodifiableList(
 			chop(getCroppedImage(), CHOPPED_COLUMNS, CHOPPED_ROWS));
