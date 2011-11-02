@@ -9,21 +9,21 @@ package edu.nyu.cs.sysproj.google_earth;
  */
 public enum ValidityCharacteristic {
 	CLOUDY {
-		boolean isInvalid(Image image) {
-			return false;
+		boolean isValid(Image image) {
+			return true;
 		}
 	},
 	BLURRY {
-		boolean isInvalid(Image image) {
-			return false;
+		boolean isValid(Image image) {
+			return true;
 		}
 	},
 	BRIGHT {
-		boolean isInvalid(Image image) {
-			return false;
+		boolean isValid(Image image) {
+			return true;
 		}
 	};
 
-	abstract boolean isInvalid(Image image);
+	abstract boolean isValid(Image image);
 
 }

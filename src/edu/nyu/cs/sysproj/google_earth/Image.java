@@ -92,7 +92,7 @@ public class Image {
 	
 	public boolean isValid() {
 		for(ValidityCharacteristic valididityCharacteristic : ValidityCharacteristic.values())
-			if(valididityCharacteristic.isInvalid(this))
+			if(!valididityCharacteristic.isValid(this))
 				return false;
 		return true;
 	}
