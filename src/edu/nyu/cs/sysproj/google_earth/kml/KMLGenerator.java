@@ -20,7 +20,7 @@ public class KMLGenerator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int numberOfDates = 1;
+		int numberOfDates = 5;
 		int yearlyInterval = -2;
 		Calendar cal = Calendar.getInstance();
 		List<Date> dates = new ArrayList<Date>();

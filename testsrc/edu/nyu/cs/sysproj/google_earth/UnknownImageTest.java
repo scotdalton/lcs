@@ -3,8 +3,7 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestFileName1;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestFileName2;
+import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

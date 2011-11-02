@@ -28,6 +28,10 @@ public class Utility {
 	final static String NON_ARABLE_TESTING_IMAGE_PATH = 
 		TESTING_IMAGE_PATH+"/non_arable";
 	final static double CONFIDENCE_THRESHOLD = 0.60;
+	final static double CLOUDY_MEAN_THRESHOLD = 230.0;
+	final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
+	final static double BRIGHT_MEAN_THRESHOLD = 200.0;
+	
 	private static FastVector attributes;
 	
 	protected static FastVector getAttributes() {

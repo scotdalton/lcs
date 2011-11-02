@@ -9,7 +9,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import javax.media.jai.Histogram;
 import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
 
 import com.google.common.collect.Lists;
 
