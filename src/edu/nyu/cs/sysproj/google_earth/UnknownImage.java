@@ -23,9 +23,11 @@ public class UnknownImage extends Image {
 		int nonArableCount = 0;
 		List<Image> choppedImages = getChoppedImages();
 		for(Image choppedImage : choppedImages) {
-			if(choppedImage.getClassification().equals(ArabilityClassification.ARABLE))
+			ArabilityClassification classification = 
+				choppedImage.getClassification();
+			if(classification.equals(ArabilityClassification.ARABLE))
 				arableCount++;
-			else if (choppedImage.getClassification().equals(ArabilityClassification.NON_ARABLE))
+			else if (classification.equals(ArabilityClassification.NON_ARABLE))
 				nonArableCount++;
 		}
 		arablePercentage = arableCount/(double)choppedImages.size();

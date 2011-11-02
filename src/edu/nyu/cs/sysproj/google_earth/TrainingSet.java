@@ -24,27 +24,22 @@ public class TrainingSet {
 	private static TrainingSet trainingSet;
 	private Instances instances;
 	
-	private TrainingSet(List<KnownImage> knownImages, String name) {
+	private TrainingSet(List<Image> knownImages, String name) throws Exception {
 		FastVector attributes = Utility.getAttributes();
 		instances = 
 			new Instances(name, attributes, knownImages.size());
 		for(Image trainingImage: knownImages) {
 			List<Feature> features = trainingImage.getFeatures();
-			Instance instance = new Instance(features.size());
-			// Class attribute is first
-			try {
-				instance.setValue(
-					(Attribute)attributes.elementAt(0), 
-						trainingImage.getClassification().toString());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			for(int i=1; i<=features.size(); i++)
-				instance.setValue(
-					(Attribute)attributes.elementAt(i), 
-						features.get(i).getValue());      
-			// add the instance
+			Instance instance = new Instance(attributes.size());
+			for(int i=0; i<features.size(); i++)
+				instance.setValue((Attribute)attributes.elementAt(i), 
+					features.get(i).getValue());      
+			// Class attribute is last
+			int classAttributeIndex = attributes.capacity() -1;
+			instance.setValue(
+				(Attribute)attributes.elementAt(classAttributeIndex), 
+					trainingImage.getClassification().toString());
+			instances.setClassIndex(classAttributeIndex);
 			instances.add(instance);
 		}
 	}
@@ -68,44 +63,47 @@ public class TrainingSet {
 	}
 	
 	protected static TrainingSet getTrainingSet(
-			List<KnownImage> knownImages, String name) {
+			List<Image> knownImages, String name) throws Exception {
 		trainingSet = new TrainingSet(knownImages, name);
 		return trainingSet;
 	}
 	
-	private static List<KnownImage> getTrainingImages() {
-		List<KnownImage> knownImages = Lists.newArrayList();
-		for(KnownImage arableTrainingImage : 
-			getTrainingImages(ARABLE_TRAINING_IMAGE_PATH, 
+	private static List<Image> getTrainingImages() {
+		List<Image> knownImages = Lists.newArrayList();
+		for(Image arableTrainingImage : 
+			getKnownImages(ARABLE_TRAINING_IMAGE_PATH, 
 				ArabilityClassification.ARABLE))
 					knownImages.add(arableTrainingImage);
-		for(KnownImage nonArableTrainingImage : 
-			getTrainingImages(NON_ARABLE_TRAINING_IMAGE_PATH, 
+		for(Image nonArableTrainingImage : 
+			getKnownImages(NON_ARABLE_TRAINING_IMAGE_PATH, 
 				ArabilityClassification.NON_ARABLE))
 					knownImages.add(nonArableTrainingImage);
 		return knownImages;
 	}
 	
-	private static List<KnownImage> getTestingImages() {
-		List<KnownImage> knownImages = Lists.newArrayList();
-		for(KnownImage arableTrainingImage : 
-			getTrainingImages(ARABLE_TESTING_IMAGE_PATH, 
+	private static List<Image> getTestingImages() {
+		List<Image> knownImages = Lists.newArrayList();
+		for(Image arableTrainingImage : 
+			getKnownImages(ARABLE_TESTING_IMAGE_PATH, 
 				ArabilityClassification.ARABLE))
 					knownImages.add(arableTrainingImage);
-		for(KnownImage nonArableTrainingImage : 
-			getTrainingImages(NON_ARABLE_TESTING_IMAGE_PATH, 
+		for(Image nonArableTrainingImage : 
+			getKnownImages(NON_ARABLE_TESTING_IMAGE_PATH, 
 				ArabilityClassification.NON_ARABLE))
 					knownImages.add(nonArableTrainingImage);
 		return knownImages;
 	}
 	
-	private static List<KnownImage> getTrainingImages(
+	private static List<Image> getKnownImages(
 			String directoryName, ArabilityClassification classification) {
-		List<KnownImage> knownImages = Lists.newArrayList();
+		List<Image> knownImages = Lists.newArrayList();
 		File directory = new File(directoryName);
 		if (directory.isDirectory()) {
 			String[] filenames = directory.list();
+			int i = 0;
 			for (String filename: filenames) {
+				i++;
+				if(i++ > 5) break;
 				File file = 
 					new File(directoryName + "/" + filename);
 				if(file.isFile() && !file.isHidden()) {
@@ -114,7 +112,7 @@ public class TrainingSet {
 					List<Image> choppedImages = image.getChoppedImages();
 					for(Image choppedImage : choppedImages) {
 						choppedImage.setClassification(classification);
-						knownImages.add((KnownImage) choppedImage);
+						knownImages.add((Image) choppedImage);
 					}
 				}
 			}

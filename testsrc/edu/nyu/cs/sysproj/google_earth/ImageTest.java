@@ -23,7 +23,7 @@ public class ImageTest {
 
 	@Test
 	public void testCreateImage() {
-		Image image = new Image(getTestFile());
+		Image image = new Image(getTestFile1());
 		RenderedImage originalImage = image.getOriginalImage();
 		assertTrue(image.getOriginalImage() instanceof RenderedImage);
 		assertEquals(3, originalImage.getColorModel().
@@ -36,7 +36,7 @@ public class ImageTest {
 	
 	@Test
 	public void testCroppedImage() {
-		Image image = new Image(getTestFile());
+		Image image = new Image(getTestFile1());
 		Image croppedImage = image.getCroppedImage();
 		RenderedImage originalImage = croppedImage.getOriginalImage();
 		assertEquals(3, originalImage.getColorModel().
@@ -49,7 +49,7 @@ public class ImageTest {
 
 	@Test
 	public void testChoppedImages() {
-		Image image = new Image(getTestFile());
+		Image image = new Image(getTestFile1());
 		List<Image> choppedImages = image.getChoppedImages();
 		for (Image choppedImage:choppedImages) {
 			assertEquals(100, choppedImage.getHeight());

@@ -23,8 +23,20 @@ public class TestUtility {
 	public final static String NON_ARABLE_TRAINING_IMAGE_PATH = 
 		TRAINING_IMAGE_PATH+"/non_arable";
 
-	public static File getTestFile() {
-		return new File(IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png" );
+	public static String getTestFileName1() {
+		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20031004.png";
+	}
+
+	public static File getTestFile1() {
+		return new File(getTestFileName1());
+	}
+
+	public static String getTestFileName2() {
+		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png";
+	}
+
+	public static File getTestFile2() {
+		return new File(getTestFileName2());
 	}
 
 	public static List<File> getImageFiles() {

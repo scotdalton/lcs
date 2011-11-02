@@ -49,11 +49,6 @@ public class Image {
 		this(JAI.create("fileload", imageFile.getAbsolutePath()));
 	}
 	
-	private Image(RenderedImage renderedImage, ArabilityClassification classification) {
-		this(renderedImage);
-		this.classification = classification;
-	}
-	
 	private Image(RenderedImage renderedImage) {
 		originalImage = renderedImage;
 		width = originalImage.getWidth();
@@ -144,6 +139,6 @@ public class Image {
 			add(originX).
 				add(originY).add(width).add(height);
 		return new Image(
-			JAI.create("crop", croppedImageParams), image.classification);
+			JAI.create("crop", croppedImageParams));
 	}
 }

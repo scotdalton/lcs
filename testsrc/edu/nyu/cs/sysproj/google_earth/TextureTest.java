@@ -3,7 +3,7 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestFile;
+import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestFile1;
 
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
@@ -27,7 +27,7 @@ import edu.nyu.cs.sysproj.google_earth.features.Texture;
 public class TextureTest {
 	@Test
 	public void testGetFeature() {
-		File file = getTestFile();
+		File file = getTestFile1();
 //		for(File file : getArableTrainingImageFiles()) {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();

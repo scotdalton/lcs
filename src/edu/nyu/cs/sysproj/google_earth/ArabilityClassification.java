@@ -9,5 +9,6 @@ package edu.nyu.cs.sysproj.google_earth;
  */
 public enum ArabilityClassification {
 	ARABLE,
-	NON_ARABLE
+	NON_ARABLE,
+	UNKNOWN
 }

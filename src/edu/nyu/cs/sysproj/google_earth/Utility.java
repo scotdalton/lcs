@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
+import java.util.EnumSet;
+
 import weka.core.Attribute;
 import weka.core.FastVector;
 
@@ -25,19 +27,26 @@ public class Utility {
 		TESTING_IMAGE_PATH+"/arable";
 	final static String NON_ARABLE_TESTING_IMAGE_PATH = 
 		TESTING_IMAGE_PATH+"/non_arable";
-	final static double CONFIDENCE_THRESHOLD = 60.0;
+	final static double CONFIDENCE_THRESHOLD = 0.60;
+	private static FastVector attributes;
 	
 	protected static FastVector getAttributes() {
-		FastVector classifications = 
-			new FastVector(ArabilityClassification.values().length);
-		for(ArabilityClassification classification : ArabilityClassification.values())
-			classifications.addElement(classification.toString());
-		FastVector attributes = 
-			new FastVector(ArabilityFeature.values().length + 1);
-		// Class attribute is first
-		attributes.addElement(new Attribute("classification", classifications));
-		for(ArabilityFeature arabilityFeature : ArabilityFeature.values())
-			attributes.addElement(new Attribute(arabilityFeature.toString()));
+		if(attributes == null) {
+			attributes = 
+				new FastVector((ArabilityFeature.values().length + 1));
+			for(ArabilityFeature arabilityFeature : ArabilityFeature.values())
+				attributes.addElement(new Attribute(arabilityFeature.toString()));
+			FastVector classifications = 
+				new FastVector(ArabilityClassification.values().length);
+			EnumSet<ArabilityClassification> classificationValues = 
+				EnumSet.range(ArabilityClassification.ARABLE,
+					ArabilityClassification.NON_ARABLE);
+			for(ArabilityClassification classification: classificationValues) {
+				classifications.addElement(classification.toString());
+			}
+			// Class attribute is last
+			attributes.addElement(new Attribute("classification", classifications));
+		}
 		return attributes;
 	}
 }
