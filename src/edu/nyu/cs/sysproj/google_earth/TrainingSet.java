@@ -13,44 +13,37 @@ import weka.core.Instances;
 
 import com.google.common.collect.Lists;
 
+import edu.nyu.cs.sysproj.google_earth.features.Feature;
+import static edu.nyu.cs.sysproj.google_earth.Utility.*;
+
 /**
  * @author Scot Dalton
  *
  */
 public class TrainingSet {
-	private final static String IMAGE_PATH = 
-		"/Users/dalton/Dropbox/MSIS/Systems Projects/google_earth/images";
-	private final static String TRAINING_IMAGE_PATH = 
-		IMAGE_PATH+"/training";
-	private final static String ARABLE_TRAINING_IMAGE_PATH = 
-		TRAINING_IMAGE_PATH+"/arable";
-	private final static String NON_ARABLE_TRAINING_IMAGE_PATH = 
-		TRAINING_IMAGE_PATH+"/non_arable";
-	private final static String TESTING_IMAGE_PATH = 
-		IMAGE_PATH+"/testing";
-	private final static String ARABLE_TESTING_IMAGE_PATH = 
-		TESTING_IMAGE_PATH+"/arable";
-	private final static String NON_ARABLE_TESTING_IMAGE_PATH = 
-		TESTING_IMAGE_PATH+"/non_arable";
 	private static TrainingSet trainingSet;
 	private Instances instances;
 	
-	private TrainingSet(List<TrainingImage> trainingImages) {
-		FastVector attributes = getAttributes();
+	private TrainingSet(List<KnownImage> knownImages, String name) {
+		FastVector attributes = Utility.getAttributes();
 		instances = 
-			new Instances("Train", attributes, trainingImages.size());
-		for(Image trainingImage: trainingImages) {
+			new Instances(name, attributes, knownImages.size());
+		for(Image trainingImage: knownImages) {
 			List<Feature> features = trainingImage.getFeatures();
 			Instance instance = new Instance(features.size());
-			for(int i=0; i<features.size(); i++) {
+			// Class attribute is first
+			try {
+				instance.setValue(
+					(Attribute)attributes.elementAt(0), 
+						trainingImage.getClassification().toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			for(int i=1; i<=features.size(); i++)
 				instance.setValue(
 					(Attribute)attributes.elementAt(i), 
 						features.get(i).getValue());      
-			}
-			// Class attribute is last
-			instance.setValue(
-				(Attribute)attributes.elementAt(attributes.size() - 1), 
-					trainingImage.getClassification().toString());
 			// add the instance
 			instances.add(instance);
 		}
@@ -60,54 +53,55 @@ public class TrainingSet {
 		return instances;
 	}
 	
-	protected static TrainingSet getTrainingSet() {
+	protected static TrainingSet getTrainingSet() throws Exception {
 		if (trainingSet == null) {
-			trainingSet = getTrainingSet(getTrainingImages());
+			trainingSet = getTrainingSet(getTrainingImages(), "Training");
 		}
 		return trainingSet;
 	}
 	
-	protected static TrainingSet getTestingSet() {
+	protected static TrainingSet getTestingSet() throws Exception {
 		if (trainingSet == null) {
-			trainingSet = getTrainingSet(getTestingImages());
+			trainingSet = getTrainingSet(getTestingImages(), "Testing");
 		}
 		return trainingSet;
 	}
 	
-	protected static TrainingSet getTrainingSet(List<TrainingImage> trainingImages) {
-		trainingSet = new TrainingSet(trainingImages);
+	protected static TrainingSet getTrainingSet(
+			List<KnownImage> knownImages, String name) {
+		trainingSet = new TrainingSet(knownImages, name);
 		return trainingSet;
 	}
 	
-	private static List<TrainingImage> getTrainingImages() {
-		List<TrainingImage> trainingImages = Lists.newArrayList();
-		for(TrainingImage arableTrainingImage : 
+	private static List<KnownImage> getTrainingImages() {
+		List<KnownImage> knownImages = Lists.newArrayList();
+		for(KnownImage arableTrainingImage : 
 			getTrainingImages(ARABLE_TRAINING_IMAGE_PATH, 
 				ArabilityClassification.ARABLE))
-					trainingImages.add(arableTrainingImage);
-		for(TrainingImage nonArableTrainingImage : 
+					knownImages.add(arableTrainingImage);
+		for(KnownImage nonArableTrainingImage : 
 			getTrainingImages(NON_ARABLE_TRAINING_IMAGE_PATH, 
 				ArabilityClassification.NON_ARABLE))
-					trainingImages.add(nonArableTrainingImage);
-		return trainingImages;
+					knownImages.add(nonArableTrainingImage);
+		return knownImages;
 	}
 	
-	private static List<TrainingImage> getTestingImages() {
-		List<TrainingImage> trainingImages = Lists.newArrayList();
-		for(TrainingImage arableTrainingImage : 
+	private static List<KnownImage> getTestingImages() {
+		List<KnownImage> knownImages = Lists.newArrayList();
+		for(KnownImage arableTrainingImage : 
 			getTrainingImages(ARABLE_TESTING_IMAGE_PATH, 
 				ArabilityClassification.ARABLE))
-					trainingImages.add(arableTrainingImage);
-		for(TrainingImage nonArableTrainingImage : 
+					knownImages.add(arableTrainingImage);
+		for(KnownImage nonArableTrainingImage : 
 			getTrainingImages(NON_ARABLE_TESTING_IMAGE_PATH, 
 				ArabilityClassification.NON_ARABLE))
-					trainingImages.add(nonArableTrainingImage);
-		return trainingImages;
+					knownImages.add(nonArableTrainingImage);
+		return knownImages;
 	}
 	
-	private static List<TrainingImage> getTrainingImages(
+	private static List<KnownImage> getTrainingImages(
 			String directoryName, ArabilityClassification classification) {
-		List<TrainingImage> trainingImages = Lists.newArrayList();
+		List<KnownImage> knownImages = Lists.newArrayList();
 		File directory = new File(directoryName);
 		if (directory.isDirectory()) {
 			String[] filenames = directory.list();
@@ -115,37 +109,16 @@ public class TrainingSet {
 				File file = 
 					new File(directoryName + "/" + filename);
 				if(file.isFile() && !file.isHidden()) {
-					TrainingImage image = 
-						new TrainingImage(file, classification);
+					KnownImage image = 
+						new KnownImage(file, classification);
 					List<Image> choppedImages = image.getChoppedImages();
 					for(Image choppedImage : choppedImages) {
-						trainingImages.add((TrainingImage) choppedImage);
+						choppedImage.setClassification(classification);
+						knownImages.add((KnownImage) choppedImage);
 					}
 				}
 			}
 		}
-		return trainingImages;
-	}
-
-	private FastVector getAttributes() {
-		// Declare image attributes (features)
-		Attribute redMean = new Attribute("redMean");
-		Attribute greenMean = new Attribute("greenMean");
-		Attribute blueMean = new Attribute("blueMean");
-//		Attribute texture = new Attribute("texture");
-		// Declare the class attribute along with its values
-		FastVector classValues = new FastVector(2);
-		classValues.addElement(ArabilityClassification.ARABLE.toString());
-		classValues.addElement(ArabilityClassification.NON_ARABLE.toString());
-		Attribute classAttribute = new Attribute("theClass", classValues);
-		// Declare the feature vector
-		FastVector attributes = new FastVector(4);
-		attributes.addElement(redMean);    
-		attributes.addElement(greenMean);    
-		attributes.addElement(blueMean);    
-//		attributes.addElement(texture);    
-		// Class attribute is last
-		attributes.addElement(classAttribute);
-		return attributes;
+		return knownImages;
 	}
 }

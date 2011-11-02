@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.google_earth.features;
 
 import java.awt.RenderingHints;
 import java.awt.Transparency;
@@ -15,6 +15,8 @@ import java.util.Arrays;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
+
+import edu.nyu.cs.sysproj.google_earth.Image;
 
 import math.transform.jwave.Transform;
 import math.transform.jwave.handlers.DiscreteWaveletTransform;

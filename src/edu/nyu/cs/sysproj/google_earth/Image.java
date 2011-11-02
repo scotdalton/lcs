@@ -14,6 +14,8 @@ import javax.media.jai.RenderedOp;
 
 import com.google.common.collect.Lists;
 
+import edu.nyu.cs.sysproj.google_earth.features.Feature;
+
 /**
  * @author Scot Dalton
  *
@@ -29,21 +31,10 @@ public class Image {
 	private int minX;
 	private int minY;
 	private ArabilityClassification classification;
+	private List<Feature> features;
 
-	public Image(String imageFileName) {
+	protected Image(String imageFileName) {
 		this(new File(imageFileName));
-	}
-	
-	public Image(File imageFile) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()));
-	}
-	
-	public Image(RenderedImage renderedImage) {
-		originalImage = renderedImage;
-		width = originalImage.getWidth();
-		height = originalImage.getHeight();
-		minX = originalImage.getMinX();
-		minY = originalImage.getMinY();
 	}
 	
 	protected Image(File imageFile, ArabilityClassification classification) {
@@ -51,17 +42,42 @@ public class Image {
 		this.classification = classification;
 	}
 	
+	/**
+	 * Protected for testing purposes.
+	 * @param imageFile
+	 */
+	protected Image(File imageFile) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()));
+	}
+	
 	private Image(RenderedImage renderedImage, ArabilityClassification classification) {
 		this(renderedImage);
 		this.classification = classification;
 	}
 	
+	private Image(RenderedImage renderedImage) {
+		originalImage = renderedImage;
+		width = originalImage.getWidth();
+		height = originalImage.getHeight();
+		minX = originalImage.getMinX();
+		minY = originalImage.getMinY();
+	}
+	
 	public List<Feature> getFeatures() {
-		return null;
+		features = Lists.newArrayList();
+		for(ArabilityFeature arabilityFeature : ArabilityFeature.values())
+			features.add(arabilityFeature.getFeatureInstance(this));
+		return features;
 	}
 
-	public ArabilityClassification getClassification() {
+	public ArabilityClassification getClassification() throws Exception {
+		if(classification == null)
+			classification = TrainedModel.getTrainedModel().eval(this);
 		return classification;
+	}
+	
+	protected void setClassification(ArabilityClassification classification) {
+		this.classification = classification;
 	}
 	
 	public int getWidth() {
@@ -128,6 +144,7 @@ public class Image {
 			new ParameterBlock().addSource(image.getOriginalImage()).
 			add(originX).
 				add(originY).add(width).add(height);
-		return new Image(JAI.create("crop", croppedImageParams), classification);
+		return new Image(
+			JAI.create("crop", croppedImageParams), image.classification);
 	}
 }

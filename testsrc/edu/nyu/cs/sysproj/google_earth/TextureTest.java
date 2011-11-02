@@ -16,6 +16,8 @@ import javax.media.jai.SnapshotImage;
 
 import org.junit.Test;
 
+import edu.nyu.cs.sysproj.google_earth.features.Texture;
+
 
 
 /**

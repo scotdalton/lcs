@@ -10,6 +10,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import edu.nyu.cs.sysproj.google_earth.features.MeanBlueColor;
+import edu.nyu.cs.sysproj.google_earth.features.MeanGreenColor;
+import edu.nyu.cs.sysproj.google_earth.features.MeanRedColor;
+
 
 
 /**
