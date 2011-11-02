@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.media.jai.JAI;
-import javax.media.jai.RenderedOp;
 
 import com.google.common.collect.Lists;
 

@@ -21,7 +21,7 @@ public class TrainedModel {
 	private static TrainedModel trainedModel;
 	private Classifier classifier;
 	private TrainingSet trainingSet;
-	private double[][] confusionMatrix;
+//	private double[][] confusionMatrix;
 
 	/**
 	 * @return the confusionMatrix
@@ -78,7 +78,7 @@ public class TrainedModel {
 		eTest = new Evaluation(trainingSet.getInstances());
 		eTest.evaluateModel(classifier, testingSet.getInstances());
 		// Get the confusion matrix
-		confusionMatrix = eTest.confusionMatrix();
+//		confusionMatrix = eTest.confusionMatrix();
 		// Print the result à la Weka explorer:
 		return eTest.toSummaryString();
 	}

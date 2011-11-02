@@ -5,13 +5,10 @@ package edu.nyu.cs.sysproj.google_earth.features;
 
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
-import java.util.Arrays;
 
 import javax.media.jai.JAI;
 
 import edu.nyu.cs.sysproj.google_earth.Image;
-
-import weka.core.Attribute;
 
 
 
