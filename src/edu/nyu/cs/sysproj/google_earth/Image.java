@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.media.jai.Histogram;
 import javax.media.jai.JAI;
-import javax.media.jai.PlanarImage;
 
 import com.google.common.collect.Lists;
 
@@ -27,6 +26,7 @@ public class Image {
 	private final int CHOPPED_COLUMNS =10;
 	private final int CHOPPED_ROWS = 10;
 	private RenderedImage originalImage;
+	private Histogram histogram;
 	private int width;
 	private int height;
 	private int minX;
@@ -57,12 +57,26 @@ public class Image {
 		height = originalImage.getHeight();
 		minX = originalImage.getMinX();
 		minY = originalImage.getMinY();
+		// Set up the parameters for the Histogram object.
+		int[] bins = {256, 256, 256};             // The number of bins.
+		double[] low = {0.0D, 0.0D, 0.0D};        // The low value.
+		double[] high = {256.0D, 256.0D, 256.0D}; // The high value.
+		// Construct the Histogram object.
+		histogram = new Histogram(bins, low, high);
+		// Create the parameter block.
+		ParameterBlock histogramPB = (new ParameterBlock()).
+			addSource(originalImage).add(null).add(1).add(1);
+	     // Perform the histogram operation.
+		RenderedImage histogramImage = 
+			(RenderedImage)JAI.create("histogram", histogramPB, null);
+	     // Retrieve the histogram data.
+	     histogram = (Histogram) histogramImage.getProperty("histogram");
 	}
 	
 	public List<Feature> getFeatures() {
 		features = Lists.newArrayList();
 		for(ArabilityFeature arabilityFeature : ArabilityFeature.values())
-			features.add(arabilityFeature.getFeatureInstance(this));
+			features.add(arabilityFeature.instantiate(this));
 		return features;
 	}
 
@@ -90,6 +104,10 @@ public class Image {
 	
 	public int getMinY() {
 		return minY;
+	}
+	
+	public Histogram getHistogram() {
+		return histogram;
 	}
 	
 	public boolean isValid() {

@@ -9,6 +9,7 @@ import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.util.Arrays;
@@ -16,11 +17,10 @@ import java.util.Arrays;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 
-import edu.nyu.cs.sysproj.google_earth.Image;
-
 import math.transform.jwave.Transform;
 import math.transform.jwave.handlers.DiscreteWaveletTransform;
-import math.transform.jwave.handlers.wavelets.Haar02;
+import math.transform.jwave.handlers.wavelets.Daub02;
+import edu.nyu.cs.sysproj.google_earth.Image;
 
 
 /**
@@ -28,7 +28,8 @@ import math.transform.jwave.handlers.wavelets.Haar02;
  *
  */
 public class Texture {
-	private double[] waveletCoefficients;
+	private double[][] matrix;
+	private double[][] waveletCoefficients;
 	private double[] dctCoefficients;
 	RenderedImage discreteCosineTransform;
 	RenderedImage greyscaleImage;
@@ -49,14 +50,11 @@ public class Texture {
 			new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
 		greyscaleImage = 
 			JAI.create("ColorConvert", greyscalePB, greyscaleRH);
+		setMatrix(greyscaleImage);
 		Transform t = 
-			new Transform(new DiscreteWaveletTransform(new Haar02(), 2));
-		waveletCoefficients = 
-			t.forward(greyscaleImage.getData().getPixels(
-				greyscaleImage.getMinX(), greyscaleImage.getMinY(), 
-					greyscaleImage.getWidth(), greyscaleImage.getHeight(), 
-						(double[])null)); 
-	     ParameterBlock dctPB = 
+			new Transform(new DiscreteWaveletTransform(new Daub02(), 1));
+		waveletCoefficients = t.forward(matrix); 
+		ParameterBlock dctPB = 
 	    	 	(new ParameterBlock()).addSource(greyscaleImage);
 	     discreteCosineTransform = JAI.create("dct", dctPB, null);
 	     dctCoefficients =
@@ -72,7 +70,7 @@ public class Texture {
 		return getDCTCoefficients();
 	}
 	
-	public double[] getWaveletCoefficients() {
+	public double[][] getWaveletCoefficients() {
 		return Arrays.copyOf(waveletCoefficients, waveletCoefficients.length);
 	}
 	
@@ -86,5 +84,22 @@ public class Texture {
 	
 	public RenderedImage getGreyscaleImage() {
 		return greyscaleImage;
+	}
+	
+	public double[][] getMatrix() {
+		return matrix;
+	}
+	
+	private void setMatrix(RenderedImage singleBandImage) {
+		if(singleBandImage.getData().getNumBands() > 1)
+			throw new IllegalArgumentException();
+		int width = singleBandImage.getWidth();
+		int height = singleBandImage.getHeight();
+		Raster data = singleBandImage.getData();
+		matrix = new double[height][width];
+		for (int column = 0; column < width; column++)
+			for (int row = 0; row < height; row++)
+				matrix[row][column] = 
+					data.getSampleDouble(column, row, 0);
 	}
 }

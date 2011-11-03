@@ -10,9 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.google_earth.features.MeanBlueColor;
-import edu.nyu.cs.sysproj.google_earth.features.MeanGreenColor;
-import edu.nyu.cs.sysproj.google_earth.features.MeanRedColor;
+import edu.nyu.cs.sysproj.google_earth.features.MeanPixel;
 
 
 
@@ -28,9 +26,10 @@ public class ColorTest {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			for(Image choppedImage : choppedImages) {
-				MeanRedColor meanRedColor = new MeanRedColor(choppedImage);
+				MeanPixel meanPixelBand1 = 
+					new MeanPixel(choppedImage, 0);
 				System.out.println("File: " + file.getName());
-				System.out.println("\tMean red pixel: " + meanRedColor.getValue());
+				System.out.println("\tMean pixel band 1: " + meanPixelBand1.getValue());
 			}
 		}
 	}
@@ -41,9 +40,10 @@ public class ColorTest {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			for(Image choppedImage : choppedImages) {
-				MeanGreenColor meanGreenColor = new MeanGreenColor(choppedImage);
+				MeanPixel meanColorBand2 = 
+					new MeanPixel(choppedImage, 1);
 				System.out.println("File: " + file.getName());
-				System.out.println("\tMean green pixel: " + meanGreenColor.getValue());
+				System.out.println("\tMean green pixel: " + meanColorBand2.getValue());
 			}
 		}
 	}
@@ -54,9 +54,10 @@ public class ColorTest {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			for(Image choppedImage : choppedImages) {
-				MeanBlueColor meanBlueColor = new MeanBlueColor(choppedImage);
+				MeanPixel meanColorBand3 = 
+					new MeanPixel(choppedImage, 2);
 				System.out.println("File: " + file.getName());
-				System.out.println("\tMean blue pixel: " + meanBlueColor.getValue());
+				System.out.println("\tMean blue pixel: " + meanColorBand3.getValue());
 			}
 		}
 	}

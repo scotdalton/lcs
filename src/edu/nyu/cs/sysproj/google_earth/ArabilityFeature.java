@@ -4,30 +4,28 @@
 package edu.nyu.cs.sysproj.google_earth;
 
 import edu.nyu.cs.sysproj.google_earth.features.Feature;
-import edu.nyu.cs.sysproj.google_earth.features.MeanBlueColor;
-import edu.nyu.cs.sysproj.google_earth.features.MeanGreenColor;
-import edu.nyu.cs.sysproj.google_earth.features.MeanRedColor;
+import edu.nyu.cs.sysproj.google_earth.features.MeanPixel;
 
 /**
  * @author Scot Dalton
  *
  */
 public enum ArabilityFeature {
-	MeanRedColor {
-		Feature getFeatureInstance(Image image) {
-			return new MeanRedColor(image);
+	MeanPixelBand1 {
+		Feature instantiate(Image image) {
+			return new MeanPixel(image, 0);
 		}
 	},
-	MeanGreenColor {
-		Feature getFeatureInstance(Image image) {
-			return new MeanGreenColor(image);
+	MeanPixelBand2 {
+		Feature instantiate(Image image) {
+			return new MeanPixel(image, 1);
 		}
 	},
-	MeanBlueColor {
-		Feature getFeatureInstance(Image image) {
-			return new MeanBlueColor(image);
+	MeanPixelBand3 {
+		Feature instantiate(Image image) {
+			return new MeanPixel(image, 2);
 		}
 	};
 
-	abstract Feature getFeatureInstance(Image image);
+	abstract Feature instantiate(Image image);
 }

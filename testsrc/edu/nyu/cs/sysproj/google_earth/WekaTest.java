@@ -11,10 +11,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.google_earth.features.MeanBlueColor;
-import edu.nyu.cs.sysproj.google_earth.features.MeanGreenColor;
-import edu.nyu.cs.sysproj.google_earth.features.MeanRedColor;
-
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
@@ -22,6 +18,7 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import edu.nyu.cs.sysproj.google_earth.features.MeanPixel;
 
 
 /**
@@ -60,11 +57,11 @@ public class WekaTest {
 				// Create the instance
 				Instance iExample = new Instance(4);
 				iExample.setValue((Attribute)attributes.elementAt(0), 
-						new MeanRedColor(choppedImage).getValue());      
+						new MeanPixel(choppedImage, 0).getValue());      
 				iExample.setValue((Attribute)attributes.elementAt(1), 
-						new MeanGreenColor(choppedImage).getValue());      
+						new MeanPixel(choppedImage, 1).getValue());      
 				iExample.setValue((Attribute)attributes.elementAt(2), 
-						new MeanBlueColor(choppedImage).getValue());      
+						new MeanPixel(choppedImage, 2).getValue());      
 				iExample.setValue((Attribute)attributes.elementAt(3), 
 						ArabilityClassification.ARABLE.toString());
 				// add the instance
@@ -92,11 +89,11 @@ public class WekaTest {
 				// Create the instance
 				Instance iExample = new Instance(4);
 				iExample.setValue((Attribute)attributes.elementAt(0), 
-						new MeanRedColor(choppedImage).getValue());      
+						new MeanPixel(choppedImage, 0).getValue());      
 				iExample.setValue((Attribute)attributes.elementAt(1), 
-						new MeanGreenColor(choppedImage).getValue());      
+						new MeanPixel(choppedImage, 1).getValue());      
 				iExample.setValue((Attribute)attributes.elementAt(2), 
-						new MeanBlueColor(choppedImage).getValue());      
+						new MeanPixel(choppedImage, 2).getValue());      
 				iExample.setValue((Attribute)attributes.elementAt(3), 
 						ArabilityClassification.ARABLE.toString());
 				// add the instance
