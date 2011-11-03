@@ -8,8 +8,6 @@ import static edu.nyu.cs.sysproj.google_earth.TestUtility.getBrightTestImage1;
 import static edu.nyu.cs.sysproj.google_earth.TestUtility.getCloudyTestImage1;
 import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestImage1;
 
-import javax.media.jai.Histogram;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
 

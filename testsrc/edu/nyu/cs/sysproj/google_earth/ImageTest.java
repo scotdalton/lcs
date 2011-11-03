@@ -7,11 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.util.List;
-
-import javax.media.jai.JAI;
 
 import org.junit.Test;
 
@@ -21,7 +18,7 @@ import org.junit.Test;
  */
 public class ImageTest {
 
-	@Test
+//	@Test
 	public void testCreateImage() {
 		Image image = new Image(getTestFile1());
 		RenderedImage originalImage = image.getOriginalImage();
@@ -34,7 +31,7 @@ public class ImageTest {
 		assertTrue(image.getChoppedImages() instanceof List<?>);
 	}
 	
-	@Test
+//	@Test
 	public void testCroppedImage() {
 		Image image = new Image(getTestFile1());
 		Image croppedImage = image.getCroppedImage();
@@ -43,8 +40,8 @@ public class ImageTest {
 				getColorSpace().getNumComponents());
 		assertEquals(1000, croppedImage.getHeight());
 		assertEquals(1000, croppedImage.getWidth());
-//		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
-//		persistImage(outputFile, croppedImage.getOriginalImage());
+		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
+		persistImage(outputFile, croppedImage.getOriginalImage());
 	}
 
 	@Test
@@ -52,8 +49,8 @@ public class ImageTest {
 		Image image = new Image(getTestFile1());
 		List<Image> choppedImages = image.getChoppedImages();
 		for (Image choppedImage:choppedImages) {
-			assertEquals(10, choppedImage.getHeight());
-			assertEquals(10, choppedImage.getWidth());
+			assertEquals(100, choppedImage.getHeight());
+			assertEquals(100, choppedImage.getWidth());
 			String outputFile = 
 				TestUtility.IMAGE_PATH + "/chop/testChop"+
 					choppedImage.getMinX()+"-"+
@@ -74,7 +71,7 @@ public class ImageTest {
 					TestUtility.ARABLE_TRAINING_IMAGE_PATH + 
 						"/chop/"+ file.getName() + 
 							"_Chop_"+x+"_"+y+".png";
-//				persistImage(outputFile, choppedImage.getOriginalImage());
+				persistImage(outputFile, choppedImage.getOriginalImage());
 			}
 		}
 		for(File file: getNonArableTrainingImageFiles()) {
@@ -87,7 +84,7 @@ public class ImageTest {
 					TestUtility.NON_ARABLE_TRAINING_IMAGE_PATH + 
 						"/chop/"+ file.getName() + 
 							"_Chop_"+x+"_"+y+".png";
-//				persistImage(outputFile, choppedImage.getOriginalImage());
+				persistImage(outputFile, choppedImage.getOriginalImage());
 			}
 		}
 	}
