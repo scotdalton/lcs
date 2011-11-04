@@ -3,13 +3,11 @@
  */
 package edu.nyu.cs.sysproj.google_earth.features;
 
-import java.awt.image.Raster;
-import java.awt.image.RenderedImage;
-import java.util.Arrays;
-
-import math.transform.jwave.Transform;
-import math.transform.jwave.handlers.DiscreteWaveletTransform;
-import math.transform.jwave.handlers.wavelets.Daub02;
+//import java.util.Arrays;
+//
+//import math.transform.jwave.Transform;
+//import math.transform.jwave.handlers.DiscreteWaveletTransform;
+//import math.transform.jwave.handlers.wavelets.Daub02;
 import edu.nyu.cs.sysproj.google_earth.Image;
 
 
@@ -23,15 +21,11 @@ public class Texture implements Feature{
 //	RenderedImage discreteCosineTransform;
 	private float value;
 	
-//	public Texture(Image image, int x, int y) {
 	public Texture(Image image) {
-//		RenderedImage greyscaleImage = image.getGreyscaleImage();
-//		setMatrix(greyscaleImage);
+//		setMatrix(image.getGreyscaleImage());
 //		Transform t = 
 //			new Transform(new DiscreteWaveletTransform(new Daub02(), 1));
 //		waveletCoefficients = t.forward(matrix); 
-//		value = image.getDiscreteCosineTransform().getData().
-//			getSampleFloat(x, y, 0);
 		value = 	(float) image.getDiscreteCosineTransform().getMeans()[0];
 	}
 	
