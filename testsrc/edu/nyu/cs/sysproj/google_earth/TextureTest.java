@@ -6,13 +6,9 @@ package edu.nyu.cs.sysproj.google_earth;
 import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
 
 import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
+
 import java.io.File;
 import java.util.List;
-
-import javax.media.jai.JAI;
-import javax.media.jai.PlanarImage;
-import javax.media.jai.SnapshotImage;
 
 import org.junit.Test;
 
@@ -57,7 +53,7 @@ public class TextureTest {
 //				System.out.println("File: " + file.getName());
 //				System.out.println("Min X: " + x);
 //				System.out.println("Min Y: " + y);
-				double[][] matrix = texture.getMatrix();
+//				double[][] matrix = texture.getMatrix();
 				double[][] waveletCoefficients = 
 					texture.getWaveletCoefficients();
 				System.out.println(

@@ -15,7 +15,7 @@ public class MeanPixel implements Feature {
 	private float value;
 
 	public MeanPixel(Image image, int band) {
-		value = (float) image.getHistogram().getMean()[band];
+		value = (float) image.getMeans()[band];
 	}
 	
 	public float getValue() {

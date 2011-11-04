@@ -4,7 +4,6 @@
 package edu.nyu.cs.sysproj.google_earth.features;
 
 
-
 //import javax.media.jai.RenderedOp;
 
 /**

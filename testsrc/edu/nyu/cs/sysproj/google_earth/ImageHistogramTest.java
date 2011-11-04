@@ -16,10 +16,9 @@ public class ImageHistogramTest {
 	@Test
 	public void testCreateImageHistograms() {
 		Image image = getTestImage1();
-		for (int band=0; band < image.getHistogram().getNumBands(); band++) {
-			for (int bin=0; bin < image.getHistogram().getNumBins(band); bin++)
-				System.out.print(image.getHistogram().getBinSize(band, bin) + ", ");
-			System.out.println();
-		}
+		for(double mean : image.getMeans())
+			System.out.println(mean);
+		for(double standardDeviation : image.getStandardDeviations())
+			System.out.println(standardDeviation);
 	}
 }

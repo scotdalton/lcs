@@ -10,9 +10,7 @@ package edu.nyu.cs.sysproj.google_earth;
 public enum ValidityCheck {
 	CLOUDY {
 		boolean isValid(Image image) {
-			double[] means = image.getHistogram().getMean();
-//			double[] standardDeviations = 
-//				image.getHistogram().getStandardDeviation();
+			double[] means = image.getMeans();
 			for (double mean: means)
 				if (mean > Utility.CLOUDY_MEAN_THRESHOLD) 
 					return false;
@@ -21,9 +19,8 @@ public enum ValidityCheck {
 	},
 	BLURRY {
 		boolean isValid(Image image) {
-//			double[] means = image.getHistogram().getMean();
 			double[] standardDeviations = 
-				image.getHistogram().getStandardDeviation();
+				image.getStandardDeviations();
 			for (double standardDeviation: standardDeviations)
 				if (standardDeviation < 
 						Utility.BLURRY_STANDARD_DEVIATION_THRESHOLD) 
@@ -33,9 +30,7 @@ public enum ValidityCheck {
 	},
 	BRIGHT {
 		boolean isValid(Image image) {
-			double[] means = image.getHistogram().getMean();
-//			double[] standardDeviations = 
-//				image.getHistogram().getStandardDeviation();
+			double[] means = image.getMeans();
 			for (double mean: means)
 				if (mean > Utility.BRIGHT_MEAN_THRESHOLD) 
 					return false;

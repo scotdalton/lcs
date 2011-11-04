@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
+import static edu.nyu.cs.sysproj.google_earth.Utility.*;
+
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
@@ -17,15 +19,6 @@ import com.google.common.collect.Lists;
  *
  */
 public class TestUtility {
-	public final static String IMAGE_PATH = 
-		"/Users/dalton/Dropbox/MSIS/Systems Projects/google_earth/images";
-	public final static String EDGE_IMAGE_PATH = IMAGE_PATH+"/edges";
-	public final static String TRAINING_IMAGE_PATH = 
-		IMAGE_PATH+"/training";
-	public final static String ARABLE_TRAINING_IMAGE_PATH = 
-		TRAINING_IMAGE_PATH+"/arable";
-	public final static String NON_ARABLE_TRAINING_IMAGE_PATH = 
-		TRAINING_IMAGE_PATH+"/non_arable";
 
 	public static String getTestFileName1() {
 		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20031004.png";
@@ -80,11 +73,19 @@ public class TestUtility {
 	}
 
 	public static List<File> getArableTrainingImageFiles() {
-		return getFiles(ARABLE_TRAINING_IMAGE_PATH);
+		return getFiles(ARABLE_TRAINING_IMAGE_PATH+"/selected");
 	}
 	
 	public static List<File> getNonArableTrainingImageFiles() {
-		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH);
+		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH+"/selected");
+	}
+	
+	public static List<File> getArableTestingImageFiles() {
+		return getFiles(ARABLE_TESTING_IMAGE_PATH+"/selected");
+	}
+	
+	public static List<File> getNonArableTestingImageFiles() {
+		return getFiles(NON_ARABLE_TESTING_IMAGE_PATH+"/selected");
 	}
 	
 	public static void persistImage(String filename, RenderedImage source) {

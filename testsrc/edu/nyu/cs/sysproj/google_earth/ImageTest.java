@@ -2,6 +2,7 @@ package edu.nyu.cs.sysproj.google_earth;
 /**
  * 
  */
+import static edu.nyu.cs.sysproj.google_earth.Utility.*;
 import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +29,7 @@ public class ImageTest {
 		assertEquals(1000, image.getHeight());
 		assertEquals(1000, image.getWidth());
 		assertTrue(image.getChoppedImages() instanceof List<?>);
-		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
+		String outputFile = IMAGE_PATH + "/crop/testCrop.png";
 		persistImage(outputFile, image.getRenderedImage());
 	}
 	
@@ -40,14 +41,14 @@ public class ImageTest {
 			assertEquals(100, choppedImage.getHeight());
 			assertEquals(100, choppedImage.getWidth());
 			String outputFile = 
-				TestUtility.IMAGE_PATH + "/chop/testChop"+
+				IMAGE_PATH + "/chop/testChop"+
 					choppedImage.getMinX()+"-"+
 						choppedImage.getMinY()+".png";
 			persistImage(outputFile, choppedImage.getRenderedImage());
 		}
 	}
 	
-	@Test
+//	@Test
 	public void testTrainingData() {
 		for(File file: getArableTrainingImageFiles()) {
 			Image image = new Image(file);
@@ -56,9 +57,8 @@ public class ImageTest {
 				int x = choppedImage.getMinX();
 				int y = choppedImage.getMinY();
 				String outputFile = 
-					TestUtility.ARABLE_TRAINING_IMAGE_PATH + 
-						"/chop/"+ file.getName() + 
-							"_Chop_"+x+"_"+y+".png";
+					ARABLE_TRAINING_IMAGE_PATH + "/" + file.getName() + 
+						"_"+x+"_"+y+".png";
 				persistImage(outputFile, choppedImage.getRenderedImage());
 			}
 		}
@@ -69,9 +69,36 @@ public class ImageTest {
 				int x = choppedImage.getMinX();
 				int y = choppedImage.getMinY();
 				String outputFile = 
-					TestUtility.NON_ARABLE_TRAINING_IMAGE_PATH + 
-						"/chop/"+ file.getName() + 
-							"_Chop_"+x+"_"+y+".png";
+					NON_ARABLE_TRAINING_IMAGE_PATH + "/" + file.getName() + 
+						"_"+x+"_"+y+".png";
+				persistImage(outputFile, choppedImage.getRenderedImage());
+			}
+		}
+	}
+
+	@Test
+	public void testTestingData() {
+		for(File file: getArableTestingImageFiles()) {
+			Image image = new Image(file);
+			List<Image> choppedImages = image.getChoppedImages();
+			for (Image choppedImage: choppedImages) {
+				int x = choppedImage.getMinX();
+				int y = choppedImage.getMinY();
+				String outputFile = 
+					ARABLE_TESTING_IMAGE_PATH + "/" + file.getName() + 
+						"_"+x+"_"+y+".png";
+				persistImage(outputFile, choppedImage.getRenderedImage());
+			}
+		}
+		for(File file: getNonArableTestingImageFiles()) {
+			Image image = new Image(file);
+			List<Image> choppedImages = image.getChoppedImages();
+			for (Image choppedImage: choppedImages) {
+				int x = choppedImage.getMinX();
+				int y = choppedImage.getMinY();
+				String outputFile = 
+					NON_ARABLE_TESTING_IMAGE_PATH + "/" + file.getName() + 
+						"_"+x+"_"+y+".png";
 				persistImage(outputFile, choppedImage.getRenderedImage());
 			}
 		}

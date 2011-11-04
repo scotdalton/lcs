@@ -4,6 +4,9 @@
 package edu.nyu.cs.sysproj.google_earth;
 
 import java.util.EnumSet;
+import java.util.List;
+
+import edu.nyu.cs.sysproj.google_earth.features.Feature;
 
 import weka.core.Attribute;
 import weka.core.FastVector;
@@ -21,12 +24,20 @@ public class Utility {
 		TRAINING_IMAGE_PATH+"/arable";
 	final static String NON_ARABLE_TRAINING_IMAGE_PATH = 
 		TRAINING_IMAGE_PATH+"/non_arable";
+	final static String CURATED_ARABLE_TRAINING_IMAGE_PATH = 
+		ARABLE_TRAINING_IMAGE_PATH+"/curated";
+	final static String CURATED_NON_ARABLE_TRAINING_IMAGE_PATH = 
+		NON_ARABLE_TRAINING_IMAGE_PATH+"/curated";
 	final static String TESTING_IMAGE_PATH = 
 		IMAGE_PATH+"/testing";
 	final static String ARABLE_TESTING_IMAGE_PATH = 
 		TESTING_IMAGE_PATH+"/arable";
 	final static String NON_ARABLE_TESTING_IMAGE_PATH = 
 		TESTING_IMAGE_PATH+"/non_arable";
+	final static String CURATED_ARABLE_TESTING_IMAGE_PATH = 
+		ARABLE_TESTING_IMAGE_PATH+"/curated";
+	final static String CURATED_NON_ARABLE_TESTING_IMAGE_PATH = 
+		NON_ARABLE_TESTING_IMAGE_PATH+"/curated";
 	final static double CONFIDENCE_THRESHOLD = 0.60;
 	final static double CLOUDY_MEAN_THRESHOLD = 230.0;
 	final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
@@ -52,5 +63,13 @@ public class Utility {
 			attributes.addElement(new Attribute("classification", classifications));
 		}
 		return attributes;
+	}
+	
+	protected static float[] getAttributeValues(Image image) {
+		List<Feature> features = image.getFeatures();
+		float[] values = new float[features.size()];
+		for(int i=0; i<features.size(); i++) 
+			values[i] = features.get(i).getValue();
+		return values;
 	}
 }

@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
+import static edu.nyu.cs.sysproj.google_earth.Utility.*;
+
 import java.io.File;
 import java.util.List;
 
@@ -12,9 +14,6 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import com.google.common.collect.Lists;
-
-import edu.nyu.cs.sysproj.google_earth.features.Feature;
-import static edu.nyu.cs.sysproj.google_earth.Utility.*;
 
 /**
  * @author Scot Dalton
@@ -28,18 +27,17 @@ public class TrainingSet {
 		FastVector attributes = Utility.getAttributes();
 		instances = 
 			new Instances(name, attributes, knownImages.size());
+		// Class attribute is last
+		int classAttributeIndex = attributes.capacity() -1;
+		instances.setClassIndex(classAttributeIndex);
 		for(Image trainingImage: knownImages) {
-			List<Feature> features = trainingImage.getFeatures();
+			float[] values = Utility.getAttributeValues(trainingImage);
 			Instance instance = new Instance(attributes.size());
-			for(int i=0; i<features.size(); i++)
-				instance.setValue((Attribute)attributes.elementAt(i), 
-					features.get(i).getValue());      
-			// Class attribute is last
-			int classAttributeIndex = attributes.capacity() -1;
+			for(int i=0; i<values.length; i++)
+				instance.setValue((Attribute)attributes.elementAt(i), values[i]);
 			instance.setValue(
 				(Attribute)attributes.elementAt(classAttributeIndex), 
 					trainingImage.getClassification().toString());
-			instances.setClassIndex(classAttributeIndex);
 			instances.add(instance);
 		}
 	}
@@ -71,11 +69,11 @@ public class TrainingSet {
 	private static List<Image> getTrainingImages() {
 		List<Image> knownImages = Lists.newArrayList();
 		for(Image arableTrainingImage : 
-			getKnownImages(ARABLE_TRAINING_IMAGE_PATH, 
+			getKnownImages(CURATED_ARABLE_TRAINING_IMAGE_PATH, 
 				ArabilityClassification.ARABLE))
 					knownImages.add(arableTrainingImage);
 		for(Image nonArableTrainingImage : 
-			getKnownImages(NON_ARABLE_TRAINING_IMAGE_PATH, 
+			getKnownImages(CURATED_NON_ARABLE_TRAINING_IMAGE_PATH, 
 				ArabilityClassification.NON_ARABLE))
 					knownImages.add(nonArableTrainingImage);
 		return knownImages;
@@ -84,11 +82,11 @@ public class TrainingSet {
 	private static List<Image> getTestingImages() {
 		List<Image> knownImages = Lists.newArrayList();
 		for(Image arableTrainingImage : 
-			getKnownImages(ARABLE_TESTING_IMAGE_PATH, 
+			getKnownImages(CURATED_ARABLE_TESTING_IMAGE_PATH, 
 				ArabilityClassification.ARABLE))
 					knownImages.add(arableTrainingImage);
 		for(Image nonArableTrainingImage : 
-			getKnownImages(NON_ARABLE_TESTING_IMAGE_PATH, 
+			getKnownImages(CURATED_NON_ARABLE_TESTING_IMAGE_PATH, 
 				ArabilityClassification.NON_ARABLE))
 					knownImages.add(nonArableTrainingImage);
 		return knownImages;
@@ -100,18 +98,13 @@ public class TrainingSet {
 		File directory = new File(directoryName);
 		if (directory.isDirectory()) {
 			String[] filenames = directory.list();
-			int i = 0;
 			for (String filename: filenames) {
 				File file = 
 					new File(directoryName + "/" + filename);
 				if(file.isFile() && !file.isHidden()) {
-					i++;
-					if(i > 6) break;
 					KnownImage image = 
 						new KnownImage(file, classification);
-					List<Image> choppedImages = image.getChoppedImages();
-					for(Image choppedImage : choppedImages)
-						knownImages.add((Image) choppedImage);
+					knownImages.add(image);
 				}
 			}
 		}

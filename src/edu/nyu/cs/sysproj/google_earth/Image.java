@@ -3,13 +3,21 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
+import java.awt.RenderingHints;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.media.jai.Histogram;
+import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 
 import com.google.common.collect.Lists;
@@ -31,6 +39,8 @@ public class Image {
 	private final int CHOPPED_COLUMNS =10;
 	private final int CHOPPED_ROWS = 10;
 	private RenderedImage renderedImage;
+	private RenderedImage greyscaleImage;
+	private RenderedImage discreteCosineTransform;
 	private Histogram histogram;
 	private int width;
 	private int height;
@@ -73,23 +83,11 @@ public class Image {
 	 */
 	private Image(RenderedImage renderedImage) {
 		this.renderedImage = 
-			cropOriginal(CROPPED_WIDTH, CROPPED_HEIGHT).
-				getRenderedImage();
-		width = renderedImage.getWidth();
-		height = renderedImage.getHeight();
-		minX = renderedImage.getMinX();
-		minY = renderedImage.getMinY();
-		// Get the histogram from JAI and store it
-		int[] bins = {256, 256, 256};
-		double[] low = {0.0D, 0.0D, 0.0D};
-		double[] high = {256.0D, 256.0D, 256.0D};
-		histogram = new Histogram(bins, low, high);
-		ParameterBlock histogramPB = (new ParameterBlock()).
-			addSource(renderedImage).add(null).add(1).add(1);
-		RenderedImage histogramImage = 
-			(RenderedImage)JAI.create("histogram", histogramPB, null);
-	     // Retrieve the histogram data.
-	     histogram = (Histogram) histogramImage.getProperty("histogram");
+			centeredCrop(renderedImage, CROPPED_WIDTH, CROPPED_HEIGHT);
+		width = this.renderedImage.getWidth();
+		height = this.renderedImage.getHeight();
+		minX = this.renderedImage.getMinX();
+		minY = this.renderedImage.getMinY();
 	}
 	
 	/**
@@ -147,13 +145,21 @@ public class Image {
 	}
 	
 	/**
-	 * Returns the image's histogram
-	 * TODO: Create histogram object that decorates JAI Histogram
-	 * to encapsulate implementation 
+	 * Returns the means for all the bands of the histogram 
 	 * @return
 	 */
-	public Histogram getHistogram() {
-		return histogram;
+	public double[] getMeans() {
+		double[] means = getHistogram().getMean();
+		return Arrays.copyOf(means, means.length);
+	}
+	
+	/**
+	 * Returns the standard deviations for all the bands of the histogram 
+	 * @return
+	 */
+	public double[] getStandardDeviations() {
+		double[] standardDeviations = getHistogram().getStandardDeviation();
+		return Arrays.copyOf(standardDeviations, standardDeviations.length);
 	}
 	
 	/**
@@ -177,12 +183,72 @@ public class Image {
 	}
 	
 	/**
-	 * Get the rendered image.
+	 * Returns the RenderedImage.
 	 * TODO: Make this private to encapsulate implementation
 	 * @return
 	 */
 	public RenderedImage getRenderedImage() {
 		return renderedImage;
+	}
+	
+	/**
+	 * Returns a RenderedImage that is the greyscale representation 
+	 * of the image.
+	 * @return
+	 */
+	public RenderedImage getGreyscaleImage() {
+		if(greyscaleImage == null) {
+			ColorModel cm = 
+				new ComponentColorModel(ColorSpace.getInstance(
+					ColorSpace.CS_GRAY), new int[] {8}, false, false, 
+						Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+			ParameterBlock greyscalePB = 
+				(new ParameterBlock()).addSource(renderedImage).add(cm);
+			ImageLayout greyscaleLayout = 
+				(new ImageLayout()).setMinX(minX).
+					setMinY(minY).setColorModel(cm);
+			RenderingHints greyscaleRH = 
+				new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
+			greyscaleImage = 
+				JAI.create("ColorConvert", greyscalePB, greyscaleRH);
+		}
+		return greyscaleImage;
+	}
+	
+	/**
+	 * Returns a RenderedImage that representst the coefficients from
+	 * a Discrete Cosine Transform.
+	 * @return
+	 */
+	public RenderedImage getDiscreteCosineTransform() {
+		if (discreteCosineTransform == null) {
+			ParameterBlock dctPB = 
+				(new ParameterBlock()).addSource(greyscaleImage);
+			discreteCosineTransform = JAI.create("dct", dctPB, null);
+		}
+		return discreteCosineTransform;
+	}
+	
+	/**
+	 * Gets the histogram for the image.  If the histogram doesn't
+	 * exist, this function creates it.
+	 * @return
+	 */
+	private Histogram getHistogram() {
+		if (histogram == null) {
+			// Get the histogram from JAI and store it
+			int[] bins = {256, 256, 256};
+			double[] low = {0.0D, 0.0D, 0.0D};
+			double[] high = {256.0D, 256.0D, 256.0D};
+			histogram = new Histogram(bins, low, high);
+			ParameterBlock histogramPB = (new ParameterBlock()).
+				addSource(renderedImage).add(null).add(1).add(1);
+			RenderedImage histogramImage = 
+				(RenderedImage)JAI.create("histogram", histogramPB, null);
+		     // Retrieve the histogram data.
+		     histogram = (Histogram) histogramImage.getProperty("histogram");
+		}
+		return histogram;
 	}
 
 	/**
@@ -210,22 +276,23 @@ public class Image {
 	}
 	
 	/**
-	 * Returns a cropped image based on the original image, with the 
-	 * given dimensions
+	 * Returns a cropped RenderedImage centered on the input RenderedImage, 
+	 * with the given dimensions.
 	 * @param width
 	 * @param height
 	 * @return
 	 */
-	private Image cropOriginal(float width, float height) {
+	private RenderedImage centeredCrop(RenderedImage renderedImage,
+			float width, float height) {
 		float originX = 
 			renderedImage.getWidth()/2 - width/2 + renderedImage.getMinX();
 		float originY = 
 			renderedImage.getHeight()/2 - height/2 + renderedImage.getMinY();
-		return crop(this, originX, originY, width, height);
+		return crop(renderedImage, originX, originY, width, height);
 	}
 	
 	/**
-	 * Returns a cropped image based on the input specifications.
+	 * Returns a cropped Image based on the input specifications.
 	 * @param image
 	 * @param originX
 	 * @param originY
@@ -235,18 +302,34 @@ public class Image {
 	 */
 	private Image crop(Image image, float originX, float originY, 
 			float width, float height) {
-		// Don't crop if smaller than crop dimensions.
-		if (image.getWidth() < width || image.getHeight() < height)
-			return image;
-		ParameterBlock croppedImageParams = 
-			new ParameterBlock().addSource(image.renderedImage).
-				add(originX).add(originY).add(width).add(height);
 		Image croppedImage = 
-			new Image(JAI.create("crop", croppedImageParams));
+			new Image(crop(image.renderedImage, 
+				originX, originY, width, height));
 		// If the (parent) image has a classification, 
 		// it's crop (child) has the same classification 
 		if(classification != null)
 			croppedImage.classification = image.classification;
 		return croppedImage;
+	}
+	
+	/**
+	 * Returns a cropped RenderedImage based on the input specifications.
+	 * @param renderedImage
+	 * @param originX
+	 * @param originY
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	private RenderedImage crop(RenderedImage renderedImage, float originX, 
+			float originY, float width, float height) {
+		// Don't crop if smaller than crop dimensions.
+		if (renderedImage.getWidth() < width || 
+				renderedImage.getHeight() < height)
+			return renderedImage;
+		ParameterBlock croppedImageParams = 
+			new ParameterBlock().addSource(renderedImage).
+				add(originX).add(originY).add(width).add(height);
+		return JAI.create("crop", croppedImageParams);
 	}
 }
