@@ -39,8 +39,8 @@ public class Image {
 	private final int CHOPPED_COLUMNS =10;
 	private final int CHOPPED_ROWS = 10;
 	private RenderedImage renderedImage;
+	private Image discreteCosineTransform;
 	private RenderedImage greyscaleImage;
-	private RenderedImage discreteCosineTransform;
 	private Histogram histogram;
 	private int width;
 	private int height;
@@ -220,11 +220,12 @@ public class Image {
 	 * a Discrete Cosine Transform.
 	 * @return
 	 */
-	public RenderedImage getDiscreteCosineTransform() {
+	public Image getDiscreteCosineTransform() {
 		if (discreteCosineTransform == null) {
 			ParameterBlock dctPB = 
-				(new ParameterBlock()).addSource(greyscaleImage);
-			discreteCosineTransform = JAI.create("dct", dctPB, null);
+				(new ParameterBlock()).addSource(this.getGreyscaleImage());
+			discreteCosineTransform = 
+				new Image(JAI.create("dct", dctPB, null));
 		}
 		return discreteCosineTransform;
 	}
