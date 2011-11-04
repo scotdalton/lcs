@@ -20,33 +20,21 @@ public class ImageTest {
 
 //	@Test
 	public void testCreateImage() {
-		Image image = new Image(getTestFile1());
-		RenderedImage originalImage = image.getOriginalImage();
-		assertTrue(image.getOriginalImage() instanceof RenderedImage);
+		Image image = getTestImage1();
+		RenderedImage originalImage = image.getRenderedImage();
+		assertTrue(image.getRenderedImage() instanceof RenderedImage);
 		assertEquals(3, originalImage.getColorModel().
 				getColorSpace().getNumComponents());
-		assertEquals(1055, originalImage.getHeight(), 0);
-		assertEquals(1544, originalImage.getWidth(), 0);
-		assertTrue(image.getCroppedImage() instanceof Image);
+		assertEquals(1000, image.getHeight());
+		assertEquals(1000, image.getWidth());
 		assertTrue(image.getChoppedImages() instanceof List<?>);
+		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
+		persistImage(outputFile, image.getRenderedImage());
 	}
 	
 //	@Test
-	public void testCroppedImage() {
-		Image image = new Image(getTestFile1());
-		Image croppedImage = image.getCroppedImage();
-		RenderedImage originalImage = croppedImage.getOriginalImage();
-		assertEquals(3, originalImage.getColorModel().
-				getColorSpace().getNumComponents());
-		assertEquals(1000, croppedImage.getHeight());
-		assertEquals(1000, croppedImage.getWidth());
-		String outputFile = TestUtility.IMAGE_PATH + "/crop/testCrop.png";
-		persistImage(outputFile, croppedImage.getOriginalImage());
-	}
-
-	@Test
 	public void testChoppedImages() {
-		Image image = new Image(getTestFile1());
+		Image image = getTestImage1();
 		List<Image> choppedImages = image.getChoppedImages();
 		for (Image choppedImage:choppedImages) {
 			assertEquals(100, choppedImage.getHeight());
@@ -55,11 +43,11 @@ public class ImageTest {
 				TestUtility.IMAGE_PATH + "/chop/testChop"+
 					choppedImage.getMinX()+"-"+
 						choppedImage.getMinY()+".png";
-			persistImage(outputFile, choppedImage.getOriginalImage());
+			persistImage(outputFile, choppedImage.getRenderedImage());
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testTrainingData() {
 		for(File file: getArableTrainingImageFiles()) {
 			Image image = new Image(file);
@@ -71,7 +59,7 @@ public class ImageTest {
 					TestUtility.ARABLE_TRAINING_IMAGE_PATH + 
 						"/chop/"+ file.getName() + 
 							"_Chop_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getOriginalImage());
+				persistImage(outputFile, choppedImage.getRenderedImage());
 			}
 		}
 		for(File file: getNonArableTrainingImageFiles()) {
@@ -84,7 +72,7 @@ public class ImageTest {
 					TestUtility.NON_ARABLE_TRAINING_IMAGE_PATH + 
 						"/chop/"+ file.getName() + 
 							"_Chop_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getOriginalImage());
+				persistImage(outputFile, choppedImage.getRenderedImage());
 			}
 		}
 	}

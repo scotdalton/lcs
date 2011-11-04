@@ -42,7 +42,7 @@ public class Texture {
 						Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
 		ParameterBlock greyscalePB = 
 			(new ParameterBlock()).
-				addSource(image.getOriginalImage()).add(cm);
+				addSource(image.getRenderedImage()).add(cm);
 		ImageLayout greyscaleLayout = 
 			(new ImageLayout()).setMinX(image.getMinX()).
 				setMinY(image.getMinY()).setColorModel(cm);

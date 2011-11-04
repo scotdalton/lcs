@@ -31,72 +31,48 @@ public class TestUtility {
 		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20031004.png";
 	}
 
-	public static File getTestFile1() {
-		return new File(getTestFileName1());
-	}
-
 	public static Image getTestImage1() {
-		return new Image(getTestFile1());
+		return new Image(getTestFileName1());
 	}
 
 	public static String getTestFileName2() {
 		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png";
 	}
 
-	public static File getTestFile2() {
-		return new File(getTestFileName2());
-	}
-
 	public static Image getTestImage2() {
-		return new Image(getTestFile2());
+		return new Image(getTestFileName2());
 	}
 
 	public static String getTestChoppedFileName1() {
 		return IMAGE_PATH + "/" + "chop/testChop272-27.png";
 	}
 
-	public static File getTestChoppedFile1() {
-		return new File(getTestChoppedFileName1());
-	}
-
 	public static Image getTestChoppedImage1() {
-		return new Image(getTestChoppedFile1());
+		return new Image(getTestChoppedFileName1());
 	}
 
 	public static String getCloudyTestFileName1() {
 		return IMAGE_PATH + "/" + "Nanvura_Mozambique_1_20091004.png";
 	}
 
-	public static File getCloudyTestFile1() {
-		return new File(getCloudyTestFileName1());
-	}
-
 	public static Image getCloudyTestImage1() {
-		return new Image(getCloudyTestFile1());
+		return new Image(getCloudyTestFileName1());
 	}
 
 	public static String getBlurryTestFileName1() {
 		return IMAGE_PATH + "/" + "Dar_es_Salaam_Tanzania_1_20031004.png";
 	}
 
-	public static File getBlurryTestFile1() {
-		return new File(getBlurryTestFileName1());
-	}
-
 	public static Image getBlurryTestImage1() {
-		return new Image(getBlurryTestFile1());
+		return new Image(getBlurryTestFileName1());
 	}
 
 	public static String getBrightTestFileName1() {
 		return IMAGE_PATH + "/" + "Johannesburg_South_Africa_2_20111004.png";
 	}
 
-	public static File getBrightTestFile1() {
-		return new File(getBrightTestFileName1());
-	}
-
 	public static Image getBrightTestImage1() {
-		return new Image(getBrightTestFile1());
+		return new Image(getBrightTestFileName1());
 	}
 
 	public static List<File> getImageFiles() {

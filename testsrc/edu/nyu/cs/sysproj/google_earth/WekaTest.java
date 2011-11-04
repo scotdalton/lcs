@@ -3,8 +3,7 @@
  */
 package edu.nyu.cs.sysproj.google_earth;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getArableTrainingImageFiles;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestFile1;
+import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
 
 import java.io.File;
 import java.util.List;
@@ -83,7 +82,7 @@ public class WekaTest {
 			Instances testingSet = new Instances("Test", attributes, 900);           
 			// Set class index
 			testingSet.setClassIndex(3);	
-			Image image = new Image(getTestFile1());
+			Image image = getTestImage1();
 			List<Image> choppedImages = image.getChoppedImages();
 			for (Image choppedImage:choppedImages) {
 				// Create the instance

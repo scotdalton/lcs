@@ -7,7 +7,7 @@ package edu.nyu.cs.sysproj.google_earth;
  * @author Scot Dalton
  *
  */
-public enum ValidityCharacteristic {
+public enum ValidityCheck {
 	CLOUDY {
 		boolean isValid(Image image) {
 			double[] means = image.getHistogram().getMean();

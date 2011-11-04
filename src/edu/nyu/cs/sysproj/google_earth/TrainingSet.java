@@ -102,18 +102,16 @@ public class TrainingSet {
 			String[] filenames = directory.list();
 			int i = 0;
 			for (String filename: filenames) {
-				i++;
-				if(i++ > 5) break;
 				File file = 
 					new File(directoryName + "/" + filename);
 				if(file.isFile() && !file.isHidden()) {
+					i++;
+					if(i > 6) break;
 					KnownImage image = 
 						new KnownImage(file, classification);
 					List<Image> choppedImages = image.getChoppedImages();
-					for(Image choppedImage : choppedImages) {
-						choppedImage.setClassification(classification);
+					for(Image choppedImage : choppedImages)
 						knownImages.add((Image) choppedImage);
-					}
 				}
 			}
 		}
