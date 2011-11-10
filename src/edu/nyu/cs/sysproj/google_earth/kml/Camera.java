@@ -87,6 +87,7 @@ public class Camera extends edu.nyu.cs.sysproj.google_earth.kml.AbstractBase {
 			"<gx:TimeStamp>" +
 			"<when>" + this.dateFormat.format(this.date) + "</when>" +
 			"</gx:TimeStamp>" +
+			"<flyToView>1</flyToView>" +
 			"</Camera>";
 	}
 }

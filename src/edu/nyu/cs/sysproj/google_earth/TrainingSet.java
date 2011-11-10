@@ -67,17 +67,27 @@ public class TrainingSet {
 		return trainingSet;
 	}
 	
-	private static List<Image> getTrainingImages() {
+	/**
+	 * Protected for testing purposes.
+	 * @return
+	 */
+	protected static List<Image> getTrainingImages() {
 		List<Image> knownImages = Lists.newArrayList();
-		for(Image arableTrainingImage : 
-			getKnownImages(CURATED_ARABLE_TRAINING_IMAGE_PATH, 
-				ArabilityClassification.ARABLE))
-					knownImages.add(arableTrainingImage);
-		for(Image nonArableTrainingImage : 
-			getKnownImages(CURATED_NON_ARABLE_TRAINING_IMAGE_PATH, 
-				ArabilityClassification.NON_ARABLE))
-					knownImages.add(nonArableTrainingImage);
+		for(Image arableTrainingImage : getArableTrainingImages())
+			knownImages.add(arableTrainingImage);
+		for(Image nonArableTrainingImage : getNonArableTrainingImages())
+			knownImages.add(nonArableTrainingImage);
 		return knownImages;
+	}
+	
+	protected static List<Image> getArableTrainingImages() {
+		return getKnownImages(CURATED_ARABLE_TRAINING_IMAGE_PATH, 
+			ArabilityClassification.ARABLE);
+	}
+	
+	protected static List<Image> getNonArableTrainingImages() {
+		return getKnownImages(CURATED_NON_ARABLE_TRAINING_IMAGE_PATH, 
+			ArabilityClassification.NON_ARABLE);
 	}
 	
 	private static List<Image> getTestingImages() {

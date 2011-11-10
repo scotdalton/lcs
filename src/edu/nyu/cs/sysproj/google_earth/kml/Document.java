@@ -60,7 +60,8 @@ public class Document extends edu.nyu.cs.sysproj.google_earth.kml.AbstractBase {
 	}
 
 	private String buildKml() {
-		String kml = "<Document><name>" + this.name + "</name>";
+		String kml = "<Document><name>" + this.name + 
+			"</name><open>1</open>";
 		for(Placemark placemark: placemarks)
 			kml += placemark.toKml();
 		kml += "</Document>";

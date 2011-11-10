@@ -76,16 +76,32 @@ public class TestUtility {
 		return getFiles(ARABLE_TRAINING_IMAGE_PATH+"/selected");
 	}
 	
+	public static List<File> getCuratedArableTrainingImageFiles() {
+		return getFiles(ARABLE_TRAINING_IMAGE_PATH+"/curated");
+	}
+	
 	public static List<File> getNonArableTrainingImageFiles() {
 		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH+"/selected");
+	}
+	
+	public static List<File> getCuratedNonArableTrainingImageFiles() {
+		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH+"/curated");
 	}
 	
 	public static List<File> getArableTestingImageFiles() {
 		return getFiles(ARABLE_TESTING_IMAGE_PATH+"/selected");
 	}
 	
+	public static List<File> getCuratedArableTestingImageFiles() {
+		return getFiles(ARABLE_TESTING_IMAGE_PATH+"/curated");
+	}
+	
 	public static List<File> getNonArableTestingImageFiles() {
 		return getFiles(NON_ARABLE_TESTING_IMAGE_PATH+"/selected");
+	}
+	
+	public static List<File> getCuratedNonArableTestingImageFiles() {
+		return getFiles(NON_ARABLE_TESTING_IMAGE_PATH+"/curated");
 	}
 	
 	public static void persistImage(String filename, RenderedImage source) {

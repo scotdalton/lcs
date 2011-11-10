@@ -16,8 +16,10 @@ import weka.core.FastVector;
  *
  */
 public class Utility {
+	final static String BASE_PATH = 
+		"/Users/dalton/Dropbox/MSIS/SystemsProjects/google_earth";
 	final static String IMAGE_PATH = 
-		"/Users/dalton/Dropbox/MSIS/Systems Projects/google_earth/images";
+		BASE_PATH+"/images";
 	final static String TRAINING_IMAGE_PATH = 
 		IMAGE_PATH+"/training";
 	final static String ARABLE_TRAINING_IMAGE_PATH = 
@@ -38,7 +40,9 @@ public class Utility {
 		ARABLE_TESTING_IMAGE_PATH+"/curated";
 	final static String CURATED_NON_ARABLE_TESTING_IMAGE_PATH = 
 		NON_ARABLE_TESTING_IMAGE_PATH+"/curated";
-	final static double CONFIDENCE_THRESHOLD = 0.60;
+	final public static String KML_DIRECTORY = 
+		BASE_PATH+"/kml";
+	final static double CONFIDENCE_THRESHOLD = 0.95;
 	final static double CLOUDY_MEAN_THRESHOLD = 230.0;
 	final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
 	final static double BRIGHT_MEAN_THRESHOLD = 200.0;

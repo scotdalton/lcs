@@ -19,6 +19,27 @@ public class UnknownImage extends Image {
 	 */
 	public UnknownImage(String imageFileName) throws Exception {
 		super(imageFileName);
+		setPercentages();
+	}
+
+	/**
+	 * @param renderedImage
+	 * @throws Exception 
+	 */
+	public UnknownImage(Image image) throws Exception {
+		super(image);
+		setPercentages();
+	}
+
+	public double getArablePercentage() {
+		return arablePercentage;
+	}
+	
+	public double getNonArablePercentage() {
+		return nonArablePercentage;
+	}
+	
+	private void setPercentages() throws Exception {
 		int arableCount = 0;
 		int nonArableCount = 0;
 		List<Image> choppedImages = getChoppedImages();
@@ -32,13 +53,5 @@ public class UnknownImage extends Image {
 		}
 		arablePercentage = arableCount/(double)choppedImages.size();
 		nonArablePercentage = nonArableCount/(double)choppedImages.size();
-	}
-
-	public double getArablePercentage() {
-		return arablePercentage;
-	}
-	
-	public double getNonArablePercentage() {
-		return nonArablePercentage;
 	}
 }

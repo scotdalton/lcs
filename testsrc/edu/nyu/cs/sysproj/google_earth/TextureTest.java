@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.google_earth.features.Texture;
+import edu.nyu.cs.sysproj.google_earth.features.DCTMean;
 
 /**
  * @author Scot Dalton
@@ -23,10 +23,10 @@ public class TextureTest {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			for(Image choppedImage : choppedImages) {
-				Texture texture = 
-					new Texture(choppedImage);
+				DCTMean dCTMean = 
+					new DCTMean(choppedImage);
 				System.out.println("File: " + file.getName());
-				System.out.println("\tTexture: " + texture.getValue());
+				System.out.println("\tTexture: " + dCTMean.getValue());
 			}
 		}
 	}

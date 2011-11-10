@@ -18,7 +18,10 @@ import java.util.List;
 
 import javax.media.jai.Histogram;
 import javax.media.jai.ImageLayout;
+import javax.media.jai.ImagePyramid;
+import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
+import javax.media.jai.RenderedOp;
 
 import com.google.common.collect.Lists;
 
@@ -38,8 +41,10 @@ public class Image {
 	private final float CROPPED_HEIGHT = 1000;
 	private final int CHOPPED_COLUMNS =10;
 	private final int CHOPPED_ROWS = 10;
+	private final float DOWN_SAMPLE_SIZE = (float) 0.05;
 	private RenderedImage renderedImage;
 	private Image discreteCosineTransform;
+	private Image downImage;
 	private RenderedImage greyscaleImage;
 	private Histogram histogram;
 	private int width;
@@ -81,15 +86,25 @@ public class Image {
 	 * Private constructor for general use case
 	 * @param renderedImage
 	 */
-	private Image(RenderedImage renderedImage) {
+	public Image(RenderedImage renderedImage) {
 		this.renderedImage = 
 			centeredCrop(renderedImage, CROPPED_WIDTH, CROPPED_HEIGHT);
-		width = this.renderedImage.getWidth();
-		height = this.renderedImage.getHeight();
-		minX = this.renderedImage.getMinX();
-		minY = this.renderedImage.getMinY();
+		setDimensions(this.renderedImage);
 	}
 	
+	/**
+	 * @param image
+	 */
+	public Image(Image image) {
+		renderedImage = image.renderedImage;
+		setDimensions(this.renderedImage);
+		discreteCosineTransform = image.discreteCosineTransform;
+		downImage = image.downImage;
+		greyscaleImage = image.greyscaleImage;
+		histogram = image.histogram;
+		classification = image.classification;
+	}
+
 	/**
 	 * Returns the list of features for the image. 
 	 * @return
@@ -158,8 +173,35 @@ public class Image {
 	 * @return
 	 */
 	public double[] getStandardDeviations() {
-		double[] standardDeviations = getHistogram().getStandardDeviation();
+		double[] standardDeviations = 
+			getHistogram().getStandardDeviation();
 		return Arrays.copyOf(standardDeviations, standardDeviations.length);
+	}
+	
+	public Image getDownImage() {
+		if(downImage == null) {
+			RenderedOp downSampler = 
+				createScaleOp(renderedImage, DOWN_SAMPLE_SIZE);
+			RenderedOp upSampler = 
+				createScaleOp(renderedImage, 1/DOWN_SAMPLE_SIZE);
+			RenderedOp differencer = 
+				createSubtractOp(renderedImage, renderedImage);
+			RenderedOp combiner = 
+				createAddOp(renderedImage, renderedImage);
+			ImagePyramid pyramid = 
+				new ImagePyramid(renderedImage, downSampler, upSampler, differencer, combiner);
+			downImage = new Image(pyramid.getDownImage());
+		}
+		return downImage;
+	}
+	
+	public float getDownSample(int x, int y, int b) {
+		Image image = getDownImage();
+		x = image.getMinX() + x;
+		y = image.getMinY() + y;
+//		return image.getRenderedImage().getData().
+//			getPixels(x, y, 0, 0, (float[])null)[0];
+		return image.getRenderedImage().getData().getSampleFloat(x, y, b);
 	}
 	
 	/**
@@ -332,5 +374,33 @@ public class Image {
 			new ParameterBlock().addSource(renderedImage).
 				add(originX).add(originY).add(width).add(height);
 		return JAI.create("crop", croppedImageParams);
+	}
+
+	private RenderedOp createScaleOp(RenderedImage im, float scale) {
+		ParameterBlock pb = 
+			new ParameterBlock().addSource(im).add(scale).add(scale).
+				add(0.0F).add(0.0F).add(new InterpolationNearest());
+		return JAI.create("scale", pb, null);
+	}
+
+	private RenderedOp createSubtractOp(RenderedImage src1,
+            RenderedImage src2) {
+		ParameterBlock pb = 
+			new ParameterBlock().addSource(src1).addSource(src2);
+		return JAI.create("subtract", pb);
+	}
+
+	private RenderedOp createAddOp(RenderedImage src1, 
+			RenderedImage src2) {
+		ParameterBlock pb = 
+			new ParameterBlock().addSource(src1).addSource(src2);
+		return JAI.create("add", pb);
+	}
+	
+	private void setDimensions(RenderedImage renderedImage) {
+		width = renderedImage.getWidth();
+		height = renderedImage.getHeight();
+		minX = renderedImage.getMinX();
+		minY = renderedImage.getMinY();
 	}
 }
