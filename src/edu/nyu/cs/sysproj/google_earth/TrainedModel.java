@@ -36,18 +36,18 @@ public class TrainedModel {
 		// Specify that the instance belong to the training set 
 		// in order to inherit from the set description
 		instance.setDataset(TrainingSet.getTrainingSet().getInstances());
-		 // Get the likelihood of each classes 
-		 // distribution[0] is the probability of being ARABLE
-		 // distribution[1] is the probability of being NON_ARABLE 
-		 double[] distribution = 
-			 classifier.distributionForInstance(instance);
-		 if(distribution[0] > Utility.CONFIDENCE_THRESHOLD) {
-			 return ArabilityClassification.ARABLE;
-		 } else if(distribution[1] > Utility.CONFIDENCE_THRESHOLD) {
-			 return ArabilityClassification.NON_ARABLE;
-		 } else {
-			 return ArabilityClassification.UNKNOWN;
-		 }
+		// Get the likelihood of each classes 
+		// distribution[0] is the probability of being ARABLE
+		// distribution[1] is the probability of being NON_ARABLE 
+		double[] distribution = 
+			classifier.distributionForInstance(instance);
+		if(distribution[0] > Utility.CONFIDENCE_THRESHOLD) {
+			return ArabilityClassification.ARABLE;
+		} else if(distribution[1] > Utility.CONFIDENCE_THRESHOLD) {
+			return ArabilityClassification.NON_ARABLE;
+		} else {
+			return ArabilityClassification.UNKNOWN;
+		}
 	}
 	
 	private TrainedModel() throws Exception {

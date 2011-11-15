@@ -18,7 +18,7 @@ import edu.nyu.cs.sysproj.google_earth.kml.Kml;
  *
  */
 public class ImageFactory {
-	public static Image getImage(Kml kml) throws Exception {
+	public static Image getImage(Kml kml, int cropFactor) throws Exception {
 		Image image = null;
 		String fileName = KML_DIRECTORY+"/kml.kml";
 		kml.persistToFile(fileName);
@@ -27,8 +27,8 @@ public class ImageFactory {
 		runtime.exec(command);
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = toolkit.getScreenSize();
-		Rectangle rectangle = 
-			new Rectangle(0, 0, screenSize.width, screenSize.height);
+		Rectangle rectangle = new Rectangle(cropFactor, cropFactor, 
+			screenSize.width-cropFactor, screenSize.height-cropFactor);
 		Robot robot = new Robot();
 		robot.setAutoWaitForIdle(true);
 		// Wait for Google Earth to load.

@@ -58,7 +58,7 @@ public class ImageFactoryTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(document);
 		Kml kml = new Kml.Builder().documents(documents).build();
-		Image image = ImageFactory.getImage(kml);
+		Image image = ImageFactory.getImage(kml, 5);
 		String fileName = IMAGE_PATH + "/captured/image.png";
 		persistImage(fileName, image.getRenderedImage());
 	}
