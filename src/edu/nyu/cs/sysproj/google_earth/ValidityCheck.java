@@ -4,6 +4,8 @@
 package edu.nyu.cs.sysproj.google_earth;
 
 /**
+ * Some images are invalid, so we have some checks validity.
+ * 
  * @author Scot Dalton
  *
  */

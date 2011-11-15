@@ -37,11 +37,6 @@ import edu.nyu.cs.sysproj.google_earth.features.Feature;
  * 
  */
 public class Image {
-	private final float CROPPED_WIDTH = 1000;
-	private final float CROPPED_HEIGHT = 1000;
-	private final int CHOPPED_COLUMNS =10;
-	private final int CHOPPED_ROWS = 10;
-	private final float DOWN_SAMPLE_SIZE = (float) 0.05;
 	private RenderedImage renderedImage;
 	private Image discreteCosineTransform;
 	private Image downImage;
@@ -51,6 +46,11 @@ public class Image {
 	private int height;
 	private int minX;
 	private int minY;
+	private float downSampleSize;
+	private float croppedWidth;
+	private float croppedHeight;
+	private int choppedColumns;
+	private int choppedRows;
 	private ArabilityClassification classification;
 	private List<Feature> features;
 
@@ -88,8 +88,9 @@ public class Image {
 	 */
 	public Image(RenderedImage renderedImage) {
 		this.renderedImage = 
-			centeredCrop(renderedImage, CROPPED_WIDTH, CROPPED_HEIGHT);
+			centeredCrop(renderedImage, croppedWidth, croppedHeight);
 		setDimensions(this.renderedImage);
+		setDefaults();
 	}
 	
 	/**
@@ -98,6 +99,7 @@ public class Image {
 	public Image(Image image) {
 		renderedImage = image.renderedImage;
 		setDimensions(this.renderedImage);
+		setDefaults();
 		discreteCosineTransform = image.discreteCosineTransform;
 		downImage = image.downImage;
 		greyscaleImage = image.greyscaleImage;
@@ -128,7 +130,7 @@ public class Image {
 	}
 	
 	/**
-	 * Returns the images width
+	 * Returns the image's width
 	 * @return
 	 */
 	public int getWidth() {
@@ -136,7 +138,7 @@ public class Image {
 	}
 	
 	/**
-	 * Returns the images height
+	 * Returns the image's height
 	 * @return
 	 */
 	public int getHeight() {
@@ -177,13 +179,17 @@ public class Image {
 			getHistogram().getStandardDeviation();
 		return Arrays.copyOf(standardDeviations, standardDeviations.length);
 	}
-	
+
+	/**
+	 * Returns the image scaled down based on the downSampleSize
+	 * @return
+	 */
 	public Image getDownImage() {
 		if(downImage == null) {
 			RenderedOp downSampler = 
-				createScaleOp(renderedImage, DOWN_SAMPLE_SIZE);
+				createScaleOp(renderedImage, downSampleSize);
 			RenderedOp upSampler = 
-				createScaleOp(renderedImage, 1/DOWN_SAMPLE_SIZE);
+				createScaleOp(renderedImage, 1/downSampleSize);
 			RenderedOp differencer = 
 				createSubtractOp(renderedImage, renderedImage);
 			RenderedOp combiner = 
@@ -221,7 +227,7 @@ public class Image {
 	 */
 	public List<Image> getChoppedImages() {
 		return Collections.unmodifiableList(
-			chop(this, CHOPPED_COLUMNS, CHOPPED_ROWS));
+			chop(this, choppedColumns, choppedRows));
 	}
 	
 	/**
@@ -402,5 +408,13 @@ public class Image {
 		height = renderedImage.getHeight();
 		minX = renderedImage.getMinX();
 		minY = renderedImage.getMinY();
+	}
+	
+	private void setDefaults() {
+		downSampleSize = Utility.DOWN_SAMPLE_SIZE;
+		croppedWidth = Utility.CROPPED_WIDTH;
+		croppedHeight = Utility.CROPPED_HEIGHT;
+		choppedColumns = Utility.CHOPPED_COLUMNS;
+		choppedRows = Utility.CHOPPED_ROWS;
 	}
 }

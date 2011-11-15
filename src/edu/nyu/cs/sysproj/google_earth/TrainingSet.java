@@ -17,6 +17,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Singleton representing the training set.
+ * 
  * @author Scot Dalton
  *
  */

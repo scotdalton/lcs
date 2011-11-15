@@ -6,6 +6,8 @@ package edu.nyu.cs.sysproj.google_earth;
 import java.util.List;
 
 /**
+ * UnknownImage extends Image for candidate images.
+ * 
  * @author Scot Dalton
  *
  */

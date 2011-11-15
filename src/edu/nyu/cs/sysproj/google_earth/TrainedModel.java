@@ -12,6 +12,7 @@ import weka.core.Instance;
 
 /**
  * Singleton representing the trained model.
+ * 
  * @author Scot Dalton
  *
  */

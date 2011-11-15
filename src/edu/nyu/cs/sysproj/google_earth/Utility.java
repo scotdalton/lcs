@@ -12,6 +12,8 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 
 /**
+ * Utilility class for defaults, etc.
+ * 
  * @author Scot Dalton
  *
  */
@@ -46,6 +48,11 @@ public class Utility {
 	final static double CLOUDY_MEAN_THRESHOLD = 230.0;
 	final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
 	final static double BRIGHT_MEAN_THRESHOLD = 200.0;
+	final static float CROPPED_WIDTH = 1000;
+	final static float CROPPED_HEIGHT = 1000;
+	final static int CHOPPED_COLUMNS =10;
+	final static int CHOPPED_ROWS = 10;
+	final static float DOWN_SAMPLE_SIZE = (float) 0.125;
 	
 	private static FastVector attributes;
 	
