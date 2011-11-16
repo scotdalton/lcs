@@ -1,10 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.Utility.*;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,11 +13,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.google_earth.image_capture.ImageFactory;
-import edu.nyu.cs.sysproj.google_earth.kml.Camera;
-import edu.nyu.cs.sysproj.google_earth.kml.Document;
-import edu.nyu.cs.sysproj.google_earth.kml.Kml;
-import edu.nyu.cs.sysproj.google_earth.kml.Placemark;
+import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.sysproj.arability.utility.ImageFactory;
+import edu.nyu.cs.sysproj.arability.utility.kml.Camera;
+import edu.nyu.cs.sysproj.arability.utility.kml.Document;
+import edu.nyu.cs.sysproj.arability.utility.kml.Kml;
+import edu.nyu.cs.sysproj.arability.utility.kml.Placemark;
 
 /**
  * @author Scot Dalton
@@ -58,7 +58,7 @@ public class ImageFactoryTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(document);
 		Kml kml = new Kml.Builder().documents(documents).build();
-		Image image = ImageFactory.getImage(kml, 5);
+		Image image = ImageFactory.getImage(kml, 5, 5000);
 		String fileName = IMAGE_PATH + "/captured/image.png";
 		persistImage(fileName, image.getRenderedImage());
 	}

@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.TestUtility.*;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +17,9 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
-import edu.nyu.cs.sysproj.google_earth.features.MeanPixel;
+import edu.nyu.cs.sysproj.arability.ArabilityClassification;
+import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.sysproj.arability.features.MeanPixel;
 
 
 /**
@@ -35,8 +37,8 @@ public class WekaTest {
 //		Attribute texture = new Attribute("texture");
 		// Declare the class attribute along with its values
 		FastVector classValues = new FastVector(2);
-		classValues.addElement("arable");
-		classValues.addElement("nonarable");
+		classValues.addElement(ArabilityClassification.ARABLE.toString());
+		classValues.addElement(ArabilityClassification.NON_ARABLE.toString());
 		Attribute classAttribute = new Attribute("theClass", classValues);
 		// Declare the feature vector
 		FastVector attributes = new FastVector(4);

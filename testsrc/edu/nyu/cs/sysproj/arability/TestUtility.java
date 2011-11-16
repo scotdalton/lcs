@@ -1,18 +1,16 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.Utility.*;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
 
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.util.List;
 
-import javax.media.jai.JAI;
-
 import com.google.common.collect.Lists;
+
+import edu.nyu.cs.sysproj.arability.Image;
 
 /**
  * @author Scot Dalton
@@ -102,12 +100,6 @@ public class TestUtility {
 	
 	public static List<File> getCuratedNonArableTestingImageFiles() {
 		return getFiles(NON_ARABLE_TESTING_IMAGE_PATH+"/curated");
-	}
-	
-	public static void persistImage(String filename, RenderedImage source) {
-		ParameterBlock fileStoreParams = (new ParameterBlock()).
-			addSource(source).add(filename).add("PNG");
-		JAI.create("filestore", fileStoreParams);
 	}
 	
 	private static List<File> getFiles(String directoryName) {

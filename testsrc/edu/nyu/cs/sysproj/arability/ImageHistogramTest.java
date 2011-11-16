@@ -1,11 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.TestUtility.*;
 
 import org.junit.Test;
+
+import edu.nyu.cs.sysproj.arability.Image;
 
 /**
  * @author Scot Dalton

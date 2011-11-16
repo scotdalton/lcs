@@ -1,16 +1,17 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getArableTrainingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getArableTrainingImageFiles;
 
 import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.google_earth.features.MeanPixel;
+import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.sysproj.arability.features.MeanPixel;
 
 
 

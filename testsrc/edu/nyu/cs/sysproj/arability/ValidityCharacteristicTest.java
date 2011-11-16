@@ -1,12 +1,12 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getBlurryTestImage1;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getBrightTestImage1;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getCloudyTestImage1;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.getTestImage1;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getBlurryTestImage1;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getBrightTestImage1;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getCloudyTestImage1;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getTestImage1;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

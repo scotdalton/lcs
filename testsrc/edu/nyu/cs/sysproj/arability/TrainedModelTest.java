@@ -1,13 +1,17 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.TestUtility.*;
 
 import java.io.File;
 
 import org.junit.Test;
+
+import edu.nyu.cs.sysproj.arability.ArabilityClassification;
+import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.sysproj.arability.TrainedModel;
 
 /**
  * @author Scot Dalton

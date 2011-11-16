@@ -1,9 +1,9 @@
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 /**
  * 
  */
-import static edu.nyu.cs.sysproj.google_earth.Utility.*;
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -12,6 +12,8 @@ import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
+
+import edu.nyu.cs.sysproj.arability.Image;
 
 /**
  * @author Scot Dalton

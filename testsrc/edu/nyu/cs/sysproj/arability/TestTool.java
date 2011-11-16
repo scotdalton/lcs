@@ -1,10 +1,10 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.TestUtility.persistImage;
-import static edu.nyu.cs.sysproj.google_earth.Utility.IMAGE_PATH;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.persistImage;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.IMAGE_PATH;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,11 +16,14 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import edu.nyu.cs.sysproj.google_earth.image_capture.ImageFactory;
-import edu.nyu.cs.sysproj.google_earth.kml.Camera;
-import edu.nyu.cs.sysproj.google_earth.kml.Document;
-import edu.nyu.cs.sysproj.google_earth.kml.Kml;
-import edu.nyu.cs.sysproj.google_earth.kml.Placemark;
+import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.sysproj.arability.TrainedModel;
+import edu.nyu.cs.sysproj.arability.UnknownImage;
+import edu.nyu.cs.sysproj.arability.utility.ImageFactory;
+import edu.nyu.cs.sysproj.arability.utility.kml.Camera;
+import edu.nyu.cs.sysproj.arability.utility.kml.Document;
+import edu.nyu.cs.sysproj.arability.utility.kml.Kml;
+import edu.nyu.cs.sysproj.arability.utility.kml.Placemark;
 
 /**
  * @author Scot Dalton
@@ -67,7 +70,7 @@ public class TestTool {
 			documents.add(document);
 			Kml kml = new Kml.Builder().documents(documents).build();
 			String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
-			Image image = ImageFactory.getImage(kml, 5);
+			Image image = ImageFactory.getImage(kml, 5, 5000);
 			persistImage(fileName, image.getRenderedImage());
 			try {
 				imageMap.put(imageName, new UnknownImage(fileName));

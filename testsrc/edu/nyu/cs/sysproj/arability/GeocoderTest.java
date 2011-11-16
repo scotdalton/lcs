@@ -1,13 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.google_earth.geocoding.Geocoder;
+import edu.nyu.cs.sysproj.arability.utility.Geocoder;
 
 
 /**
@@ -20,5 +20,11 @@ public class GeocoderTest {
 		Geocoder geocoder = new Geocoder("274 Prospect Park West");
 		assertEquals("274 Prospect Park West, Brooklyn, NY 11215, USA", 
 			geocoder.getAddress());
+	}
+
+	@Test
+	public void testGeocoder_latLng() throws Exception {
+		Geocoder geocoder = new Geocoder((float)-25.461111, (float)30.928889);
+		assertEquals("N4, South Africa", geocoder.getAddress());
 	}
 }
