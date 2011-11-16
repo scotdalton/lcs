@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.kml;
+package edu.nyu.cs.sysproj.arability.utility.kml;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Scot Dalton
  *
  */
-public class Kml extends edu.nyu.cs.sysproj.google_earth.kml.AbstractBase {
+public class Kml extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBase {
 	private List<Document> documents;
 
 	public static class Builder {

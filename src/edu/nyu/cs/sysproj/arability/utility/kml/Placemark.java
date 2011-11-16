@@ -1,13 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.kml;
+package edu.nyu.cs.sysproj.arability.utility.kml;
 
 /**
  * @author Scot Dalton
  *
  */
-public class Placemark extends edu.nyu.cs.sysproj.google_earth.kml.AbstractBase {
+public class Placemark extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBase {
 	private String name;
 	private Camera camera;
 

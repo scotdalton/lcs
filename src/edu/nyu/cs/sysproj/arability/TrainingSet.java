@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.google_earth.Utility.*;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
 
 import java.io.File;
 import java.util.List;
@@ -14,6 +14,8 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import com.google.common.collect.Lists;
+
+import edu.nyu.cs.sysproj.arability.utility.Configuration;
 
 /**
  * Singleton representing the training set.
@@ -26,14 +28,14 @@ public class TrainingSet {
 	private Instances instances;
 	
 	private TrainingSet(List<Image> knownImages, String name) throws Exception {
-		FastVector attributes = Utility.getAttributes();
+		FastVector attributes = Configuration.getAttributes();
 		instances = 
 			new Instances(name, attributes, knownImages.size());
 		// Class attribute is last
 		int classAttributeIndex = attributes.capacity() -1;
 		instances.setClassIndex(classAttributeIndex);
 		for(Image trainingImage: knownImages) {
-			float[] values = Utility.getAttributeValues(trainingImage);
+			float[] values = Configuration.getAttributeValues(trainingImage);
 			Instance instance = new Instance(attributes.size());
 			for(int i=0; i<values.length; i++)
 				instance.setValue((Attribute)attributes.elementAt(i), values[i]);

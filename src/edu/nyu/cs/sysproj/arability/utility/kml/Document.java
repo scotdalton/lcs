@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.kml;
+package edu.nyu.cs.sysproj.arability.utility.kml;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @author Scot Dalton
  *
  */
-public class Document extends edu.nyu.cs.sysproj.google_earth.kml.AbstractBase {
+public class Document extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBase {
 	private String name;
 	private List<Placemark> placemarks;
 

@@ -1,7 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
+
+import edu.nyu.cs.sysproj.arability.utility.Configuration;
 
 /**
  * Some images are invalid, so we have some checks validity.
@@ -14,7 +16,7 @@ public enum ValidityCheck {
 		boolean isValid(Image image) {
 			double[] means = image.getMeans();
 			for (double mean: means)
-				if (mean > Utility.CLOUDY_MEAN_THRESHOLD) 
+				if (mean > Configuration.CLOUDY_MEAN_THRESHOLD) 
 					return false;
 			return true;
 		}
@@ -25,7 +27,7 @@ public enum ValidityCheck {
 				image.getStandardDeviations();
 			for (double standardDeviation: standardDeviations)
 				if (standardDeviation < 
-						Utility.BLURRY_STANDARD_DEVIATION_THRESHOLD) 
+						Configuration.BLURRY_STANDARD_DEVIATION_THRESHOLD) 
 					return false;
 			return true;
 		}
@@ -34,7 +36,7 @@ public enum ValidityCheck {
 		boolean isValid(Image image) {
 			double[] means = image.getMeans();
 			for (double mean: means)
-				if (mean > Utility.BRIGHT_MEAN_THRESHOLD) 
+				if (mean > Configuration.BRIGHT_MEAN_THRESHOLD) 
 					return false;
 			return true;
 		}

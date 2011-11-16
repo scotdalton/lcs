@@ -1,8 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
+import edu.nyu.cs.sysproj.arability.utility.Configuration;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayesSimple;
@@ -28,8 +29,8 @@ public class TrainedModel {
 	 * @throws Exception 
 	 */
 	public ArabilityClassification eval(Image image) throws Exception {
-		FastVector attributes = Utility.getAttributes();
-		float[] values = Utility.getAttributeValues(image);
+		FastVector attributes = Configuration.getAttributes();
+		float[] values = Configuration.getAttributeValues(image);
 		Instance instance = new Instance(attributes.size());
 		for(int i=0; i<values.length; i++)
 			instance.setValue((Attribute)attributes.elementAt(i), values[i]);      
@@ -41,9 +42,9 @@ public class TrainedModel {
 		// distribution[1] is the probability of being NON_ARABLE 
 		double[] distribution = 
 			classifier.distributionForInstance(instance);
-		if(distribution[0] > Utility.CONFIDENCE_THRESHOLD) {
+		if(distribution[0] > Configuration.CONFIDENCE_THRESHOLD) {
 			return ArabilityClassification.ARABLE;
-		} else if(distribution[1] > Utility.CONFIDENCE_THRESHOLD) {
+		} else if(distribution[1] > Configuration.CONFIDENCE_THRESHOLD) {
 			return ArabilityClassification.NON_ARABLE;
 		} else {
 			return ArabilityClassification.UNKNOWN;

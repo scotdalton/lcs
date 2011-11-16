@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
 import java.awt.RenderingHints;
 import java.awt.Transparency;
@@ -14,6 +14,7 @@ import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.media.jai.Histogram;
@@ -25,7 +26,8 @@ import javax.media.jai.RenderedOp;
 
 import com.google.common.collect.Lists;
 
-import edu.nyu.cs.sysproj.google_earth.features.Feature;
+import edu.nyu.cs.sysproj.arability.features.Feature;
+import edu.nyu.cs.sysproj.arability.utility.Configuration;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -46,6 +48,7 @@ public class Image {
 	private int height;
 	private int minX;
 	private int minY;
+	private int downSampleSquareRoot;
 	private float downSampleSize;
 	private float croppedWidth;
 	private float croppedHeight;
@@ -53,6 +56,7 @@ public class Image {
 	private int choppedRows;
 	private ArabilityClassification classification;
 	private List<Feature> features;
+	private Date date;
 
 	/**
 	 * Protected constructor for general use.
@@ -60,6 +64,15 @@ public class Image {
 	 */
 	protected Image(String imageFileName) {
 		this(new File(imageFileName));
+	}
+
+	/**
+	 * Protected constructor for general use.
+	 * @param imageFileName
+	 * @param date
+	 */
+	protected Image(String imageFileName, Date date) {
+		this(new File(imageFileName), date);
 	}
 	
 	/**
@@ -83,28 +96,62 @@ public class Image {
 	}
 	
 	/**
-	 * Private constructor for general use case
-	 * @param renderedImage
+	 * Constructor set to protected for testing purposes.
+	 * Should be private.  Allows for flexibility in the implementation
+	 * so we can use other libraries if necessary.
+	 * @param imageFile
 	 */
-	public Image(RenderedImage renderedImage) {
-		this.renderedImage = 
-			centeredCrop(renderedImage, croppedWidth, croppedHeight);
-		setDimensions(this.renderedImage);
-		setDefaults();
+	protected Image(File imageFile, Date date) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()));
 	}
 	
 	/**
+	 * Constructor for general use case
+	 * @param renderedImage
+	 */
+	public Image(RenderedImage renderedImage) {
+		setDefaults();
+		this.renderedImage = 
+			centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		setDimensions(this.renderedImage);
+	}
+	
+	/**
+	 * Constructor for general use case
+	 * @param renderedImage
+	 * @param date
+	 */
+	public Image(RenderedImage renderedImage, Date date) {
+		setDefaults();
+		this.renderedImage = 
+			centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		setDimensions(this.renderedImage);
+		this.date = date;
+	}
+	
+	/**
+	 * Constructor for general use case
+	 * @param image
+	 */
+	public Image(Image image, Date date) {
+		this(image);
+		this.date = date;
+	}
+
+	/**
+	 * Constructor for general use case
 	 * @param image
 	 */
 	public Image(Image image) {
+		setDefaults();
 		renderedImage = image.renderedImage;
 		setDimensions(this.renderedImage);
-		setDefaults();
 		discreteCosineTransform = image.discreteCosineTransform;
 		downImage = image.downImage;
 		greyscaleImage = image.greyscaleImage;
 		histogram = image.histogram;
 		classification = image.classification;
+		date = image.date;
 	}
 
 	/**
@@ -159,6 +206,14 @@ public class Image {
 	 */
 	public int getMinY() {
 		return minY;
+	}
+	
+	/**
+	 * Returns the date.
+	 * @return
+	 */
+	public Date getDate() {
+		return date;
 	}
 	
 	/**
@@ -408,13 +463,14 @@ public class Image {
 		height = renderedImage.getHeight();
 		minX = renderedImage.getMinX();
 		minY = renderedImage.getMinY();
+		downSampleSize = downSampleSquareRoot/(float)width;
 	}
 	
 	private void setDefaults() {
-		downSampleSize = Utility.DOWN_SAMPLE_SIZE;
-		croppedWidth = Utility.CROPPED_WIDTH;
-		croppedHeight = Utility.CROPPED_HEIGHT;
-		choppedColumns = Utility.CHOPPED_COLUMNS;
-		choppedRows = Utility.CHOPPED_ROWS;
+		downSampleSquareRoot = Configuration.DOWN_SAMPLE_SQUARE_ROOT;
+		croppedWidth = Configuration.CROPPED_WIDTH;
+		croppedHeight = Configuration.CROPPED_HEIGHT;
+		choppedColumns = Configuration.CHOPPED_COLUMNS;
+		choppedRows = Configuration.CHOPPED_ROWS;
 	}
 }

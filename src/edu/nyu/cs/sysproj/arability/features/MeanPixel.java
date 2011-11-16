@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.features;
+package edu.nyu.cs.sysproj.arability.features;
 
-import edu.nyu.cs.sysproj.google_earth.Image;
+import edu.nyu.cs.sysproj.arability.Image;
 
 
 

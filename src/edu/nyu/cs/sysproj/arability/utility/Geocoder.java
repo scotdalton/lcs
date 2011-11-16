@@ -1,12 +1,11 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.geocoding;
+package edu.nyu.cs.sysproj.arability.utility;
 
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -22,9 +21,9 @@ public class Geocoder {
 	private float longitude;
 	private JSONObject geocoding;
 	
-	public Geocoder(float latitude, float longitude) throws Exception {
-		this.latitude = latitude;
+	public Geocoder(float longitude, float latitude) throws Exception {
 		this.longitude = longitude;
+		this.latitude = latitude;
 		processGeocoding();
 	}
 	
@@ -52,7 +51,7 @@ public class Geocoder {
 				"address="+URLEncoder.encode(address, "UTF-8");
 		} else {
 			geocoderURLString += 
-				"latlng="+latitude+","+longitude;
+				"latlng="+longitude+","+latitude;
 		}
 		URL geocoderURL = new URL(geocoderURLString);
 		JSONObject geocoding = 

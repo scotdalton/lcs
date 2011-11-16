@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
 import java.io.File;
 

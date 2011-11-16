@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
 /**
  * ArabilityClassification defines the set of classifications we're 

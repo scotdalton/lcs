@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.kml;
+package edu.nyu.cs.sysproj.arability.utility.kml;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.Date;
  * @author Scot Dalton
  *
  */
-public class Camera extends edu.nyu.cs.sysproj.google_earth.kml.AbstractBase {
+public class Camera extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBase {
 	private double latitude;
 	private double longitude;
 	private Date date;

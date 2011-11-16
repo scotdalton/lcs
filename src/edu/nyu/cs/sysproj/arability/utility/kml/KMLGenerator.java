@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.kml;
+package edu.nyu.cs.sysproj.arability.utility.kml;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth;
+package edu.nyu.cs.sysproj.arability;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class UnknownImage extends Image {
 		super(imageFileName);
 		setPercentages();
 	}
-
+	
 	/**
 	 * @param renderedImage
 	 * @throws Exception 

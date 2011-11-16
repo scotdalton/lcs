@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.google_earth.features;
+package edu.nyu.cs.sysproj.arability.features;
 
 
 //import javax.media.jai.RenderedOp;
