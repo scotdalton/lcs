@@ -52,6 +52,8 @@ public class Image {
 	private float downSampleSize;
 	private float croppedWidth;
 	private float croppedHeight;
+	private float choppedWidth;
+	private float choppedHeight;
 	private int choppedColumns;
 	private int choppedRows;
 	private ArabilityClassification classification;
@@ -86,12 +88,12 @@ public class Image {
 	}
 	
 	/**
-	 * Constructor set to protected for testing purposes.
+	 * Constructor set to public for testing and utility purposes.
 	 * Should be private.  Allows for flexibility in the implementation
 	 * so we can use other libraries if necessary.
 	 * @param imageFile
 	 */
-	protected Image(File imageFile) {
+	public Image(File imageFile) {
 		this(JAI.create("fileload", imageFile.getAbsolutePath()));
 	}
 	
@@ -111,8 +113,14 @@ public class Image {
 	 */
 	public Image(RenderedImage renderedImage) {
 		setDefaults();
-		this.renderedImage = 
-			centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		if(skipChop(renderedImage))
+			this.renderedImage = renderedImage;
+		else {
+			croppedWidth = getCroppedWidth(renderedImage);
+			croppedHeight = getCroppedHeight(renderedImage);
+			this.renderedImage = 
+				centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		}
 		setDimensions(this.renderedImage);
 	}
 	
@@ -281,6 +289,8 @@ public class Image {
 	 * @return
 	 */
 	public List<Image> getChoppedImages() {
+		choppedColumns = (int) (croppedWidth/choppedWidth);
+		choppedRows = (int) (croppedHeight/choppedHeight);
 		return Collections.unmodifiableList(
 			chop(this, choppedColumns, choppedRows));
 	}
@@ -331,6 +341,41 @@ public class Image {
 				new Image(JAI.create("dct", dctPB, null));
 		}
 		return discreteCosineTransform;
+	}
+	
+	protected int getChoppedRows() {
+		return choppedRows;
+	}
+	
+	protected int getChoppedColumns() {
+		return choppedColumns;
+	}
+	
+	protected float getChoppedWidth() {
+		return choppedWidth;
+	}
+	
+	protected float getChoppedHeight() {
+		return choppedHeight;
+	}
+	
+	private float getCroppedWidth(RenderedImage renderedImage) {
+		if (croppedWidth > renderedImage.getWidth())
+			croppedWidth = 
+				(float) (Math.floor(renderedImage.getWidth()/(double)choppedWidth)*choppedWidth);
+		return croppedWidth;
+	}
+	
+	private float getCroppedHeight(RenderedImage renderedImage) {
+		if (croppedHeight > renderedImage.getHeight())
+			croppedHeight = 
+				(float) (Math.floor(renderedImage.getHeight()/(double)choppedHeight)*choppedHeight);
+		return croppedHeight;
+	}
+	
+	private boolean skipChop(RenderedImage renderedImage) {
+		return renderedImage.getWidth() <= choppedWidth && 
+			renderedImage.getHeight() <= choppedHeight;
 	}
 	
 	/**
@@ -470,7 +515,9 @@ public class Image {
 		downSampleSquareRoot = Configuration.DOWN_SAMPLE_SQUARE_ROOT;
 		croppedWidth = Configuration.CROPPED_WIDTH;
 		croppedHeight = Configuration.CROPPED_HEIGHT;
-		choppedColumns = Configuration.CHOPPED_COLUMNS;
-		choppedRows = Configuration.CHOPPED_ROWS;
+		choppedWidth = Configuration.CHOPPED_WIDTH;
+		choppedHeight = Configuration.CHOPPED_HEIGHT;
+//		choppedColumns = Configuration.CHOPPED_COLUMNS;
+//		choppedRows = Configuration.CHOPPED_ROWS;
 	}
 }

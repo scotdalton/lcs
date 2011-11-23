@@ -19,7 +19,7 @@ import edu.nyu.cs.sysproj.arability.Image;
 public class TestUtility {
 
 	public static String getTestFileName1() {
-		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20031004.png";
+		return TMP_IMAGE_PATH + "/" + "Tamale_Ghana_1_20031004.png";
 	}
 
 	public static Image getTestImage1() {
@@ -27,7 +27,7 @@ public class TestUtility {
 	}
 
 	public static String getTestFileName2() {
-		return IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png";
+		return TMP_IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png";
 	}
 
 	public static Image getTestImage2() {

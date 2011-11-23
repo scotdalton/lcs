@@ -67,26 +67,26 @@ public enum ArabilityFeature {
 			return new DCTDownSample(image, 4, 0);
 		}
 	},
-	DCT_DOWN_SAMPLE_5_0 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 0);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_0 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 0);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_0 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 0);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_0 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 0);
-		}
-	},
+//	DCT_DOWN_SAMPLE_5_0 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 0);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_0 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 0);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_0 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 0);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_0 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 0);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_0 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 0);
@@ -147,26 +147,26 @@ public enum ArabilityFeature {
 			return new DCTDownSample(image, 4, 1);
 		}
 	},
-	DCT_DOWN_SAMPLE_5_1 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 1);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_1 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 1);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_1 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 1);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_1 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 1);
-		}
-	},
+//	DCT_DOWN_SAMPLE_5_1 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 1);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_1 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 1);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_1 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 1);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_1 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 1);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_1 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 1);
@@ -227,26 +227,26 @@ public enum ArabilityFeature {
 			return new DCTDownSample(image, 4, 2);
 		}
 	},
-	DCT_DOWN_SAMPLE_5_2 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 2);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_2 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 2);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_2 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 2);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_2 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 2);
-		}
-	},
+//	DCT_DOWN_SAMPLE_5_2 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 2);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_2 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 2);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_2 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 2);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_2 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 2);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_2 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 2);
@@ -307,26 +307,26 @@ public enum ArabilityFeature {
 			return new DCTDownSample(image, 4, 3);
 		}
 	},
-	DCT_DOWN_SAMPLE_5_3 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 3);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_3 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 3);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_3 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 3);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_3 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 3);
-		}
-	},
+//	DCT_DOWN_SAMPLE_5_3 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 3);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_3 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 3);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_3 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 3);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_3 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 3);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_3 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 3);
@@ -386,27 +386,27 @@ public enum ArabilityFeature {
 		Feature instantiate(Image image) {
 			return new DCTDownSample(image, 4, 4);
 		}
-	},
-	DCT_DOWN_SAMPLE_5_4 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 4);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_4 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 4);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_4 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 4);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_4 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 4);
-		}
-	},
+//	},
+//	DCT_DOWN_SAMPLE_5_4 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 4);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_4 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 4);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_4 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 4);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_4 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 4);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_4 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 4);
@@ -442,51 +442,51 @@ public enum ArabilityFeature {
 //			return new DCTDownSample(image, 15, 4);
 //		}
 //	},
-	DCT_DOWN_SAMPLE_0_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 0, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_1_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 1, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_2_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 2, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_3_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 3, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_4_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 4, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_5_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 5);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_5 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 5);
-		}
-	},
+//	DCT_DOWN_SAMPLE_0_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 0, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_1_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 1, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_2_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 2, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_3_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 3, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_4_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 4, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_5_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 5);
+//		}
+////	},
+//	DCT_DOWN_SAMPLE_6_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 5);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_5 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 5);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_5 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 5);
@@ -522,51 +522,51 @@ public enum ArabilityFeature {
 //			return new DCTDownSample(image, 15, 5);
 //		}
 //	},
-	DCT_DOWN_SAMPLE_0_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 0, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_1_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 1, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_2_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 2, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_3_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 3, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_4_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 4, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_5_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 6);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_6 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 6);
-		}
-	},
+//	DCT_DOWN_SAMPLE_0_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 0, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_1_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 1, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_2_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 2, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_3_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 3, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_4_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 4, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_5_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 6);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_6 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 6);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_6 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 6);
@@ -602,51 +602,51 @@ public enum ArabilityFeature {
 //			return new DCTDownSample(image, 15, 6);
 //		}
 //	},
-	DCT_DOWN_SAMPLE_0_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 0, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_1_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 1, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_2_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 2, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_3_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 3, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_4_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 4, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_5_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 7);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_7 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 7);
-		}
-	},
+//	DCT_DOWN_SAMPLE_0_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 0, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_1_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 1, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_2_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 2, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_3_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 3, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_4_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 4, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_5_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 7);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_7 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 7);
+//		}
+//	},
 //	DCT_DOWN_SAMPLE_9_7 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 7);
@@ -682,51 +682,51 @@ public enum ArabilityFeature {
 //			return new DCTDownSample(image, 15, 7);
 //		}
 //	},
-	DCT_DOWN_SAMPLE_0_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 0, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_1_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 1, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_2_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 2, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_3_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 3, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_4_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 4, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_5_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 5, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_6_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 6, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_7_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 7, 8);
-		}
-	},
-	DCT_DOWN_SAMPLE_8_8 {
-		Feature instantiate(Image image) {
-			return new DCTDownSample(image, 8, 8);
-		}
+//	DCT_DOWN_SAMPLE_0_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 0, 8);
+//		}
 //	},
+//	DCT_DOWN_SAMPLE_1_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 1, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_2_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 2, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_3_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 3, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_4_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 4, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_5_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 5, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_6_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 6, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_7_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 7, 8);
+//		}
+//	},
+//	DCT_DOWN_SAMPLE_8_8 {
+//		Feature instantiate(Image image) {
+//			return new DCTDownSample(image, 8, 8);
+//		}
+////	},
 //	DCT_DOWN_SAMPLE_9_8 {
 //		Feature instantiate(Image image) {
 //			return new DCTDownSample(image, 9, 8);

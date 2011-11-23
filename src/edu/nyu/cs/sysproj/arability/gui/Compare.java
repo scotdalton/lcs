@@ -129,6 +129,7 @@ public class Compare extends AbstractAction {
 				resultsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 				resultsLabel.setVerticalAlignment(SwingConstants.TOP);
 				resultsLabel.setPreferredSize(new Dimension(100, 100));
+//				resultsContainer
 		        resultsContainer.add(resultsLabel);
 		    }
 		    JOptionPane.showMessageDialog(resultsContainer, "Results ready.");

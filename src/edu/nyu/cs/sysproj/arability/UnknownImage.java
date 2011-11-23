@@ -5,6 +5,8 @@ package edu.nyu.cs.sysproj.arability;
 
 import java.util.List;
 
+import Jama.Matrix;
+
 /**
  * UnknownImage extends Image for candidate images.
  * 
@@ -12,6 +14,7 @@ import java.util.List;
  *
  */
 public class UnknownImage extends Image {
+	private Matrix arabilityMatrix;
 	private double arablePercentage;
 	private double nonArablePercentage;
 
@@ -21,7 +24,7 @@ public class UnknownImage extends Image {
 	 */
 	public UnknownImage(String imageFileName) throws Exception {
 		super(imageFileName);
-		setPercentages();
+		processArability();
 	}
 	
 	/**
@@ -30,7 +33,7 @@ public class UnknownImage extends Image {
 	 */
 	public UnknownImage(Image image) throws Exception {
 		super(image);
-		setPercentages();
+		processArability();
 	}
 
 	public double getArablePercentage() {
@@ -41,19 +44,37 @@ public class UnknownImage extends Image {
 		return nonArablePercentage;
 	}
 	
-	private void setPercentages() throws Exception {
+	public Matrix getArabilityMatrix() {
+		return arabilityMatrix;
+	}
+	
+	private void processArability() throws Exception {
 		int arableCount = 0;
 		int nonArableCount = 0;
 		List<Image> choppedImages = getChoppedImages();
+		double[][] arabilityValues = 
+			new double[getChoppedRows()][getChoppedColumns()];
+		int tileOffsetX = 
+			(getRenderedImage().getTileWidth() - getWidth())/2;
+		int tileOffsetY = 
+			(getRenderedImage().getTileHeight() - getHeight())/2;
 		for(Image choppedImage : choppedImages) {
+			int row = 
+				(int) ((choppedImage.getMinX()-tileOffsetX)/getChoppedWidth());
+			int column = 
+				(int) ((choppedImage.getMinY()-tileOffsetY)/getChoppedHeight());
 			ArabilityClassification classification = 
 				choppedImage.getClassification();
-			if(classification.equals(ArabilityClassification.ARABLE))
+			if(classification.equals(ArabilityClassification.ARABLE)) {
+				arabilityValues[row][column]=1;
 				arableCount++;
-			else if (classification.equals(ArabilityClassification.NON_ARABLE))
+			} else if (classification.equals(ArabilityClassification.NON_ARABLE)) {
+				arabilityValues[row][column]=0;
 				nonArableCount++;
+			}
 		}
 		arablePercentage = arableCount/(double)choppedImages.size();
 		nonArablePercentage = nonArableCount/(double)choppedImages.size();
+		arabilityMatrix = new Matrix(arabilityValues);
 	}
 }

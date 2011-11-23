@@ -3,7 +3,7 @@
  */
 package edu.nyu.cs.sysproj.arability.utility;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.KML_DIRECTORY;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -38,7 +38,7 @@ public class ImageFactory {
 	public static Image getImage(Kml kml, int cropFactor, 
 			int waitForKml, Date date) throws Exception {
 		Image image = null;
-		String kmlFileName = KML_DIRECTORY+"/kml.kml";
+		String kmlFileName = TMP_KML_DIRECTORY+"/kml.kml";
 		kml.persistToFile(kmlFileName);
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		googleEarth.launch();
@@ -62,7 +62,7 @@ public class ImageFactory {
 	}
 	
 	private static int waitForKml(int index) {
-		return (index == 0) ? 10000:3000;
+		return (index == 0) ? 10000:10000;
 	}
 	
 	private static Image getScreenShot(int cropFactor, Date date) throws AWTException {
@@ -78,6 +78,8 @@ public class ImageFactory {
 	}
 	
 	private static Kml getKml(Date date, float longitude, float latitude, String address) {
+		if (address == null)
+			address = longitude + ", " + latitude;
 		SimpleDateFormat dateFormat = 
 			new SimpleDateFormat("' in 'yyyy-MM-dd");
 		List<Placemark> placemarks = new ArrayList<Placemark>();
