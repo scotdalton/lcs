@@ -22,7 +22,8 @@ package edu.nyu.cs.sysproj.arability;
  *
  */
 public class TrainingSetTest {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		System.out.println(TrainingSet.getTestingSet().getInstances().classAttribute().isNominal());
 //		List<Image> arableImages = TrainingSet.getArableTrainingImages();
 //		final List<Point> arablePoints = Lists.newArrayList();
 //		for(Image arableImage:arableImages) {
