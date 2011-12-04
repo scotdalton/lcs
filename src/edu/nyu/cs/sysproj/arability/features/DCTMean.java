@@ -15,7 +15,7 @@ import edu.nyu.cs.sysproj.arability.Image;
  * @author Scot Dalton
  *
  */
-public class DCTMean implements Feature{
+public class DCTMean extends Feature{
 //	private double[][] matrix;
 //	private double[][] waveletCoefficients;
 //	RenderedImage discreteCosineTransform;
