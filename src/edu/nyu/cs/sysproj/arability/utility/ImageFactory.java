@@ -5,11 +5,6 @@ package edu.nyu.cs.sysproj.arability.utility;
 
 import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
 
-import java.awt.AWTException;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +38,7 @@ public class ImageFactory {
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		googleEarth.launch();
 		googleEarth.openKml(kmlFileName, waitForKml);
-		image = Image.getScreenShot(cropFactor, date, 4000);
+		image = Image.takeScreenShot(cropFactor, date, 4000);
 		googleEarth.destroy();
 		return image;
 	}

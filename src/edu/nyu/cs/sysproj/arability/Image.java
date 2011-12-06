@@ -110,7 +110,7 @@ public class Image {
 	};
 	private GradientKernel gradientKernel;
 
-	public static Image getScreenShot(int cropFactor, Date date, int delay) throws AWTException {
+	public static Image takeScreenShot(int cropFactor, Date date, int delay) throws AWTException {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = toolkit.getScreenSize();
 		Rectangle rectangle = new Rectangle(cropFactor, cropFactor, 

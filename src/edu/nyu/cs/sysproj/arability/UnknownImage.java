@@ -5,8 +5,6 @@ package edu.nyu.cs.sysproj.arability;
 
 import java.util.List;
 
-import Jama.Matrix;
-
 /**
  * UnknownImage extends Image for candidate images.
  * 
@@ -14,7 +12,6 @@ import Jama.Matrix;
  *
  */
 public class UnknownImage extends Image {
-	private Matrix arabilityMatrix;
 	private double arablePercentage;
 	private double developedPercentage;
 	private double desertPercentage;
@@ -54,41 +51,23 @@ public class UnknownImage extends Image {
 		return forestPercentage;
 	}
 	
-	public Matrix getArabilityMatrix() {
-		return arabilityMatrix;
-	}
-	
 	private void processArability() throws Exception {
 		int arableCount = 0;
 		int developedCount = 0;
 		int desertCount = 0;
 		int forestCount = 0;
 		List<Image> choppedImages = getChoppedImages();
-//		double[][] arabilityValues = 
-//			new double[getChoppedRows()][getChoppedColumns()];
-//		int tileOffsetX = 
-//			(getRenderedImage().getTileWidth() - getWidth())/2;
-//		int tileOffsetY = 
-//			(getRenderedImage().getTileHeight() - getHeight())/2;
 		for(Image choppedImage : choppedImages) {
-//			int row = 
-//				(int) ((choppedImage.getMinX()-tileOffsetX)/getChoppedWidth());
-//			int column = 
-//				(int) ((choppedImage.getMinY()-tileOffsetY)/getChoppedHeight());
 			Classification classification = 
 				choppedImage.getClassification();
 			if(classification.equals(Classification.ARABLE)) {
-//				arabilityValues[row][column]=1;
 				arableCount++;
 			} else if (classification.equals(Classification.DEVELOPED)) {
-//				arabilityValues[row][column]=0;
 				developedCount++;
-//			} else if (classification.equals(ArabilityClassification.DESERT)) {
-////				arabilityValues[row][column]=0;
-//				desertCount++;
-//			} else if (classification.equals(ArabilityClassification.FOREST)) {
-////				arabilityValues[row][column]=0;
-//				forestCount++;
+			} else if (classification.equals(Classification.DESERT)) {
+				desertCount++;
+			} else if (classification.equals(Classification.FOREST)) {
+				forestCount++;
 			}
 		}
 		arablePercentage = 100*arableCount/(double)choppedImages.size();
