@@ -2,18 +2,24 @@ package edu.nyu.cs.sysproj.arability;
 /**
  * 
  */
-import static edu.nyu.cs.sysproj.arability.TestUtility.*;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getArableTestingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getArableTrainingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getDevelopedTestingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getDevelopedTrainingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getTestImage1;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.ARABLE_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.ARABLE_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.DEVELOPED_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.DEVELOPED_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.IMAGE_PATH;
+import static edu.nyu.cs.sysproj.arability.utility.Configuration.TMP_IMAGE_PATH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
-
-import edu.nyu.cs.sysproj.arability.Image;
 
 /**
  * @author Scot Dalton
@@ -21,18 +27,41 @@ import edu.nyu.cs.sysproj.arability.Image;
  */
 public class ImageTest {
 
+	@Test 
+	public void testIDCT() {
+		Image image = getTestImage1();
+		List<Image> choppedImages = image.getChoppedImages();
+		Image choppedImage = choppedImages.get(0);
+		Image idct = choppedImage.getInverseDiscreteCosineTransform();
+		idct.persist(TMP_IMAGE_PATH+"/idct.jpg");
+	}
+	
+	@Test 
+	public void testDCTAdd() {
+		Image image = getTestImage1();
+		List<Image> choppedImages = image.getChoppedImages();
+		Image choppedImage = choppedImages.get(0);
+		Image dctAdd = 
+			choppedImage.add(choppedImage.getDiscreteCosineTransform());
+		dctAdd.persist(TMP_IMAGE_PATH+"/dctAdd.png");
+		
+	}
+	
+	@Test
+	public void testGradientMagnitude() {
+		Image image = getTestImage1();
+		Image gradientMagnitude = image.getGradientMagnitude();
+		gradientMagnitude.persist(TMP_IMAGE_PATH+"/gradientMagnitude.png");
+	}
+	
 //	@Test
 	public void testCreateImage() {
 		Image image = getTestImage1();
-		RenderedImage originalImage = image.getRenderedImage();
-		assertTrue(image.getRenderedImage() instanceof RenderedImage);
-		assertEquals(3, originalImage.getColorModel().
-				getColorSpace().getNumComponents());
 		assertEquals(1000, image.getHeight());
 		assertEquals(1000, image.getWidth());
 		assertTrue(image.getChoppedImages() instanceof List<?>);
 		String outputFile = IMAGE_PATH + "/crop/testCrop.png";
-		persistImage(outputFile, image.getRenderedImage());
+		image.persist(outputFile);
 	}
 	
 //	@Test
@@ -46,7 +75,7 @@ public class ImageTest {
 				IMAGE_PATH + "/chop/testChop"+
 					choppedImage.getMinX()+"-"+
 						choppedImage.getMinY()+".png";
-			persistImage(outputFile, choppedImage.getRenderedImage());
+			choppedImage.persist(outputFile);
 		}
 	}
 	
@@ -61,24 +90,24 @@ public class ImageTest {
 				String outputFile = 
 					ARABLE_TRAINING_IMAGE_PATH + "/" + file.getName() + 
 						"_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getRenderedImage());
+				choppedImage.persist(outputFile);
 			}
 		}
-		for(File file: getNonArableTrainingImageFiles()) {
+		for(File file: getDevelopedTrainingImageFiles()) {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			for (Image choppedImage: choppedImages) {
 				int x = choppedImage.getMinX();
 				int y = choppedImage.getMinY();
 				String outputFile = 
-					NON_ARABLE_TRAINING_IMAGE_PATH + "/" + file.getName() + 
+					DEVELOPED_TRAINING_IMAGE_PATH + "/" + file.getName() + 
 						"_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getRenderedImage());
+				choppedImage.persist(outputFile);
 			}
 		}
 	}
 
-	@Test
+//	@Test
 	public void testTestingData() {
 		for(File file: getArableTestingImageFiles()) {
 			Image image = new Image(file);
@@ -89,20 +118,22 @@ public class ImageTest {
 				String outputFile = 
 					ARABLE_TESTING_IMAGE_PATH + "/" + file.getName() + 
 						"_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getRenderedImage());
+				choppedImage.persist(outputFile);
 			}
 		}
-		for(File file: getNonArableTestingImageFiles()) {
+		for(File file: getDevelopedTestingImageFiles()) {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			for (Image choppedImage: choppedImages) {
 				int x = choppedImage.getMinX();
 				int y = choppedImage.getMinY();
 				String outputFile = 
-					NON_ARABLE_TESTING_IMAGE_PATH + "/" + file.getName() + 
+					DEVELOPED_TESTING_IMAGE_PATH + "/" + file.getName() + 
 						"_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getRenderedImage());
+				choppedImage.persist(outputFile);
 			}
 		}
+		
+		
 	}
 }

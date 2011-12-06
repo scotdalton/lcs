@@ -3,23 +3,6 @@
  */
 package edu.nyu.cs.sysproj.arability.utility;
 
-import java.awt.image.RenderedImage;
-import java.awt.image.renderable.ParameterBlock;
-import java.io.File;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.media.jai.JAI;
-
-import com.google.common.collect.Lists;
-
-import weka.core.Attribute;
-import weka.core.FastVector;
-import edu.nyu.cs.sysproj.arability.ArabilityClassification;
-import edu.nyu.cs.sysproj.arability.ArabilityFeature;
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.features.Feature;
-
 /**
  * Utilility class for defaults, etc.
  * 
@@ -28,11 +11,13 @@ import edu.nyu.cs.sysproj.arability.features.Feature;
  */
 public class Configuration {
 	public final static String BASE_PATH = 
-			"/Users/dalton/Dropbox/MSIS/SystemsProjects/google_earth";
-//			"/Users/scotdalton/Dropbox/MSIS/SystemsProjects/google_earth";
+//		"/home/std5/SystemsProjects/google_earth";
+		"/Users/dalton/Dropbox/MSIS/SystemsProjects/google_earth";
+//		"/Users/scotdalton/Dropbox/MSIS/SystemsProjects/google_earth";
 	public final static String TMP_BASE_PATH = 
-			"/Users/dalton/tmp/";
-//			"/Users/scotdalton/tmp";
+//		"/home/std5/tmp/";
+		"/Users/dalton/tmp/";
+//		"/Users/scotdalton/tmp";
 	public final static String IMAGE_PATH = 
 			BASE_PATH+"/images";
 	public final static String TMP_IMAGE_PATH = 
@@ -41,26 +26,46 @@ public class Configuration {
 		IMAGE_PATH+"/training";
 	public final static String ARABLE_TRAINING_IMAGE_PATH = 
 		TRAINING_IMAGE_PATH+"/arable";
-	public final static String NON_ARABLE_TRAINING_IMAGE_PATH = 
-		TRAINING_IMAGE_PATH+"/non_arable";
+	public final static String DEVELOPED_TRAINING_IMAGE_PATH = 
+		TRAINING_IMAGE_PATH+"/developed";
+	public final static String DESERT_TRAINING_IMAGE_PATH = 
+		TRAINING_IMAGE_PATH+"/desert";
+	public final static String FOREST_TRAINING_IMAGE_PATH = 
+		TRAINING_IMAGE_PATH+"/forest";
 	public final static String CURATED_ARABLE_TRAINING_IMAGE_PATH = 
 		ARABLE_TRAINING_IMAGE_PATH+"/curated";
-	public final static String CURATED_NON_ARABLE_TRAINING_IMAGE_PATH = 
-		NON_ARABLE_TRAINING_IMAGE_PATH+"/curated";
+	public final static String CURATED_DEVELOPED_TRAINING_IMAGE_PATH = 
+		DEVELOPED_TRAINING_IMAGE_PATH+"/curated";
+	public final static String CURATED_DESERT_TRAINING_IMAGE_PATH = 
+		DESERT_TRAINING_IMAGE_PATH+"/curated";
+	public final static String CURATED_FOREST_TRAINING_IMAGE_PATH = 
+		FOREST_TRAINING_IMAGE_PATH+"/curated";
 	public final static String TESTING_IMAGE_PATH = 
 		IMAGE_PATH+"/testing";
 	public final static String ARABLE_TESTING_IMAGE_PATH = 
 		TESTING_IMAGE_PATH+"/arable";
-	public final static String NON_ARABLE_TESTING_IMAGE_PATH = 
-		TESTING_IMAGE_PATH+"/non_arable";
+	public final static String DEVELOPED_TESTING_IMAGE_PATH = 
+		TESTING_IMAGE_PATH+"/developed";
+	public final static String DESERT_TESTING_IMAGE_PATH = 
+		TESTING_IMAGE_PATH+"/desert";
+	public final static String FOREST_TESTING_IMAGE_PATH = 
+		TESTING_IMAGE_PATH+"/forest";
 	public final static String CURATED_ARABLE_TESTING_IMAGE_PATH = 
 		ARABLE_TESTING_IMAGE_PATH+"/curated";
-	public final static String CURATED_NON_ARABLE_TESTING_IMAGE_PATH = 
-		NON_ARABLE_TESTING_IMAGE_PATH+"/curated";
+	public final static String CURATED_DEVELOPED_TESTING_IMAGE_PATH = 
+		DEVELOPED_TESTING_IMAGE_PATH+"/curated";
+	public final static String CURATED_DESERT_TESTING_IMAGE_PATH = 
+		DESERT_TESTING_IMAGE_PATH+"/curated";
+	public final static String CURATED_FOREST_TESTING_IMAGE_PATH = 
+		FOREST_TESTING_IMAGE_PATH+"/curated";
 	public final static String KML_DIRECTORY = 
-			BASE_PATH+"/kml";
+		BASE_PATH+"/kml";
 	public final static String TMP_KML_DIRECTORY = 
 			TMP_BASE_PATH+"/kml";
+	public final static String DATA_DIRECTORY = 
+		BASE_PATH+"/data";
+	public final static String TMP_DATA_DIRECTORY = 
+		TMP_BASE_PATH+"/data";
 	public final static double CONFIDENCE_THRESHOLD = 0.95;
 	public final static double CLOUDY_MEAN_THRESHOLD = 230.0;
 	public final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
@@ -73,56 +78,11 @@ public class Configuration {
 	public final static int CHOPPED_HEIGHT = 100;
 //	public final static float DOWN_SAMPLE_SIZE = (float) 0.125;
 	public final static int DOWN_SAMPLE_SQUARE_ROOT = 5;
-	
-	private static FastVector attributes;
-	
-	public static FastVector getAttributes() {
-		if(attributes == null) {
-			attributes = 
-				new FastVector((ArabilityFeature.values().length + 1));
-			for(ArabilityFeature arabilityFeature : ArabilityFeature.values())
-				attributes.addElement(new Attribute(arabilityFeature.toString()));
-			FastVector classifications = 
-				new FastVector(ArabilityClassification.values().length);
-			EnumSet<ArabilityClassification> classificationValues = 
-				EnumSet.range(ArabilityClassification.ARABLE,
-					ArabilityClassification.NON_ARABLE);
-			for(ArabilityClassification classification: classificationValues) {
-				classifications.addElement(classification.toString());
-			}
-			// Class attribute is last
-			attributes.addElement(new Attribute("classification", classifications));
-		}
-		return attributes;
-	}
-	
-	public static float[] getAttributeValues(Image image) {
-		List<Feature> features = image.getFeatures();
-		float[] values = new float[features.size()];
-		for(int i=0; i<features.size(); i++) 
-			values[i] = features.get(i).getValue();
-		return values;
-	}
-
-	public static void persistImage(String filename, RenderedImage source) {
-		ParameterBlock fileStoreParams = (new ParameterBlock()).
-			addSource(source).add(filename).add("PNG");
-		JAI.create("filestore", fileStoreParams);
-	}
-
-	protected static List<File> getFiles(String directoryName) {
-		List<File> fileList = Lists.newArrayList();
-		File directory = new File(directoryName);
-		if (directory.isDirectory()) {
-			String[] filenames = directory.list();
-			for (String filename: filenames) {
-				File file = 
-					new File(directoryName + "/" + filename);
-				if(file.isFile() && !file.isHidden()) {
-					fileList.add(file);
-				}
-			}
-		}
-		return fileList;
-	}
+	public final static String CLASSIFIER = 
+		"weka.classifiers.bayes.NaiveBayes";
+	public final static String[] CLASSIFIER_OPTIONS = {};
+	public final static String CLASSIFIER_DIRECTORY = 
+		TMP_BASE_PATH+"/arability/classifier";
+	public final static String INSTANCES_DIRECTORY = 
+		TMP_BASE_PATH+"/arability/instances";
 }

@@ -3,7 +3,6 @@
  */
 package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.persistImage;
 import static edu.nyu.cs.sysproj.arability.utility.Configuration.IMAGE_PATH;
 
 import java.text.SimpleDateFormat;
@@ -71,7 +70,7 @@ public class TestTool {
 			Kml kml = new Kml.Builder().documents(documents).build();
 			String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
 			Image image = ImageFactory.getImage(kml, 5, 5000);
-			persistImage(fileName, image.getRenderedImage());
+			image.persist(fileName);
 			try {
 				imageMap.put(imageName, new UnknownImage(fileName));
 			} catch (Exception e) {

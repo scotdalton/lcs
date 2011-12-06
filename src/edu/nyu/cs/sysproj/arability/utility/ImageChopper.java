@@ -21,7 +21,7 @@ public class ImageChopper {
 		for(String arg: args)
 			if (arg.startsWith("imageDirectory="))
 				imageDirectory=arg.split("=")[1];
-		for(File file: getFiles(imageDirectory)) {
+		for(File file: FileUtil.getFiles(imageDirectory)) {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			File choppedDir = new File(imageDirectory+"/chopped");
@@ -33,7 +33,7 @@ public class ImageChopper {
 				int y = choppedImage.getMinY();
 				String outputFile =	choppedDir + "/" + file.getName() + 
 					"_"+x+"_"+y+".png";
-				persistImage(outputFile, choppedImage.getRenderedImage());
+				choppedImage.persist(outputFile);
 			}
 		}
 	}

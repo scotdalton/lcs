@@ -3,30 +3,43 @@
  */
 package edu.nyu.cs.sysproj.arability;
 
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
+import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.ImagePyramid;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
+import javax.media.jai.KernelJAI;
+import javax.media.jai.PlanarImage;
 import javax.media.jai.RenderedOp;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import edu.nyu.cs.sysproj.arability.features.Feature;
 import edu.nyu.cs.sysproj.arability.utility.Configuration;
 
 /**
@@ -41,9 +54,11 @@ import edu.nyu.cs.sysproj.arability.utility.Configuration;
 public class Image {
 	private RenderedImage renderedImage;
 	private Image discreteCosineTransform;
+	private Image gradientMagnitude;
 	private Image downImage;
 	private RenderedImage greyscaleImage;
 	private Histogram histogram;
+	private BufferedImage bufferedImage;
 	private int width;
 	private int height;
 	private int minX;
@@ -56,41 +71,76 @@ public class Image {
 	private float choppedHeight;
 	private int choppedColumns;
 	private int choppedRows;
-	private ArabilityClassification classification;
-	private List<Feature> features;
+	private Classification classification;
 	private Date date;
+	private static final float[] FREI_CHEN_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
+		1.414F, 0.0F, -1.414F, 1.0F, 0.0F, -1.0F };
+	private static final float[] FREI_CHEN_VERTICAL = { -1.0F, -1.414F, -1.0F,
+		0.0F, 0.0F, 0.0F, 1.0F, 1.414F, 1.0F };
+	private static final float[] PREWITT_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
+		1.0F, 0.0F, -1.0F, 1.0F, 0.0F, -1.0F };
+	private static final float[] PREWITT_VERTICAL = { -1.0F, -1.0F, -1.0F,
+		0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
+	private static final float[] ROBERTS_HORIZONTAL = { 0.0F, 0.0F, -1.0F, 0.0F,  
+		1.0F, 0.0F, 0.0F, 0.0F, 0.0F };
+	private static final float[] ROBERTS_VERTICAL = { -1.0F,  0.0F,  0.0F, 0.0F, 
+		1.0F, 0.0F, 0.0F, 0.0F, 0.0F };
+	private enum KernelDimension {HORIZONTAL, VERTICAL};
+	public enum GradientKernel{
+		FREI_CHEN(FREI_CHEN_HORIZONTAL, FREI_CHEN_VERTICAL),
+		PREWITT(PREWITT_HORIZONTAL, PREWITT_VERTICAL),
+		ROBERTS_CROSS(ROBERTS_HORIZONTAL, ROBERTS_VERTICAL),
+		SOBEL(KernelJAI.GRADIENT_MASK_SOBEL_HORIZONTAL, KernelJAI.GRADIENT_MASK_SOBEL_VERTICAL);
 
+		private EnumMap<KernelDimension, KernelJAI> kernelMap;
+		
+		private GradientKernel(float[] horizontalData, float[] verticalData) {
+			this(new KernelJAI(3, 3, horizontalData), new KernelJAI(3, 3, verticalData));
+		}
+		
+		private GradientKernel(KernelJAI horizontalKernel, KernelJAI verticalKernel) {
+			kernelMap = Maps.newEnumMap(KernelDimension.class);
+			kernelMap.put(KernelDimension.HORIZONTAL, horizontalKernel);
+			kernelMap.put(KernelDimension.VERTICAL, verticalKernel);
+		}
+		
+		private Map<KernelDimension, KernelJAI> getKernelMap() {
+			return Collections.unmodifiableMap(kernelMap);
+		}
+	};
+	private GradientKernel gradientKernel;
+
+	public static Image getScreenShot(int cropFactor, Date date, int delay) throws AWTException {
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension screenSize = toolkit.getScreenSize();
+		Rectangle rectangle = new Rectangle(cropFactor, cropFactor, 
+			screenSize.width-cropFactor, screenSize.height-cropFactor);
+		Robot robot = new Robot();
+		robot.setAutoWaitForIdle(true);
+		// Wait for 4 seconds.
+		robot.delay(delay);
+		return new Image(robot.createScreenCapture(rectangle), date);
+	}
+	
 	/**
-	 * Protected constructor for general use.
+	 * Constructor for general use.
 	 * @param imageFileName
 	 */
-	protected Image(String imageFileName) {
+	public Image(String imageFileName) {
 		this(new File(imageFileName));
 	}
 
 	/**
-	 * Protected constructor for general use.
+	 * Constructor for general use.
 	 * @param imageFileName
 	 * @param date
 	 */
-	protected Image(String imageFileName, Date date) {
+	public Image(String imageFileName, Date date) {
 		this(new File(imageFileName), date);
 	}
 	
 	/**
-	 * Protected contructor for known images (training data).
-	 * @param imageFile
-	 * @param classification
-	 */
-	protected Image(File imageFile, ArabilityClassification classification) {
-		this(imageFile);
-		this.classification = classification;
-	}
-	
-	/**
-	 * Constructor set to public for testing and utility purposes.
-	 * Should be private.  Allows for flexibility in the implementation
-	 * so we can use other libraries if necessary.
+	 * Constructor for general use.
 	 * @param imageFile
 	 */
 	public Image(File imageFile) {
@@ -98,56 +148,25 @@ public class Image {
 	}
 	
 	/**
-	 * Constructor set to protected for testing purposes.
-	 * Should be private.  Allows for flexibility in the implementation
-	 * so we can use other libraries if necessary.
+	 * Constructor for general use.
 	 * @param imageFile
-	 */
-	protected Image(File imageFile, Date date) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()));
-	}
-	
-	/**
-	 * Constructor for general use case
-	 * @param renderedImage
-	 */
-	public Image(RenderedImage renderedImage) {
-		setDefaults();
-		if(skipChop(renderedImage))
-			this.renderedImage = renderedImage;
-		else {
-			croppedWidth = getCroppedWidth(renderedImage);
-			croppedHeight = getCroppedHeight(renderedImage);
-			this.renderedImage = 
-				centeredCrop(renderedImage, croppedWidth, croppedHeight);
-		}
-		setDimensions(this.renderedImage);
-	}
-	
-	/**
-	 * Constructor for general use case
-	 * @param renderedImage
 	 * @param date
 	 */
-	public Image(RenderedImage renderedImage, Date date) {
-		setDefaults();
-		this.renderedImage = 
-			centeredCrop(renderedImage, croppedWidth, croppedHeight);
-		setDimensions(this.renderedImage);
+	public Image(File imageFile, Date date) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()));
 		this.date = date;
 	}
 	
 	/**
-	 * Constructor for general use case
+	 * Constructor for general use.
 	 * @param image
 	 */
 	public Image(Image image, Date date) {
 		this(image);
-		this.date = date;
 	}
 
 	/**
-	 * Constructor for general use case
+	 * Constructor for general use.
 	 * @param image
 	 */
 	public Image(Image image) {
@@ -163,24 +182,63 @@ public class Image {
 	}
 
 	/**
-	 * Returns the list of features for the image. 
-	 * @return
+	 * Protected contructor for known images (training data).
+	 * @param imageFileName
+	 * @param classification
 	 */
-	public List<Feature> getFeatures() {
-		features = Lists.newArrayList();
-		for(ArabilityFeature arabilityFeature : ArabilityFeature.values())
-			features.add(arabilityFeature.instantiate(this));
-		return features;
+	protected Image(String imageFileName, Classification classification) {
+		this(new File(imageFileName), classification);
 	}
-
+	
+	/**
+	 * Protected contructor for known images (training data).
+	 * @param imageFile
+	 * @param classification
+	 */
+	protected Image(File imageFile, Classification classification) {
+		this(imageFile);
+		this.classification = classification;
+	}
+	
+	/**
+	 * Private constructor
+	 * @param renderedImage
+	 */
+	private Image(RenderedImage renderedImage) {
+		setDefaults();
+		if(skipChop(renderedImage))
+			this.renderedImage = renderedImage;
+		else {
+			croppedWidth = getCroppedWidth(renderedImage);
+			croppedHeight = getCroppedHeight(renderedImage);
+			this.renderedImage = 
+				centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		}
+		setDimensions(this.renderedImage);
+	}
+	
+	/**
+	 * Private constructor
+	 * @param renderedImage
+	 * @param date
+	 */
+	private Image(RenderedImage renderedImage, Date date) {
+		setDefaults();
+		this.renderedImage = 
+			centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		setDimensions(this.renderedImage);
+		this.date = date;
+	}
+	
 	/**
 	 * Returns the classification of the image.
 	 * @return
 	 * @throws Exception
 	 */
-	public ArabilityClassification getClassification() throws Exception {
+	public Classification getClassification() throws Exception {
 		if(classification == null)
-			classification = TrainedModel.getTrainedModel().eval(this);
+			classification = 
+				TrainedModel.getTrainedModel().classifyImage(this);
 		return classification;
 	}
 	
@@ -224,44 +282,31 @@ public class Image {
 		return date;
 	}
 	
-	/**
-	 * Returns the means for all the bands of the histogram 
-	 * @return
-	 */
-	public double[] getMeans() {
-		double[] means = getHistogram().getMean();
-		return Arrays.copyOf(means, means.length);
-	}
-	
-	/**
-	 * Returns the standard deviations for all the bands of the histogram 
-	 * @return
-	 */
-	public double[] getStandardDeviations() {
-		double[] standardDeviations = 
-			getHistogram().getStandardDeviation();
-		return Arrays.copyOf(standardDeviations, standardDeviations.length);
+	public GradientKernel getGradientKernel() {
+		return gradientKernel;
 	}
 
-	/**
-	 * Returns the image scaled down based on the downSampleSize
-	 * @return
-	 */
-	public Image getDownImage() {
-		if(downImage == null) {
-			RenderedOp downSampler = 
-				createScaleOp(renderedImage, downSampleSize);
-			RenderedOp upSampler = 
-				createScaleOp(renderedImage, 1/downSampleSize);
-			RenderedOp differencer = 
-				createSubtractOp(renderedImage, renderedImage);
-			RenderedOp combiner = 
-				createAddOp(renderedImage, renderedImage);
-			ImagePyramid pyramid = 
-				new ImagePyramid(renderedImage, downSampler, upSampler, differencer, combiner);
-			downImage = new Image(pyramid.getDownImage());
-		}
-		return downImage;
+	public void setGradientKernel(GradientKernel gradientKernel) {
+		this.gradientKernel = gradientKernel;
+	}
+	
+	public int getNumBands() {
+		return renderedImage.getData().getNumBands();
+	}
+	
+	public double[] getPixels(double[] data) {
+		return renderedImage.getData().
+			getPixels(minX, minY, width, height, data);
+	}
+	
+	public float[] getPixels(float[] data) {
+		return renderedImage.getData().
+			getPixels(minX, minY, width, height, data);
+	}
+	
+	public int[] getPixels(int[] data) {
+		return renderedImage.getData().
+			getPixels(minX, minY, width, height, data);
 	}
 	
 	public float getDownSample(int x, int y, int b) {
@@ -271,6 +316,12 @@ public class Image {
 //		return image.getRenderedImage().getData().
 //			getPixels(x, y, 0, 0, (float[])null)[0];
 		return image.getRenderedImage().getData().getSampleFloat(x, y, b);
+	}
+	
+	public float getSample(int x, int y, int b) {
+		x = getMinX() + x;
+		y = getMinY() + y;
+		return getRenderedImage().getData().getSampleFloat(x, y, b);
 	}
 	
 	/**
@@ -296,11 +347,153 @@ public class Image {
 	}
 	
 	/**
-	 * Returns the RenderedImage.
-	 * TODO: Make this private to encapsulate implementation
+	 * Returns the means for all the bands of the histogram 
 	 * @return
 	 */
-	public RenderedImage getRenderedImage() {
+	public double[] getMeans() {
+		double[] means = getHistogram().getMean();
+		return Arrays.copyOf(means, means.length);
+	}
+	
+	/**
+	 * Returns the standard deviations for all the bands of the histogram. 
+	 * @return
+	 */
+	public double[] getStandardDeviations() {
+		double[] standardDeviations = 
+			getHistogram().getStandardDeviation();
+		return Arrays.copyOf(standardDeviations, standardDeviations.length);
+	}
+
+	/**
+	 * Returns an Image that represents the Discrete Cosine Transform.
+	 * @return
+	 */
+	public Image getDiscreteCosineTransform() {
+		if (discreteCosineTransform == null) {
+			ParameterBlock dctPB = 
+				(new ParameterBlock()).addSource(this.getGreyscaleImage());
+			discreteCosineTransform = 
+				new Image(JAI.create("dct", dctPB, null));
+		}
+		return discreteCosineTransform;
+	}
+	
+	/**
+	 * Returns an Image that represents the Inverse 
+	 * Discrete Cosine Transform.
+	 * @return
+	 */
+	public Image getInverseDiscreteCosineTransform() {
+		ParameterBlock idctParams = (new ParameterBlock()).
+			addSource(getDiscreteCosineTransform().renderedImage);
+		return new Image(JAI.create("idct", idctParams, null));
+	}
+	
+	public Image getGradientMagnitude() {
+		if(gradientMagnitude == null)
+			gradientMagnitude = 
+				getGradientMagnitude(gradientKernel);
+		return gradientMagnitude;
+	}
+	
+	/**
+	 * Returns an Image that represents a convolution along given data.
+	 * @param width
+	 * @param height
+	 * @param data
+	 * @return
+	 */
+	public Image convolve(int width, int height, float[] data) {
+		BorderExtender convolutionBorderExtender = 
+			BorderExtender.createInstance(BorderExtender.BORDER_ZERO);
+		RenderingHints convolutionRH = 
+			new RenderingHints(JAI.KEY_BORDER_EXTENDER, convolutionBorderExtender);
+ 
+		return new Image((PlanarImage) JAI.create("convolve", renderedImage, 
+			new KernelJAI(width, height, data), convolutionRH));
+	}
+	
+	/**
+	 * Returns an image that represents an addition with the given image.
+	 * @param image
+	 * @return
+	 */
+	public Image add(Image image) {
+		ParameterBlock addParams = 
+			new ParameterBlock().addSource(renderedImage).
+				addSource(image.renderedImage);
+		return new Image(JAI.create("add", addParams));
+	}
+	
+	/**
+	 * Returns an image that represents an subtraction of the given image.
+	 * @param image
+	 * @return
+	 */
+	public Image subtract(Image image) {
+		ParameterBlock subtractParams = 
+			new ParameterBlock().addSource(renderedImage).
+				addSource(image.renderedImage);
+		return new Image(JAI.create("subtract", subtractParams));
+	}
+	
+	/**
+	 * Persist the image to a file with the given filename.
+	 * @param filename
+	 */
+	public void persist(String filename) {
+		ParameterBlock fileStoreParams = (new ParameterBlock()).
+			addSource(renderedImage).add(filename).add("PNG");
+		JAI.create("filestore", fileStoreParams);
+	}
+	
+	public BufferedImage convertToBufferedImage() {
+		if(bufferedImage == null) {
+			if(renderedImage instanceof BufferedImage)
+				bufferedImage = (BufferedImage) renderedImage;
+			else if(renderedImage instanceof PlanarImage)
+				bufferedImage = 
+					((PlanarImage) renderedImage).getAsBufferedImage();
+			else {
+				ColorModel colorModel = renderedImage.getColorModel();
+				WritableRaster raster = 
+					colorModel.createCompatibleWritableRaster(width, height);
+				Hashtable<String, Object> properties = 
+					new Hashtable<String, Object>();
+				for (String key: renderedImage.getPropertyNames()) {
+					properties.put(key, renderedImage.getProperty(key));
+				}
+				bufferedImage = 
+					new BufferedImage(colorModel, raster, 
+						colorModel.isAlphaPremultiplied(), properties);
+			}
+		}
+		return bufferedImage;
+	}
+	
+	/**
+	 * Returns an Image that represents Gradient Magnitude.
+	 * Protected for testing. Should
+	 * @return
+	 */
+	private Image getGradientMagnitude(GradientKernel gradientKernel) {
+		KernelJAI horizontalKernel = 
+			gradientKernel.getKernelMap().get(KernelDimension.HORIZONTAL);
+		KernelJAI verticalKernel = 
+			gradientKernel.getKernelMap().get(KernelDimension.VERTICAL);
+	     // Create the Gradient operation.
+		Image gradientMagnitude = 
+			new Image(JAI.create("gradientmagnitude", renderedImage,
+				horizontalKernel, verticalKernel));
+		return gradientMagnitude;
+	}
+	
+	/**
+	 * Returns the RenderedImage.
+	 * @return
+	 */
+	private RenderedImage getRenderedImage() {
 		return renderedImage;
 	}
 	
@@ -309,7 +502,7 @@ public class Image {
 	 * of the image.
 	 * @return
 	 */
-	public RenderedImage getGreyscaleImage() {
+	private RenderedImage getGreyscaleImage() {
 		if(greyscaleImage == null) {
 			ColorModel cm = 
 				new ComponentColorModel(ColorSpace.getInstance(
@@ -329,34 +522,23 @@ public class Image {
 	}
 	
 	/**
-	 * Returns a RenderedImage that representst the coefficients from
-	 * a Discrete Cosine Transform.
+	 * Returns the image scaled down based on the downSampleSize
 	 * @return
 	 */
-	public Image getDiscreteCosineTransform() {
-		if (discreteCosineTransform == null) {
-			ParameterBlock dctPB = 
-				(new ParameterBlock()).addSource(this.getGreyscaleImage());
-			discreteCosineTransform = 
-				new Image(JAI.create("dct", dctPB, null));
+	private Image getDownImage() {
+		if(downImage == null) {
+			RenderedOp downSampler = 
+				createScaleOp(renderedImage, downSampleSize);
+			RenderedOp upSampler = 
+				createScaleOp(renderedImage, 1/downSampleSize);
+			RenderedOp differencer = 
+				(RenderedOp) subtract(this).renderedImage;
+			RenderedOp combiner = (RenderedOp) add(this).renderedImage;
+			ImagePyramid pyramid = 
+				new ImagePyramid(renderedImage, downSampler, upSampler, differencer, combiner);
+			downImage = new Image(pyramid.getDownImage());
 		}
-		return discreteCosineTransform;
-	}
-	
-	protected int getChoppedRows() {
-		return choppedRows;
-	}
-	
-	protected int getChoppedColumns() {
-		return choppedColumns;
-	}
-	
-	protected float getChoppedWidth() {
-		return choppedWidth;
-	}
-	
-	protected float getChoppedHeight() {
-		return choppedHeight;
+		return downImage;
 	}
 	
 	private float getCroppedWidth(RenderedImage renderedImage) {
@@ -489,20 +671,6 @@ public class Image {
 		return JAI.create("scale", pb, null);
 	}
 
-	private RenderedOp createSubtractOp(RenderedImage src1,
-            RenderedImage src2) {
-		ParameterBlock pb = 
-			new ParameterBlock().addSource(src1).addSource(src2);
-		return JAI.create("subtract", pb);
-	}
-
-	private RenderedOp createAddOp(RenderedImage src1, 
-			RenderedImage src2) {
-		ParameterBlock pb = 
-			new ParameterBlock().addSource(src1).addSource(src2);
-		return JAI.create("add", pb);
-	}
-	
 	private void setDimensions(RenderedImage renderedImage) {
 		width = renderedImage.getWidth();
 		height = renderedImage.getHeight();
@@ -519,5 +687,6 @@ public class Image {
 		choppedHeight = Configuration.CHOPPED_HEIGHT;
 //		choppedColumns = Configuration.CHOPPED_COLUMNS;
 //		choppedRows = Configuration.CHOPPED_ROWS;
+		gradientKernel = GradientKernel.SOBEL;
 	}
 }

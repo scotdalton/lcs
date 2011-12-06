@@ -26,9 +26,9 @@ public class ImageGrabber {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		double longitudeStart = -5.0;
-		double longitudeEnd = 36.0;
-		double latitudeStart = 35.0;
+		double longitudeStart = 34.0;
+		double longitudeEnd = -5.0;
+		double latitudeStart = 31.0;
 		double latitudeEnd = 6.0;
 		int numberOfDates = 1;
 		int yearlyInterval = -1;
@@ -46,6 +46,13 @@ public class ImageGrabber {
 			if (arg.startsWith("yearlyInterval="))
 				yearlyInterval=Integer.valueOf(arg.split("=")[1]);
 		}
+		grabImages(longitudeStart, longitudeEnd, latitudeStart, 
+			latitudeEnd, numberOfDates, yearlyInterval, TMP_IMAGE_PATH);
+	}
+
+	public static void grabImages(double longitudeStart, 
+			double longitudeEnd, double latitudeStart, double latitudeEnd, 
+			int numberOfDates, int yearlyInterval, String directory) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		List<Date> dates = Lists.newArrayList();
 		Date now = cal.getTime();
@@ -57,24 +64,23 @@ public class ImageGrabber {
 		SimpleDateFormat dateFormat = 
 			new SimpleDateFormat("yyyy-MM-dd");
 		for(double longitude = longitudeStart; 
-				longitude < longitudeEnd; 
-					longitude = longitude + .125) {
+				longitude > longitudeEnd; 
+					longitude = longitude - .125) {
 			for(double latitude = latitudeStart; 
 					latitude > latitudeEnd; 
 						latitude = latitude - .125) {
 				List<Image> images = 
 					ImageFactory.getImagesForDates(dates, (float)longitude, (float)latitude, null, 5);
 				for(Image image: images) {
-					if (image.isValid()) {
+//					if (image.isValid()) {
 						String imageName = longitude + "_" + latitude;
 						File grabbedDir = 
-							new File(TMP_IMAGE_PATH + "/grabbed/" +dateFormat.format(image.getDate()));
+							new File(directory + "/grabbed/" +dateFormat.format(image.getDate()));
 						if(!grabbedDir.exists()) grabbedDir.mkdirs();
 						String fileName = 
 							grabbedDir.getAbsolutePath() + "/" + imageName+".png";
-						System.out.println(fileName);
-						persistImage(fileName, image.getRenderedImage());
-					}
+						image.persist(fileName);
+//					}
 				}
 			}
 		}

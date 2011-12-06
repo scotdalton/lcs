@@ -19,7 +19,7 @@ import edu.nyu.cs.sysproj.arability.Image;
 public class TestUtility {
 
 	public static String getTestFileName1() {
-		return TMP_IMAGE_PATH + "/" + "Tamale_Ghana_1_20031004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
 	}
 
 	public static Image getTestImage1() {
@@ -27,7 +27,7 @@ public class TestUtility {
 	}
 
 	public static String getTestFileName2() {
-		return TMP_IMAGE_PATH + "/" + "Tamale_Ghana_1_20111004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20111004.png";
 	}
 
 	public static Image getTestImage2() {
@@ -78,12 +78,12 @@ public class TestUtility {
 		return getFiles(ARABLE_TRAINING_IMAGE_PATH+"/curated");
 	}
 	
-	public static List<File> getNonArableTrainingImageFiles() {
-		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH+"/selected");
+	public static List<File> getDevelopedTrainingImageFiles() {
+		return getFiles(DEVELOPED_TRAINING_IMAGE_PATH+"/selected");
 	}
 	
-	public static List<File> getCuratedNonArableTrainingImageFiles() {
-		return getFiles(NON_ARABLE_TRAINING_IMAGE_PATH+"/curated");
+	public static List<File> getCuratedDevelopedTrainingImageFiles() {
+		return getFiles(DEVELOPED_TRAINING_IMAGE_PATH+"/curated");
 	}
 	
 	public static List<File> getArableTestingImageFiles() {
@@ -94,12 +94,28 @@ public class TestUtility {
 		return getFiles(ARABLE_TESTING_IMAGE_PATH+"/curated");
 	}
 	
-	public static List<File> getNonArableTestingImageFiles() {
-		return getFiles(NON_ARABLE_TESTING_IMAGE_PATH+"/selected");
+	public static List<File> getDevelopedTestingImageFiles() {
+		return getFiles(DEVELOPED_TESTING_IMAGE_PATH+"/selected");
 	}
 	
-	public static List<File> getCuratedNonArableTestingImageFiles() {
-		return getFiles(NON_ARABLE_TESTING_IMAGE_PATH+"/curated");
+	public static List<File> getCuratedDevelopedTestingImageFiles() {
+		return getFiles(DEVELOPED_TESTING_IMAGE_PATH+"/curated");
+	}
+	
+	public static List<File> getDesertTestingImageFiles() {
+		return getFiles(DESERT_TESTING_IMAGE_PATH+"/selected");
+	}
+	
+	public static List<File> getCuratedDesertTestingImageFiles() {
+		return getFiles(DESERT_TESTING_IMAGE_PATH+"/curated");
+	}
+	
+	public static List<File> getForestTestingImageFiles() {
+		return getFiles(FOREST_TESTING_IMAGE_PATH+"/selected");
+	}
+	
+	public static List<File> getCuratedForestTestingImageFiles() {
+		return getFiles(FOREST_TESTING_IMAGE_PATH+"/curated");
 	}
 	
 	private static List<File> getFiles(String directoryName) {

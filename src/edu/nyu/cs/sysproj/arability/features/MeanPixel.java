@@ -11,14 +11,16 @@ import edu.nyu.cs.sysproj.arability.Image;
  * @author Scot Dalton
  *
  */
-public class MeanPixel implements Feature {
-	private float value;
+public class MeanPixel extends Feature {
 
-	public MeanPixel(Image image, int band) {
+	@Override
+	public void setValue(Image image) {
+		Integer band = (Integer) options.get("band");
 		value = (float) image.getMeans()[band];
 	}
 	
-	public float getValue() {
-		return value;
+	@Override
+	public String toString() {
+		return "MeanPixel" + options.values().toString();
 	}
 }

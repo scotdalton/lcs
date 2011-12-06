@@ -60,6 +60,6 @@ public class ImageFactoryTest {
 		Kml kml = new Kml.Builder().documents(documents).build();
 		Image image = ImageFactory.getImage(kml, 5, 5000);
 		String fileName = IMAGE_PATH + "/captured/image.png";
-		persistImage(fileName, image.getRenderedImage());
+		image.persist(fileName);
 	}
 }

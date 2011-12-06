@@ -19,9 +19,13 @@ public class Geocoder {
 	private String address;
 	private float latitude;
 	private float longitude;
+	private float northeastLongitude;
+	private float northeastLatitude;
+	private float southwestLongitude;
+	private float southwestLatitude;
 	private JSONObject geocoding;
 	
-	public Geocoder(float longitude, float latitude) throws Exception {
+	public Geocoder(float latitude, float longitude) throws Exception {
 		this.longitude = longitude;
 		this.latitude = latitude;
 		processGeocoding();
@@ -44,6 +48,22 @@ public class Geocoder {
 		return latitude;
 	}
 	
+	public float getNortheastLongitude() {
+		return northeastLongitude;
+	}
+	
+	public float getNortheastLatitude() {
+		return northeastLatitude;
+	}
+	
+	public float getSouthwestLongitude() {
+		return southwestLongitude;
+	}
+	
+	public float getSouthwestLatitude() {
+		return southwestLatitude;
+	}
+	
 	private JSONObject getGeocoding(String address) throws Exception {
 		String geocoderURLString = GEOCODER;
 		if(address != null) {
@@ -51,8 +71,9 @@ public class Geocoder {
 				"address="+URLEncoder.encode(address, "UTF-8");
 		} else {
 			geocoderURLString += 
-				"latlng="+longitude+","+latitude;
+				"latlng="+latitude+","+longitude;
 		}
+		System.out.println(geocoderURLString);
 		URL geocoderURL = new URL(geocoderURLString);
 		JSONObject geocoding = 
 			new JSONObject(new JSONTokener(geocoderURL.openStream()));
@@ -65,12 +86,21 @@ public class Geocoder {
 
 	private void processGeocoding(String address) throws Exception {
 		geocoding = getGeocoding(address);
+		System.out.println(geocoding);
 		JSONObject results = 
 			geocoding.getJSONArray("results").getJSONObject(0);
 		this.address = results.getString("formatted_address");
 		JSONObject location = 
 			results.getJSONObject("geometry").getJSONObject("location");
-		this.longitude = ((Double) location.get("lat")).floatValue();
-		this.longitude = ((Double) location.get("lng")).floatValue();
+		longitude = ((Double) location.get("lng")).floatValue();
+		latitude = ((Double) location.get("lat")).floatValue();
+		JSONObject bounds = 
+			results.getJSONObject("geometry").getJSONObject("bounds");
+		JSONObject northeast = bounds.getJSONObject("northeast");
+		northeastLongitude = ((Double) northeast.get("lng")).floatValue();
+		northeastLatitude = ((Double) northeast.get("lat")).floatValue();
+		JSONObject southwest = bounds.getJSONObject("southwest");
+		southwestLongitude = ((Double) southwest.get("lng")).floatValue();
+		southwestLatitude = ((Double) southwest.get("lat")).floatValue();
 	}
 }

@@ -9,15 +9,18 @@ import edu.nyu.cs.sysproj.arability.Image;
  * @author Scot Dalton
  *
  */
-public class DCTDownSample implements Feature {
-	private float value;
+public class DCTDownSample extends Feature {
 	
-	public DCTDownSample(Image image, int x, int y) {
-		Image dct = image.getDiscreteCosineTransform();
-		value = dct.getDownSample(x, y, 0);
+	@Override
+	public void setValue(Image image) {
+		Integer x = (Integer) options.get("x");
+		Integer y = (Integer) options.get("y");
+		value = 
+			(float) image.getDiscreteCosineTransform().getDownSample(x, y, 0);
 	}
 	
-	public float getValue() {
-		return value;
+	@Override
+	public String toString() {
+		return "DCTDownSample" + options.values().toString();
 	}
 }

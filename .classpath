@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/guava-10.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/weka.jar" sourcepath="weka-3-6-5/weka-src.jar"/>
 	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar" sourcepath="Jama"/>
+	<classpathentry kind="lib" path="lib/boofcv-v0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

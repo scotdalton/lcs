@@ -16,7 +16,9 @@ import Jama.Matrix;
 public class UnknownImage extends Image {
 	private Matrix arabilityMatrix;
 	private double arablePercentage;
-	private double nonArablePercentage;
+	private double developedPercentage;
+	private double desertPercentage;
+	private double forestPercentage;
 
 	/**
 	 * @param imageFileName
@@ -40,8 +42,16 @@ public class UnknownImage extends Image {
 		return arablePercentage;
 	}
 	
-	public double getNonArablePercentage() {
-		return nonArablePercentage;
+	public double getDevelopedPercentage() {
+		return developedPercentage;
+	}
+	
+	public double getDesertPercentage() {
+		return desertPercentage;
+	}
+	
+	public double getForestPercentage() {
+		return forestPercentage;
 	}
 	
 	public Matrix getArabilityMatrix() {
@@ -50,31 +60,40 @@ public class UnknownImage extends Image {
 	
 	private void processArability() throws Exception {
 		int arableCount = 0;
-		int nonArableCount = 0;
+		int developedCount = 0;
+		int desertCount = 0;
+		int forestCount = 0;
 		List<Image> choppedImages = getChoppedImages();
-		double[][] arabilityValues = 
-			new double[getChoppedRows()][getChoppedColumns()];
-		int tileOffsetX = 
-			(getRenderedImage().getTileWidth() - getWidth())/2;
-		int tileOffsetY = 
-			(getRenderedImage().getTileHeight() - getHeight())/2;
+//		double[][] arabilityValues = 
+//			new double[getChoppedRows()][getChoppedColumns()];
+//		int tileOffsetX = 
+//			(getRenderedImage().getTileWidth() - getWidth())/2;
+//		int tileOffsetY = 
+//			(getRenderedImage().getTileHeight() - getHeight())/2;
 		for(Image choppedImage : choppedImages) {
-			int row = 
-				(int) ((choppedImage.getMinX()-tileOffsetX)/getChoppedWidth());
-			int column = 
-				(int) ((choppedImage.getMinY()-tileOffsetY)/getChoppedHeight());
-			ArabilityClassification classification = 
+//			int row = 
+//				(int) ((choppedImage.getMinX()-tileOffsetX)/getChoppedWidth());
+//			int column = 
+//				(int) ((choppedImage.getMinY()-tileOffsetY)/getChoppedHeight());
+			Classification classification = 
 				choppedImage.getClassification();
-			if(classification.equals(ArabilityClassification.ARABLE)) {
-				arabilityValues[row][column]=1;
+			if(classification.equals(Classification.ARABLE)) {
+//				arabilityValues[row][column]=1;
 				arableCount++;
-			} else if (classification.equals(ArabilityClassification.NON_ARABLE)) {
-				arabilityValues[row][column]=0;
-				nonArableCount++;
+			} else if (classification.equals(Classification.DEVELOPED)) {
+//				arabilityValues[row][column]=0;
+				developedCount++;
+//			} else if (classification.equals(ArabilityClassification.DESERT)) {
+////				arabilityValues[row][column]=0;
+//				desertCount++;
+//			} else if (classification.equals(ArabilityClassification.FOREST)) {
+////				arabilityValues[row][column]=0;
+//				forestCount++;
 			}
 		}
-		arablePercentage = arableCount/(double)choppedImages.size();
-		nonArablePercentage = nonArableCount/(double)choppedImages.size();
-		arabilityMatrix = new Matrix(arabilityValues);
+		arablePercentage = 100*arableCount/(double)choppedImages.size();
+		developedPercentage = 100*developedCount/(double)choppedImages.size();
+		desertPercentage = 100*desertCount/(double)choppedImages.size();
+//		arabilityMatrix = new Matrix(arabilityValues);
 	}
 }

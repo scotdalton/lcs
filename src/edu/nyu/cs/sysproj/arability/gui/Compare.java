@@ -4,7 +4,7 @@
 package edu.nyu.cs.sysproj.arability.gui;
 
 import static edu.nyu.cs.sysproj.arability.utility.Configuration.IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.persistImage;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -23,7 +23,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -51,19 +53,30 @@ public class Compare extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton eventButton = (JButton) event.getSource();
-		JComponent inputContainer = 
-			(JComponent)eventButton.getParent().getComponent(0);
+		JComponent inputPanel = 
+			(JComponent) eventButton.getParent().getComponent(0);
 		JSplitPane arabilitySplitPane = 
-			(JSplitPane)eventButton.getParent().getParent().getParent();
-		JPanel resultsContainer = (JPanel)arabilitySplitPane.getComponent(2);
+			(JSplitPane) eventButton.getParent().getParent().getParent();
+		JPanel resultsPanel = (JPanel) arabilitySplitPane.getComponent(2);
+		JTabbedPane arabilityTabbedPane = 
+			(JTabbedPane)arabilitySplitPane.getComponent(1);
+		JPanel settingsPanel = 
+			(JPanel) arabilityTabbedPane.getComponent(2);
+		JSlider waitTimeSlider = (JSlider) settingsPanel.getComponent(1);
+		JSlider cropFactorSlider = (JSlider) settingsPanel.getComponent(3);
+		int waitTime = waitTimeSlider.getValue() * 1000;
+		int cropFactor = cropFactorSlider.getValue();
 		String address = null;
 		float latitude = 0;
 		float longitude = 0;
 		if("latLng".equals(event.getActionCommand())) {
+			String latitudeString = ((JTextField) inputPanel.getComponent(1)).getText();
+			String longitudeString = ((JTextField) inputPanel.getComponent(3)).getText();
+//			TODO: Handle empty strings.
 			latitude = 
-				Float.valueOf(((JTextField) inputContainer.getComponent(1)).getText());
+				Float.valueOf(latitudeString);
 			longitude = 
-				Float.valueOf(((JTextField) inputContainer.getComponent(3)).getText());
+				Float.valueOf(longitudeString);
 			try {
 				Geocoder geocoder = new Geocoder(latitude, longitude);
 				address = geocoder.getAddress();
@@ -77,7 +90,8 @@ public class Compare extends AbstractAction {
 			
 		} else if ("address".equals(event.getActionCommand())) {
 			address = 
-				((JTextField) inputContainer.getComponent(1)).getText();
+				((JTextField) inputPanel.getComponent(1)).getText();
+//			TODO: Handle empty string.
 			try {
 				Geocoder geocoder = new Geocoder(address);
 				latitude = geocoder.getLatitude();
@@ -89,50 +103,73 @@ public class Compare extends AbstractAction {
 			}
 		}
 		if (address == null) {
-			JOptionPane.showMessageDialog(inputContainer, "No address found.");
+			JOptionPane.showMessageDialog(inputPanel, "No address found.");
 		} else {
-			int numberOfDates = 2;
+			int numberOfDates = 3;
 			int yearlyInterval = -2;
 			Calendar cal = Calendar.getInstance();
 			List<Date> dates = new ArrayList<Date>();
 			Date now = cal.getTime();
 			dates.add(now);
-			for(int i=0; i < numberOfDates; i++) {
+			for(int i=1; i < numberOfDates; i++) {
 				cal.add(Calendar.YEAR, yearlyInterval);
 				dates.add(cal.getTime());
 			}
-			Map<String, UnknownImage> imageMap = Maps.newHashMap();
 			try {
 				List<Image> images = 
-					ImageFactory.getImagesForDates(dates, longitude, latitude, address, 5);
-				int process = JOptionPane.showConfirmDialog(inputContainer, "Process images?");
+					ImageFactory.getImagesForDates(dates, longitude, latitude, address, cropFactor, waitTime);
+				Map<String, String> imageFileMap = Maps.newLinkedHashMap();
+				for (Image image: images) {
+					SimpleDateFormat dateFormat = 
+						new SimpleDateFormat("' in 'yyyy-MM-dd");
+					String imageName = address + dateFormat.format(image.getDate());
+					String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
+					image.persist(fileName);
+					imageFileMap.put(imageName, fileName);
+				}
+				images = null;
+				int process = JOptionPane.showConfirmDialog(inputPanel, "Process images?");
 				if (process == JOptionPane.YES_OPTION) {
-					for (Image image: images) {
-						SimpleDateFormat dateFormat = 
-							new SimpleDateFormat("' in 'yyyy-MM-dd");
-						String imageName = address + dateFormat.format(image.getDate());
-						String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
-						persistImage(fileName, image.getRenderedImage());
-						imageMap.put(imageName, new UnknownImage(fileName));
-					}
+				    Iterator<Map.Entry<String, String>> imageFileIterator = 
+				    		imageFileMap.entrySet().iterator();
+				    while (imageFileIterator.hasNext()) {
+				        Map.Entry<String, String> pair = imageFileIterator.next();
+				        UnknownImage unknownImage = 
+				        		new UnknownImage(pair.getValue());
+				        JLabel arableLabel = 
+			        			new JLabel(pair.getKey() + " percentage arable: " + 
+			        				unknownImage.getArablePercentage());
+				        JLabel developedLabel = 
+			        			new JLabel(pair.getKey() + " percentage developed: " + 
+			        				unknownImage.getDevelopedPercentage());
+//				        JLabel desertLabel = 
+//				        		new JLabel(pair.getKey() + " percentage desert: " + 
+//				        			unknownImage.getDesertPercentage());
+//				        JLabel forestLabel = 
+//				        		new JLabel(pair.getKey() + " percentage forest: " + 
+//				        			unknownImage.getForestPercentage());
+				        arableLabel.setHorizontalAlignment(SwingConstants.CENTER);
+				        arableLabel.setVerticalAlignment(SwingConstants.TOP);
+				        arableLabel.setPreferredSize(new Dimension(100, 100));
+				        developedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+				        developedLabel.setVerticalAlignment(SwingConstants.TOP);
+				        developedLabel.setPreferredSize(new Dimension(100, 100));
+//				        desertLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//				        desertLabel.setVerticalAlignment(SwingConstants.TOP);
+//				        desertLabel.setPreferredSize(new Dimension(100, 100));
+//				        forestLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//				        forestLabel.setVerticalAlignment(SwingConstants.TOP);
+//				        forestLabel.setPreferredSize(new Dimension(100, 100));
+				        resultsPanel.add(arableLabel);
+				        resultsPanel.add(developedLabel);
+//				        resultsPanel.add(desertLabel);
+//				        resultsPanel.add(forestLabel);
+				    }
+				    JOptionPane.showMessageDialog(resultsPanel, "Results ready.");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		    Iterator<Map.Entry<String, UnknownImage>> imageIterator = 
-		    		imageMap.entrySet().iterator();
-		    while (imageIterator.hasNext()) {
-		        Map.Entry<String, UnknownImage> pairs = imageIterator.next();
-		        JLabel resultsLabel = 
-		        		new JLabel(pairs.getKey() + " percentage arable: " + 
-		        			pairs.getValue().getArablePercentage());
-				resultsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-				resultsLabel.setVerticalAlignment(SwingConstants.TOP);
-				resultsLabel.setPreferredSize(new Dimension(100, 100));
-//				resultsContainer
-		        resultsContainer.add(resultsLabel);
-		    }
-		    JOptionPane.showMessageDialog(resultsContainer, "Results ready.");
 		}
 	}
 }

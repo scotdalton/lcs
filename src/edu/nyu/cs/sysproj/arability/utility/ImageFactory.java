@@ -43,7 +43,7 @@ public class ImageFactory {
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		googleEarth.launch();
 		googleEarth.openKml(kmlFileName, waitForKml);
-		image = getScreenShot(cropFactor, date);
+		image = Image.getScreenShot(cropFactor, date, 4000);
 		googleEarth.destroy();
 		return image;
 	}
@@ -51,30 +51,22 @@ public class ImageFactory {
 	public static List<Image> getImagesForDates(List<Date> dates, 
 			float longitude, float latitude, String address, 
 			int cropFactor) throws Exception {
+		return getImagesForDates(dates, longitude, latitude, address, cropFactor, waitForKml()); 
+	}
+	
+	public static List<Image> getImagesForDates(List<Date> dates, 
+			float longitude, float latitude, String address, 
+			int cropFactor, int waitTime) throws Exception {
 		List<Image> images = Lists.newArrayList();
-		for(int index=0; index<dates.size(); index++) {
-			Date date = dates.get(index);
+		for(Date date: dates)
 			images.add(getImage(
 				getKml(date, longitude, latitude, address), 
-					cropFactor, waitForKml(index), date));
-		}
+					cropFactor, waitTime, date));
 		return images;
 	}
 	
-	private static int waitForKml(int index) {
-		return (index == 0) ? 10000:10000;
-	}
-	
-	private static Image getScreenShot(int cropFactor, Date date) throws AWTException {
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Dimension screenSize = toolkit.getScreenSize();
-		Rectangle rectangle = new Rectangle(cropFactor, cropFactor, 
-			screenSize.width-cropFactor, screenSize.height-cropFactor);
-		Robot robot = new Robot();
-		robot.setAutoWaitForIdle(true);
-		// Wait for 4 seconds.
-		robot.delay(4000);
-		return new Image(robot.createScreenCapture(rectangle), date);
+	private static int waitForKml() {
+		return 15000;
 	}
 	
 	private static Kml getKml(Date date, float longitude, float latitude, String address) {
