@@ -6,6 +6,8 @@ package edu.nyu.cs.sysproj.arability.utility.kml;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import edu.nyu.cs.sysproj.arability.utility.google_earth.GoogleEarth;
+
 /**
  * @author Scot Dalton
  *
@@ -79,11 +81,10 @@ public class Camera extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBas
 		return "<Camera xmlns:gx=\"http://www.google.com/kml/ext/2.2\">"+
 			"<longitude>" + this.longitude + "</longitude>" +
 			"<latitude>" + this.latitude + "</latitude>" +
-			"<altitude>1000.0</altitude>" +
-			"<heading>0.005613869619437224</heading>" +
+			"<altitude>" + GoogleEarth.ALTITUDE + "</altitude>" +
+			"<heading>0</heading>" +
 			"<tilt>0</tilt>" +
-			"<range>1189</range>" +
-			"<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>" +
+			"<altitudeMode>relativeToGround</altitudeMode>" +
 			"<gx:TimeStamp>" +
 			"<when>" + this.dateFormat.format(this.date) + "</when>" +
 			"</gx:TimeStamp>" +

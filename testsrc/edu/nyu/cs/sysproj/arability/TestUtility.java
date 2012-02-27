@@ -18,8 +18,50 @@ import edu.nyu.cs.sysproj.arability.Image;
  */
 public class TestUtility {
 
+	public static String getTestRegionFileName1() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20031004.png";
+		return TMP_BASE_PATH + "/Banjul, The Gambia/" + "Banjul, The Gambia circa 2006.png";
+	}
+
+	public static Image getTestRegion1() {
+		return new Image(getTestRegionFileName1());
+	}
+
+	public static String getTestRegionClassificationFileName1() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20031004.png";
+		return TMP_BASE_PATH + "regionClassification1.png";
+	}
+
+	public static Image getTestRegionClassificationMap1() {
+		return new Image(getTestRegionClassificationFileName1());
+	}
+
+	public static String getTestRegionClassificationFileName2() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20031004.png";
+		return TMP_BASE_PATH + "regionClassification2.png";
+	}
+
+	public static Image getTestRegionClassificationMap2() {
+		return new Image(getTestRegionClassificationFileName2());
+	}
+
+	public static String getTestRegionFileName2() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20031004.png";
+		return TMP_BASE_PATH + "/Banjul, The Gambia/" + "Banjul, The Gambia circa 2011.png";
+	}
+
+	public static Image getTestRegion2() {
+		return new Image(getTestRegionFileName2());
+	}
+
 	public static String getTestFileName1() {
-		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20031004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20031004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Johannesburg_South_Africa_1_20031004.png";
 	}
 
 	public static Image getTestImage1() {
@@ -27,11 +69,43 @@ public class TestUtility {
 	}
 
 	public static String getTestFileName2() {
-		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20111004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20051004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20051004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Johannesburg_South_Africa_1_20051004.png";
 	}
 
 	public static Image getTestImage2() {
 		return new Image(getTestFileName2());
+	}
+
+	public static String getTestFileName3() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20071004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20071004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Johannesburg_South_Africa_1_20071004.png";
+	}
+
+	public static Image getTestImage3() {
+		return new Image(getTestFileName3());
+	}
+
+	public static String getTestFileName4() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20091004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20091004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Johannesburg_South_Africa_1_20091004.png";
+	}
+
+	public static Image getTestImage4() {
+		return new Image(getTestFileName4());
+	}
+
+	public static String getTestFileName5() {
+//		return TMP_IMAGE_PATH + "/handselected/" + "Tamale_Ghana_1_20111004.png";
+//		return TMP_IMAGE_PATH + "/handselected/" + "Harare_Zimbabwe_2_20111004.png";
+		return TMP_IMAGE_PATH + "/handselected/" + "Johannesburg_South_Africa_1_20111004.png";
+	}
+
+	public static Image getTestImage5() {
+		return new Image(getTestFileName5());
 	}
 
 	public static String getTestChoppedFileName1() {

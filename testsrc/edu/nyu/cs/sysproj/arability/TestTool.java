@@ -69,7 +69,7 @@ public class TestTool {
 			documents.add(document);
 			Kml kml = new Kml.Builder().documents(documents).build();
 			String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
-			Image image = ImageFactory.getImage(kml, 5, 5000);
+			Image image = ImageFactory.getImage(kml, 5, 5, 5000);
 			image.persist(fileName);
 			try {
 				imageMap.put(imageName, new UnknownImage(fileName));

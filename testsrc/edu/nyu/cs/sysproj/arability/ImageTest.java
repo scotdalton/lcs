@@ -21,13 +21,36 @@ import java.util.List;
 
 import org.junit.Test;
 
+import edu.nyu.cs.sysproj.arability.utility.Configuration;
+
 /**
  * @author Scot Dalton
  *
  */
 public class ImageTest {
-
-	@Test 
+//	@Test
+	public void testRegion1() throws Exception {
+		Image region = TestUtility.getTestRegion1();
+		Image classificationMap = region.getClassificationHeatMap();
+		classificationMap.persist(Configuration.TMP_BASE_PATH+ "regionClassification1.png");
+	}
+	
+//	@Test
+	public void testRegion2() throws Exception {
+		Image region = TestUtility.getTestRegion2();
+		Image classificationMap = region.getClassificationHeatMap();
+		classificationMap.persist(Configuration.TMP_BASE_PATH+ "regionClassification2.png");
+	}
+	
+	@Test
+	public void testRegionComparison() throws Exception {
+		Image toImage = TestUtility.getTestRegion2();
+		Image fromImage = TestUtility.getTestRegion1();
+		Image comparison = toImage.getComparisonImage(fromImage);
+		comparison.persist(Configuration.TMP_BASE_PATH+ "regionComparison.png");
+	}
+	
+//	@Test 
 	public void testIDCT() {
 		Image image = getTestImage1();
 		List<Image> choppedImages = image.getChoppedImages();
@@ -36,7 +59,7 @@ public class ImageTest {
 		idct.persist(TMP_IMAGE_PATH+"/idct.jpg");
 	}
 	
-	@Test 
+//	@Test 
 	public void testDCTAdd() {
 		Image image = getTestImage1();
 		List<Image> choppedImages = image.getChoppedImages();
@@ -47,7 +70,7 @@ public class ImageTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void testGradientMagnitude() {
 		Image image = getTestImage1();
 		Image gradientMagnitude = image.getGradientMagnitude();

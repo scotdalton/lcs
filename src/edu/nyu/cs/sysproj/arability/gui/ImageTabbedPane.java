@@ -3,8 +3,10 @@
  */
 package edu.nyu.cs.sysproj.arability.gui;
 
+import java.util.Collections;
 import java.util.Map;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import com.google.common.collect.Maps;
@@ -17,9 +19,11 @@ import edu.nyu.cs.sysproj.arability.Image;
  */
 public class ImageTabbedPane extends JTabbedPane {
 	private static final long serialVersionUID = -6928245339429177984L;
+	private Map<String, Image> images;
 
 	public ImageTabbedPane(Map<String, Image> images) {
 		super();
+		this.images = images;
 		addImageTabs(images);
 	}
 	
@@ -35,11 +39,18 @@ public class ImageTabbedPane extends JTabbedPane {
 	
 	public void addImageTabs(Map<String, Image> images) {
 		// Create the image labels
-		Map<String, ImageLabel> imageLabels = Maps.newLinkedHashMap();
+		Map<String, JScrollPane> imageLabels = Maps.newLinkedHashMap();
 		for(String imageKey: images.keySet())
-			imageLabels.put(imageKey, new ImageLabel(images.get(imageKey)));
+			imageLabels.put(imageKey, new JScrollPane(new ImageLabel(images.get(imageKey))));
 		
 		for(String imageLabelKey: imageLabels.keySet())
 			addTab(imageLabelKey, imageLabels.get(imageLabelKey));
+	}
+
+	/**
+	 * @return the images
+	 */
+	public Map<String, Image> getImages() {
+		return Collections.unmodifiableMap(images);
 	}
 }

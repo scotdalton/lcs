@@ -12,5 +12,12 @@
 	<classpathentry kind="lib" path="lib/weka.jar" sourcepath="weka-3-6-5/weka-src.jar"/>
 	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar" sourcepath="Jama"/>
 	<classpathentry kind="lib" path="lib/boofcv-v0.2.jar"/>
+	<classpathentry kind="lib" path="lib/libpja.jar"/>
+	<classpathentry kind="lib" path="lib/simplelatlng-1.0.1.jar" sourcepath="lib/simplelatlng-1.0.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.1.jar" sourcepath="commons-io-2.1/commons-io-2.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/google_earth/commons-io-2.1/commons-io-2.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -4,7 +4,10 @@
 package edu.nyu.cs.sysproj.arability;
 
 import java.awt.AWTException;
-import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Robot;
@@ -18,7 +21,10 @@ import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.ParameterBlock;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -27,6 +33,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
 import javax.media.jai.ImageLayout;
@@ -37,10 +44,19 @@ import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RenderedOp;
 
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
+
+import boofcv.alg.feature.describe.DescribePointSurf;
+import boofcv.core.image.ConvertBufferedImage;
+import boofcv.struct.feature.SurfFeature;
+import boofcv.struct.image.ImageFloat32;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.primitives.Floats;
 
 import edu.nyu.cs.sysproj.arability.utility.Configuration;
+import edu.nyu.cs.sysproj.arability.utility.FileUtil;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -53,12 +69,14 @@ import edu.nyu.cs.sysproj.arability.utility.Configuration;
  */
 public class Image {
 	private RenderedImage renderedImage;
+	private ImageFloat32 imageFloat32;
 	private Image discreteCosineTransform;
+	private Image classificationHeatMap;
 	private Image gradientMagnitude;
 	private Image downImage;
-	private RenderedImage greyscaleImage;
+	private List<float[]> surf;
+	private Image greyscaleImage;
 	private Histogram histogram;
-	private BufferedImage bufferedImage;
 	private int width;
 	private int height;
 	private int minX;
@@ -110,16 +128,129 @@ public class Image {
 	};
 	private GradientKernel gradientKernel;
 
-	public static Image takeScreenShot(int cropFactor, Date date, int delay) throws AWTException {
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Dimension screenSize = toolkit.getScreenSize();
-		Rectangle rectangle = new Rectangle(cropFactor, cropFactor, 
-			screenSize.width-cropFactor, screenSize.height-cropFactor);
+	public static Image takeScreenShot(int xCropFactor, int yCropFactor, Date date, int delay) throws AWTException {
+		int width = (int) (getScreenWidth() - xCropFactor);
+		int height = (int) (getScreenHeight() - yCropFactor);
+		Rectangle rectangle = new Rectangle(xCropFactor/2, yCropFactor/2, 
+			width, height);
 		Robot robot = new Robot();
 		robot.setAutoWaitForIdle(true);
 		// Wait for 4 seconds.
 		robot.delay(delay);
 		return new Image(robot.createScreenCapture(rectangle), date);
+	}
+	
+	public static double getScreenWidth() {
+		return Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	}
+	
+	public static double getScreenHeight() {
+		return Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	}
+	
+	public static Image getImageForColor(int red, int green, int blue, int alpha) {
+		BufferedImage bufferedImage = 
+			new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+		Graphics graphics = bufferedImage.getGraphics();
+		graphics.setColor(new Color(red, green, blue, alpha));
+		graphics.fillRect(0, 0, 100, 100);
+		graphics.dispose();
+		return new Image(bufferedImage);
+	}
+	
+	public static Image getImageKeyForClassification(Classification classification) {
+		Image key = getImageForColor(classification.getRed(), classification.getGreen(), classification.getBlue(), classification.getAlpha());
+		BufferedImage bufferedImage = key.getAsBufferedImage();
+		Graphics graphics = bufferedImage.getGraphics();
+		graphics.setColor(Color.black);
+		graphics.setFont(new Font("Serif", Font.BOLD, 10));
+		FontMetrics fontMetrics = graphics.getFontMetrics();
+		int stringWidth = 
+			fontMetrics.stringWidth(classification.toString());
+		int x = key.getWidth() - stringWidth;
+		int y = fontMetrics.getHeight();
+		graphics.drawString(classification.toString(), x, y);
+		graphics.dispose();
+		//graphics.drawChars(classification.toString().toCharArray(), key.getMinX(), classification.toString().toCharArray().length, 0, 50);
+		return new Image(bufferedImage);
+	}
+	
+	public static Image getArableClassificationKey() {
+		return getImageKeyForClassification(Classification.ARABLE);
+	}
+
+	public static Image getDevelopedClassificationKey() {
+		return getImageKeyForClassification(Classification.DEVELOPED);
+	}
+
+	public static Image getDesertClassificationKey() {
+		return getImageKeyForClassification(Classification.DESERT);
+	}
+
+	public static Image getForestClassificationKey() {
+		return getImageKeyForClassification(Classification.FOREST);
+	}
+
+	public static Image getUnknownClassificationKey() {
+		return getImageKeyForClassification(Classification.UNKNOWN);
+	}
+	
+	public static Image getImageForRegion(File imageDirectory, int columns, int rows) {
+		List<File> imageFiles = FileUtil.getFiles(imageDirectory.getAbsolutePath());
+		Collections.sort(imageFiles, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+		// Assume all images are the same size and date
+		Image firstImage = new Image(imageFiles.get(0));
+		Date regionImageDate = firstImage.getDate();
+		int regionImageWidth = firstImage.getWidth() * columns;
+		int regionImageHeight = firstImage.getHeight() * rows;
+		BufferedImage bufferedImage = 
+			new BufferedImage(regionImageWidth, regionImageHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = bufferedImage.getGraphics();
+		int column = 0;
+		int row = 0;
+		// Start at top right (NE) and move down, then left
+		// Last image is lower left (SW)
+		for(int index = 0; index < imageFiles.size(); index++) {
+			if(rows <= index && index % rows == 0) {
+				// Increment column (left) and reset row
+				column ++; 
+				row = 0;
+			}
+			Image image = new Image(imageFiles.get(index));
+			int x = firstImage.getWidth() * (columns - 1 - column);
+			int y = image.getHeight() * row;
+			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
+			row++;
+		}
+		return new Image(bufferedImage, regionImageDate);
+	}
+
+	public static Image getImageForRegion(List<Image> images, int columns, int rows) {
+		// Assume all images are the same size and date
+		Image firstImage = images.get(0);
+		Date regionImageDate = firstImage.getDate();
+		int regionImageWidth = firstImage.getWidth() * columns;
+		int regionImageHeight = firstImage.getHeight() * rows;
+		BufferedImage bufferedImage = 
+			new BufferedImage(regionImageWidth, regionImageHeight, BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = bufferedImage.getGraphics();
+		int column = 0;
+		int row = 0;
+		// Start at top right (NE) and move down, then left
+		// Last image is lower left (SW)
+		for(int index = 0; index < images.size(); index++) {
+			if(rows <= index && index % rows == 0) {
+				// Increment column (left) and reset row
+				column ++; 
+				row = 0;
+			}
+			Image image = images.get(index);
+			int x = firstImage.getWidth() * (columns - 1 - column);
+			int y = image.getHeight() * row;
+			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
+			row++;
+		}
+		return new Image(bufferedImage, regionImageDate);
 	}
 	
 	/**
@@ -129,7 +260,7 @@ public class Image {
 	public Image(String imageFileName) {
 		this(new File(imageFileName));
 	}
-
+	
 	/**
 	 * Constructor for general use.
 	 * @param imageFileName
@@ -163,6 +294,7 @@ public class Image {
 	 */
 	public Image(Image image, Date date) {
 		this(image);
+		this.date = date;
 	}
 
 	/**
@@ -206,6 +338,7 @@ public class Image {
 	 */
 	private Image(RenderedImage renderedImage) {
 		setDefaults();
+		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
 		if(skipChop(renderedImage))
 			this.renderedImage = renderedImage;
 		else {
@@ -224,10 +357,107 @@ public class Image {
 	 */
 	private Image(RenderedImage renderedImage, Date date) {
 		setDefaults();
-		this.renderedImage = 
-			centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
+		if(skipChop(renderedImage))
+			this.renderedImage = renderedImage;
+		else {
+			croppedWidth = getCroppedWidth(renderedImage);
+			croppedHeight = getCroppedHeight(renderedImage);
+			this.renderedImage = 
+				centeredCrop(renderedImage, croppedWidth, croppedHeight);
+		}
 		setDimensions(this.renderedImage);
 		this.date = date;
+	}
+	
+	public Image getClassificationHeatMap() throws Exception {
+		if(classificationHeatMap == null) {
+			BufferedImage bufferedImage = getAsBufferedImage();
+			Graphics graphics = bufferedImage.getGraphics();
+			for(Image choppedImage: getChoppedImages()) {
+				int red = choppedImage.getClassification().getRed();
+				int green = choppedImage.getClassification().getGreen();
+				int blue = choppedImage.getClassification().getBlue();
+				int alpha = choppedImage.getClassification().getAlpha();
+				graphics.setColor(new Color(red, green, blue, alpha));
+				int rectX = choppedImage.getMinX()-minX;
+				int rectY = choppedImage.getMinY()-minY;
+				graphics.fillRect(rectX, rectY, choppedImage.getWidth(),
+					choppedImage.getHeight());
+				graphics.setColor(Color.black);
+				graphics.setFont(new Font("Serif", Font.BOLD, 10));
+				FontMetrics fontMetrics = graphics.getFontMetrics();
+				int stringWidth = 
+					fontMetrics.stringWidth(choppedImage.getClassification().toString());
+				int x = rectX + choppedImage.getWidth() - stringWidth;
+				int y = rectY + fontMetrics.getHeight();
+				graphics.drawString(choppedImage.getClassification().toString(), x, y);
+			}
+			graphics.dispose();
+			classificationHeatMap = new Image(bufferedImage);
+		}
+		return classificationHeatMap;
+	}
+	
+	public Image getComparisonImage(Image fromImage) throws Exception {
+		BufferedImage bufferedImage = getAsBufferedImage();
+		Graphics graphics = bufferedImage.getGraphics();
+		for(int index=0; index<getChoppedImages().size(); index++) {
+			Image toImage = getChoppedImages().get(index);
+			Classification toImageClassification = 
+				toImage.getClassification();
+			Classification fromImageClassification = 
+				fromImage.getChoppedImages().get(index).getClassification();
+			if(!toImageClassification.equals(
+					fromImageClassification)) {
+//				int fromImageRed = 
+//					fromImageClassification.getRed();
+//				int fromImageGreen = 
+//					fromImageClassification.getGreen();
+//				int fromImageBlue = 
+//					fromImageClassification.getBlue();
+//				int fromImageAlpha = 
+//					fromImageClassification.getAlpha();
+//				graphics.setColor(new Color(fromImageRed, 
+//						fromImageGreen, fromImageBlue, fromImageAlpha));
+//				int fromImageRectX = fromImage.getMinX()-getMinX();
+//				int fromImageRectY = fromImage.getMinY()-getMinY();
+//				graphics.fillRect(fromImageRectX, fromImageRectY, 
+//					toImage.getWidth()/2, toImage.getHeight());
+//				int toImageRed = 
+//					toImageClassification.getRed();
+//				int toImageGreen = 
+//					toImageClassification.getGreen();
+//				int toImageBlue = 
+//					toImageClassification.getBlue();
+//				int toImageAlpha = 
+//					toImageClassification.getAlpha();
+//				graphics.setColor(new Color(toImageRed, 
+//					toImageGreen, toImageBlue, toImageAlpha));
+//				int toImageRectX = fromImageRectX+(toImage.getWidth()/2);
+//				int toImageRectY = fromImageRectY;
+//				graphics.fillRect(toImageRectX, toImageRectY, 
+//					toImage.getWidth()/2, toImage.getHeight());
+				graphics.setColor(new Color(255, 0, 0, 63));
+				int rectX = toImage.getMinX()-getMinX();
+				int rectY = toImage.getMinY()-getMinY();
+				graphics.fillRect(rectX, rectY, toImage.getWidth(), 
+					toImage.getHeight());
+				graphics.setColor(Color.black);
+				graphics.setFont(new Font("Serif", Font.BOLD, 10));
+				FontMetrics fontMetrics = graphics.getFontMetrics();
+				String fromToString = fromImageClassification.toString() + 
+					" to " + toImageClassification.toString();
+				int stringWidth = fontMetrics.stringWidth(fromToString);
+				int stringHeight = fontMetrics.getHeight();
+//				int stringX = fromImageRectX + toImage.getWidth()/2 - stringWidth/2;
+//				int stringY = fromImageRectY + toImage.getHeight()/2 - stringHeight/2;
+				int stringX = rectX + toImage.getWidth()/2 - stringWidth/2;
+				int stringY = rectY + toImage.getHeight()/2 - stringHeight/2;
+				graphics.drawString(fromToString, stringX, stringY);
+			}
+		}
+		return new Image(bufferedImage);
 	}
 	
 	/**
@@ -240,6 +470,20 @@ public class Image {
 			classification = 
 				TrainedModel.getTrainedModel().classifyImage(this);
 		return classification;
+	}
+	
+	public Image getClassificationOverlay() throws Exception {
+		BufferedImage bufferedImage = getAsBufferedImage();
+		Graphics graphics = bufferedImage.getGraphics();
+		int red = getClassification().getRed();
+		int green = getClassification().getGreen();
+		int blue = getClassification().getBlue();
+		int alpha = getClassification().getAlpha();
+		graphics.setColor(new Color(red, green, blue, alpha));
+//		graphics.setColor(new Color(255, 0, 0, 63));
+		graphics.fillRect(0, 0, width, height);
+		graphics.dispose();
+		return new Image(bufferedImage);
 	}
 	
 	/**
@@ -315,13 +559,13 @@ public class Image {
 		y = image.getMinY() + y;
 //		return image.getRenderedImage().getData().
 //			getPixels(x, y, 0, 0, (float[])null)[0];
-		return image.getRenderedImage().getData().getSampleFloat(x, y, b);
+		return image.renderedImage.getData().getSampleFloat(x, y, b);
 	}
 	
 	public float getSample(int x, int y, int b) {
 		x = getMinX() + x;
 		y = getMinY() + y;
-		return getRenderedImage().getData().getSampleFloat(x, y, b);
+		return renderedImage.getData().getSampleFloat(x, y, b);
 	}
 	
 	/**
@@ -344,6 +588,30 @@ public class Image {
 		choppedRows = (int) (croppedHeight/choppedHeight);
 		return Collections.unmodifiableList(
 			chop(this, choppedColumns, choppedRows));
+	}
+	
+	/**
+	 * Returns an Image that is the greyscale representation 
+	 * of the image.
+	 * @return
+	 */
+	public Image getGreyscaleImage() {
+		if(greyscaleImage == null) {
+			ColorModel cm = 
+				new ComponentColorModel(ColorSpace.getInstance(
+					ColorSpace.CS_GRAY), new int[] {8}, false, false, 
+						Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+			ParameterBlock greyscalePB = 
+				(new ParameterBlock()).addSource(renderedImage).add(cm);
+			ImageLayout greyscaleLayout = 
+				(new ImageLayout()).setMinX(minX).
+					setMinY(minY).setColorModel(cm);
+			RenderingHints greyscaleRH = 
+				new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
+			greyscaleImage = 
+				new Image(JAI.create("ColorConvert", greyscalePB, greyscaleRH));
+		}
+		return greyscaleImage;
 	}
 	
 	/**
@@ -372,7 +640,7 @@ public class Image {
 	public Image getDiscreteCosineTransform() {
 		if (discreteCosineTransform == null) {
 			ParameterBlock dctPB = 
-				(new ParameterBlock()).addSource(this.getGreyscaleImage());
+				(new ParameterBlock()).addSource(getGreyscaleImage().renderedImage);
 			discreteCosineTransform = 
 				new Image(JAI.create("dct", dctPB, null));
 		}
@@ -397,6 +665,23 @@ public class Image {
 		return gradientMagnitude;
 	}
 	
+	public List<float[]> getSURF() {
+		if(surf == null) {
+			surf = Lists.newArrayList();
+			ImageFloat32 imageFloat32 = getGreyscaleImage().getImageFloat32();
+			DescribePointSurf<ImageFloat32> describePointSurf = 
+				new DescribePointSurf<ImageFloat32>();
+			describePointSurf.setImage(imageFloat32);
+			for(int i = 0; i < 360; i+=360) {
+				double radians = (Math.PI/(double)180)*i;
+				SurfFeature surfFeature = 
+					describePointSurf.describe(width/2, height/2, width, radians, null);
+				surf.add(doubleArrayToFloatArray(surfFeature.getValue()));
+			}
+		}
+		return surf;
+	}
+	
 	/**
 	 * Returns an Image that represents a convolution along given data.
 	 * @param width
@@ -412,6 +697,13 @@ public class Image {
  
 		return new Image((PlanarImage) JAI.create("convolve", renderedImage, 
 			new KernelJAI(width, height, data), convolutionRH));
+	}
+	
+	public Image overlay(Image image) {
+		ParameterBlock overlayParams = 
+			new ParameterBlock().addSource(renderedImage).
+				addSource(image.renderedImage);
+		return new Image(JAI.create("overlay", overlayParams));
 	}
 	
 	/**
@@ -442,34 +734,65 @@ public class Image {
 	 * Persist the image to a file with the given filename.
 	 * @param filename
 	 */
-	public void persist(String filename) {
+	public void persist(String fileName) {
 		ParameterBlock fileStoreParams = (new ParameterBlock()).
-			addSource(renderedImage).add(filename).add("PNG");
+			addSource(renderedImage).add(fileName).add("PNG");
 		JAI.create("filestore", fileStoreParams);
 	}
 	
-	public BufferedImage convertToBufferedImage() {
-		if(bufferedImage == null) {
-			if(renderedImage instanceof BufferedImage)
-				bufferedImage = (BufferedImage) renderedImage;
-			else if(renderedImage instanceof PlanarImage)
-				bufferedImage = 
-					((PlanarImage) renderedImage).getAsBufferedImage();
-			else {
-				ColorModel colorModel = renderedImage.getColorModel();
-				WritableRaster raster = 
-					colorModel.createCompatibleWritableRaster(width, height);
-				Hashtable<String, Object> properties = 
-					new Hashtable<String, Object>();
-				for (String key: renderedImage.getPropertyNames()) {
-					properties.put(key, renderedImage.getProperty(key));
-				}
-				bufferedImage = 
-					new BufferedImage(colorModel, raster, 
-						colorModel.isAlphaPremultiplied(), properties);
+	public InputStream getAsInputStream() throws Exception {
+		InputStream inputStream = new ByteArrayInputStream(getBytes());
+		return inputStream;
+	}
+	
+	public byte[] getBytes() throws Exception {
+		ByteArrayOutputStream byteArrayOutputStream = 
+			new ByteArrayOutputStream();
+		ImageIO.write(getAsBufferedImage(), "png", byteArrayOutputStream);
+		byteArrayOutputStream.flush();
+		byteArrayOutputStream.close();
+		return byteArrayOutputStream.toByteArray();
+	}
+	
+	public BufferedImage getAsBufferedImage() {
+		BufferedImage bufferedImage;
+		if(renderedImage instanceof BufferedImage)
+			bufferedImage = (BufferedImage) renderedImage;
+		else if(renderedImage instanceof PlanarImage)
+			bufferedImage = 
+				getAsPlanarImage().getAsBufferedImage();
+		else {
+			ColorModel colorModel = renderedImage.getColorModel();
+			WritableRaster raster = 
+				colorModel.createCompatibleWritableRaster(width, height);
+			Hashtable<String, Object> properties = 
+				new Hashtable<String, Object>();
+			for (String key: renderedImage.getPropertyNames()) {
+				properties.put(key, renderedImage.getProperty(key));
 			}
+			bufferedImage = 
+				new BufferedImage(colorModel, raster, 
+					colorModel.isAlphaPremultiplied(), properties);
 		}
 		return bufferedImage;
+	}
+	
+	public PlanarImage getAsPlanarImage() {
+		return PlanarImage.wrapRenderedImage(renderedImage);
+	}
+	
+	private ImageFloat32 getImageFloat32() {
+		if(imageFloat32 == null)
+			imageFloat32 = 
+				ConvertBufferedImage.convertFrom(getAsBufferedImage(), (ImageFloat32) null);
+		return imageFloat32;
+	}
+	
+	private float[] doubleArrayToFloatArray(double[] doubles) {
+		List<Float> floats = Lists.newArrayList();
+		for(Double dbl: doubles)
+			floats.add(dbl.floatValue());
+		return Floats.toArray(floats);
 	}
 	
 	/**
@@ -487,38 +810,6 @@ public class Image {
 			new Image(JAI.create("gradientmagnitude", renderedImage,
 				horizontalKernel, verticalKernel));
 		return gradientMagnitude;
-	}
-	
-	/**
-	 * Returns the RenderedImage.
-	 * @return
-	 */
-	private RenderedImage getRenderedImage() {
-		return renderedImage;
-	}
-	
-	/**
-	 * Returns a RenderedImage that is the greyscale representation 
-	 * of the image.
-	 * @return
-	 */
-	private RenderedImage getGreyscaleImage() {
-		if(greyscaleImage == null) {
-			ColorModel cm = 
-				new ComponentColorModel(ColorSpace.getInstance(
-					ColorSpace.CS_GRAY), new int[] {8}, false, false, 
-						Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
-			ParameterBlock greyscalePB = 
-				(new ParameterBlock()).addSource(renderedImage).add(cm);
-			ImageLayout greyscaleLayout = 
-				(new ImageLayout()).setMinX(minX).
-					setMinY(minY).setColorModel(cm);
-			RenderingHints greyscaleRH = 
-				new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
-			greyscaleImage = 
-				JAI.create("ColorConvert", greyscalePB, greyscaleRH);
-		}
-		return greyscaleImage;
 	}
 	
 	/**
@@ -542,16 +833,16 @@ public class Image {
 	}
 	
 	private float getCroppedWidth(RenderedImage renderedImage) {
-		if (croppedWidth > renderedImage.getWidth())
-			croppedWidth = 
-				(float) (Math.floor(renderedImage.getWidth()/(double)choppedWidth)*choppedWidth);
+//		if (croppedWidth > renderedImage.getWidth())
+		croppedWidth = 
+			(float) (Math.floor(renderedImage.getWidth()/(double)choppedWidth)*choppedWidth);
 		return croppedWidth;
 	}
 	
 	private float getCroppedHeight(RenderedImage renderedImage) {
-		if (croppedHeight > renderedImage.getHeight())
-			croppedHeight = 
-				(float) (Math.floor(renderedImage.getHeight()/(double)choppedHeight)*choppedHeight);
+//		if (croppedHeight > renderedImage.getHeight())
+		croppedHeight = 
+			(float) (Math.floor(renderedImage.getHeight()/(double)choppedHeight)*choppedHeight);
 		return croppedHeight;
 	}
 	
@@ -681,8 +972,8 @@ public class Image {
 	
 	private void setDefaults() {
 		downSampleSquareRoot = Configuration.DOWN_SAMPLE_SQUARE_ROOT;
-		croppedWidth = Configuration.CROPPED_WIDTH;
-		croppedHeight = Configuration.CROPPED_HEIGHT;
+//		croppedWidth = Configuration.CROPPED_WIDTH;
+//		croppedHeight = Configuration.CROPPED_HEIGHT;
 		choppedWidth = Configuration.CHOPPED_WIDTH;
 		choppedHeight = Configuration.CHOPPED_HEIGHT;
 //		choppedColumns = Configuration.CHOPPED_COLUMNS;

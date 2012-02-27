@@ -3,16 +3,20 @@
  */
 package edu.nyu.cs.sysproj.arability;
 
-import static edu.nyu.cs.sysproj.arability.TestUtility.*;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedArableTestingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedDesertTestingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedDevelopedTestingImageFiles;
+import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedForestTestingImageFiles;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.arability.Classification;
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.TrainedModel;
+import com.google.common.collect.Lists;
+
+import edu.nyu.cs.sysproj.arability.Features.FeatureSet;
 
 /**
  * @author Scot Dalton
@@ -23,9 +27,11 @@ public class TrainedModelTest {
 	public void testTrainedModel() throws Exception {
 		String classifierName = "weka.classifiers.trees.J48";
 		String[] classifierOptions = {};
+//		FeatureSet[] featureSets = Features.DEFAULT_FEATURE_SET;
+		List<FeatureSet> featureSets = Lists.newArrayList(FeatureSet.MEAN_PIXELS, FeatureSet.SURF);
+		TrainedModel.reset(classifierName, classifierOptions, featureSets);
 		long startGet = Calendar.getInstance().getTimeInMillis();
-		TrainedModel trainedModel = 
-			TrainedModel.getTrainedModel(classifierName, classifierOptions);
+		TrainedModel trainedModel = TrainedModel.getTrainedModel();
 		long endGet = Calendar.getInstance().getTimeInMillis();
 		System.out.println((endGet - startGet)/(double)1000);
 //		long startRefresh = Calendar.getInstance().getTimeInMillis();

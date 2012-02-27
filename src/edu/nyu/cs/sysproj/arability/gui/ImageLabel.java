@@ -18,7 +18,7 @@ public class ImageLabel extends JLabel {
 	private static final long serialVersionUID = -6916284700645272240L;
 
 	public ImageLabel(Image image) {
-		super(new ImageIcon(image.convertToBufferedImage()));
+		super(new ImageIcon(image.getAsBufferedImage()));
 	}
 	
 	public ImageLabel(File file) {

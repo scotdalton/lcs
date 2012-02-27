@@ -3,6 +3,12 @@
  */
 package edu.nyu.cs.sysproj.arability.utility;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+import edu.nyu.cs.sysproj.arability.Features.FeatureSet;
+
 /**
  * Utilility class for defaults, etc.
  * 
@@ -70,19 +76,22 @@ public class Configuration {
 	public final static double CLOUDY_MEAN_THRESHOLD = 230.0;
 	public final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
 	public final static double BRIGHT_MEAN_THRESHOLD = 200.0;
-	public final static float CROPPED_WIDTH = 1500;
+	public final static float CROPPED_WIDTH = 1000;
 	public final static float CROPPED_HEIGHT = 1000;
 //	public final static int CHOPPED_COLUMNS = 10;
 //	public final static int CHOPPED_ROWS = 10;
 	public final static int CHOPPED_WIDTH = 100;
 	public final static int CHOPPED_HEIGHT = 100;
 //	public final static float DOWN_SAMPLE_SIZE = (float) 0.125;
-	public final static int DOWN_SAMPLE_SQUARE_ROOT = 5;
+	public final static int DOWN_SAMPLE_SQUARE_ROOT = 8;
 	public final static String CLASSIFIER = 
-		"weka.classifiers.bayes.NaiveBayes";
+		"weka.classifiers.lazy.IBk";
 	public final static String[] CLASSIFIER_OPTIONS = {};
-	public final static String CLASSIFIER_DIRECTORY = 
-		TMP_BASE_PATH+"/arability/classifier";
-	public final static String INSTANCES_DIRECTORY = 
-		TMP_BASE_PATH+"/arability/instances";
+	public final static List<FeatureSet> DEFAULT_FEATURE_SET = 
+//		Lists.newArrayList(FeatureSet.MEAN_PIXELS, FeatureSet.SURF);
+		Lists.newArrayList(FeatureSet.MEAN_PIXELS, FeatureSet.GRADIENT_MAGNITUDE);
+	public final static String SERIALIZATION_DIRECTORY = 
+		TMP_BASE_PATH+".arability";
+	public final static float LONGITUDE_STEP_FACTOR = (float) 0.009765625;
+	public final static float LATITUDE_STEP_FACTOR = (float) 0.005;
 }

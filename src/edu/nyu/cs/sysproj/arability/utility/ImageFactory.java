@@ -25,12 +25,12 @@ import edu.nyu.cs.sysproj.arability.utility.kml.Placemark;
  *
  */
 public class ImageFactory {
-	public static Image getImage(Kml kml, int cropFactor, 
+	public static Image getImage(Kml kml, int xCropFactor, int yCropFactor, 
 			int waitForKml) throws Exception {
-		return getImage(kml, cropFactor, waitForKml, null);
+		return getImage(kml, xCropFactor, yCropFactor, waitForKml, null);
 	}
 	
-	public static Image getImage(Kml kml, int cropFactor, 
+	public static Image getImage(Kml kml, int xCropFactor, int yCropFactor, 
 			int waitForKml, Date date) throws Exception {
 		Image image = null;
 		String kmlFileName = TMP_KML_DIRECTORY+"/kml.kml";
@@ -38,25 +38,25 @@ public class ImageFactory {
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		googleEarth.launch();
 		googleEarth.openKml(kmlFileName, waitForKml);
-		image = Image.takeScreenShot(cropFactor, date, 4000);
+		image = Image.takeScreenShot(xCropFactor, yCropFactor, date, 4000);
 		googleEarth.destroy();
 		return image;
 	}
 	
 	public static List<Image> getImagesForDates(List<Date> dates, 
 			float longitude, float latitude, String address, 
-			int cropFactor) throws Exception {
-		return getImagesForDates(dates, longitude, latitude, address, cropFactor, waitForKml()); 
+			int xCropFactor, int yCropFactor) throws Exception {
+		return getImagesForDates(dates, longitude, latitude, address, xCropFactor, yCropFactor, waitForKml()); 
 	}
 	
 	public static List<Image> getImagesForDates(List<Date> dates, 
-			float longitude, float latitude, String address, 
-			int cropFactor, int waitTime) throws Exception {
+			double longitude, double latitude, String address, 
+			int xCropFactor, int yCropFactor, int waitTime) throws Exception {
 		List<Image> images = Lists.newArrayList();
 		for(Date date: dates)
 			images.add(getImage(
 				getKml(date, longitude, latitude, address), 
-					cropFactor, waitTime, date));
+					xCropFactor, yCropFactor, waitTime, date));
 		return images;
 	}
 	
@@ -64,7 +64,7 @@ public class ImageFactory {
 		return 15000;
 	}
 	
-	private static Kml getKml(Date date, float longitude, float latitude, String address) {
+	private static Kml getKml(Date date, double longitude, double latitude, String address) {
 		if (address == null)
 			address = longitude + ", " + latitude;
 		SimpleDateFormat dateFormat = 

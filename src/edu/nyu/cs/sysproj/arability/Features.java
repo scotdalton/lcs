@@ -14,6 +14,7 @@ import edu.nyu.cs.sysproj.arability.features.DCTDownSample;
 import edu.nyu.cs.sysproj.arability.features.Feature;
 import edu.nyu.cs.sysproj.arability.features.GradientMagnitude;
 import edu.nyu.cs.sysproj.arability.features.MeanPixel;
+import edu.nyu.cs.sysproj.arability.features.SURF;
 import edu.nyu.cs.sysproj.arability.utility.Configuration;
 
 
@@ -22,21 +23,23 @@ import edu.nyu.cs.sysproj.arability.utility.Configuration;
  *
  */
 public class Features {
-	private static Map<FeatureSet[], List<Feature>> features;
+	private static Map<List<FeatureSet>, List<Feature>> features;
 	private static int BANDS = 3;
 	private static int DCT_HEIGHT = Configuration.CHOPPED_HEIGHT;
 	private static int DCT_WIDTH = Configuration.CHOPPED_WIDTH;
 	private static int DCT_DOWN_SAMPLE_HEIGHT = 
-		Configuration.DOWN_SAMPLE_SQUARE_ROOT^2;
+		Configuration.DOWN_SAMPLE_SQUARE_ROOT;
 	private static int DCT_DOWN_SAMPLE_WIDTH = 
-		Configuration.DOWN_SAMPLE_SQUARE_ROOT^2;
+		Configuration.DOWN_SAMPLE_SQUARE_ROOT;
 	private static int GRADIENT_MAGNITUDE_HEIGHT= 
 		Configuration.CHOPPED_HEIGHT;
 	private static int GRADIENT_MAGNITUDE_WIDTH = 
 		Configuration.CHOPPED_WIDTH;
-	private static int GRADIENT_MAGNITUDE_BANDS = 3;
-	public static FeatureSet[] DEFAULT_FEATURE_SET = 
-		{FeatureSet.MEAN_PIXELS, FeatureSet.DCT};
+	private static int GRADIENT_MAGNITUDE_BANDS = 0;
+	private static int NUM_SURFS = 1;
+	private static int SURF_LENGTH = 64;
+	public static List<FeatureSet> DEFAULT_FEATURE_SET = 
+		Configuration.DEFAULT_FEATURE_SET;
 	public enum FeatureSet{
 		MEAN_PIXELS {
 			@Override
@@ -56,7 +59,7 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int x=0; x < DCT_WIDTH; x++)
+				for(int x=0; x < DCT_WIDTH; x++) {
 					for(int y=0; y < DCT_HEIGHT; y++) {
 						Feature feature = new DCT();
 						Map<String, Object> options = Maps.newHashMap();
@@ -65,6 +68,7 @@ public class Features {
 						feature.setOptions(options);
 						features.add(feature);
 					}
+				}
 				return features;
 			}
 		}, 
@@ -72,7 +76,7 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int x=0; x < DCT_DOWN_SAMPLE_WIDTH; x++)
+				for(int x=0; x < DCT_DOWN_SAMPLE_WIDTH; x++) {
 					for(int y=0; y < DCT_DOWN_SAMPLE_HEIGHT; y++) {
 						Feature feature = new DCTDownSample();
 						Map<String, Object> options = Maps.newHashMap();
@@ -81,6 +85,7 @@ public class Features {
 						feature.setOptions(options);
 						features.add(feature);
 					}
+				}
 				return features;
 			}
 		}, 
@@ -88,8 +93,8 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int x=0; x < GRADIENT_MAGNITUDE_WIDTH; x++)
-					for(int y=0; y < GRADIENT_MAGNITUDE_HEIGHT; y++)
+				for(int x=0; x < GRADIENT_MAGNITUDE_WIDTH; x++) {
+					for(int y=0; y < GRADIENT_MAGNITUDE_HEIGHT; y++) {
 						for(int b=0; b < GRADIENT_MAGNITUDE_BANDS; b++) {
 							Feature feature = new GradientMagnitude();
 							Map<String, Object> options = Maps.newHashMap();
@@ -99,6 +104,25 @@ public class Features {
 							feature.setOptions(options);
 							features.add(feature);
 						}
+					}
+				}
+				return features;
+			}
+		}, 
+		SURF {
+			@Override
+			public List<Feature> getFeatures() {
+				List<Feature> features = Lists.newArrayList();
+				for(int a=0; a < NUM_SURFS; a++) {
+					for(int i=0; i < SURF_LENGTH; i++) {
+						Feature feature = new SURF();
+						Map<String, Object> options = Maps.newHashMap();
+						options.put("a", a);
+						options.put("i", i);
+						feature.setOptions(options);
+						features.add(feature);
+					}
+				}
 				return features;
 			}
 		};
@@ -106,11 +130,7 @@ public class Features {
 		public abstract List<Feature> getFeatures();
 	};
 	
-	public static List<Feature> getFeatures() {
-		return getFeatures(DEFAULT_FEATURE_SET);
-	}
-	
-	public static List<Feature> getFeatures(FeatureSet... featureSets) {
+	public static List<Feature> getFeatures(List<FeatureSet> featureSets) {
 		if(features == null)
 			features = Maps.newHashMap();
 		if(!features.containsKey(featureSets)) {
@@ -122,11 +142,7 @@ public class Features {
 		return features.get(featureSets);
 	}
 	
-	public static float[] getFeatureValuesForImage(Image image) {
-		return getFeatureValuesForImage(image, DEFAULT_FEATURE_SET);
-	}
-	
-	public static float[] getFeatureValuesForImage(Image image, FeatureSet... featureSets) {
+	public static float[] getFeatureValuesForImage(Image image, List<FeatureSet> featureSets) {
 		List<Feature> features = Lists.newArrayList();
 		for(Feature feature : getFeatures(featureSets)) {
 			feature.setValue(image);

@@ -18,6 +18,8 @@ import com.google.common.collect.Lists;
  *
  */
 public abstract class GoogleEarth {
+	public final static double SCALE = 0.000786163522;
+	public final static double ALTITUDE = 1000.0;
 	public final long LAUNCH_WAIT = 15000;
 	public final long OPEN_KML_WAIT = 15000;
 	private List<String> openKmlCommand;
