@@ -58,7 +58,7 @@ public class TrainedModelTest {
 			Image image = new Image(file);
 			Classification classification = 
 				trainedModel.classifyImage(image);
-			if(!classification.equals(Classification.ARABLE)) {
+			if(!classification.equals(Classification.CROPLAND)) {
 				incorrectArableCount ++;
 				System.out.println(file.getName()+": "+classification);
 				commands[3] = file.getAbsolutePath();

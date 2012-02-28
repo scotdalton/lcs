@@ -31,7 +31,7 @@ import com.google.common.collect.Lists;
  * 
  */
 public enum Classification {
-	ARABLE(true, CURATED_ARABLE_TRAINING_IMAGE_PATH, CURATED_ARABLE_TESTING_IMAGE_PATH) {
+	CROPLAND(true, CURATED_ARABLE_TRAINING_IMAGE_PATH, CURATED_ARABLE_TESTING_IMAGE_PATH) {
 		@Override
 		int getRed() {
 			return 0;

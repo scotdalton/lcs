@@ -176,7 +176,7 @@ public class Image {
 	}
 	
 	public static Image getArableClassificationKey() {
-		return getImageKeyForClassification(Classification.ARABLE);
+		return getImageKeyForClassification(Classification.CROPLAND);
 	}
 
 	public static Image getDevelopedClassificationKey() {

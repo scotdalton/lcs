@@ -60,7 +60,7 @@ public class UnknownImage extends Image {
 		for(Image choppedImage : choppedImages) {
 			Classification classification = 
 				choppedImage.getClassification();
-			if(classification.equals(Classification.ARABLE)) {
+			if(classification.equals(Classification.CROPLAND)) {
 				arableCount++;
 			} else if (classification.equals(Classification.DEVELOPED)) {
 				developedCount++;
