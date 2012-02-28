@@ -18,7 +18,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 /**
- * ArabilityClassification defines the set of classifications we're 
+ * Classification defines the set of classifications we're 
  * working with.
  * 
  * @author Scot Dalton
