@@ -58,15 +58,15 @@ public class UnknownImage extends Image {
 		int forestCount = 0;
 		List<Image> choppedImages = getChoppedImages();
 		for(Image choppedImage : choppedImages) {
-			LandClassification landClassification = 
+			Classification classification = 
 				choppedImage.getClassification();
-			if(landClassification.equals(LandClassification.ARABLE)) {
+			if(classification.equals(Classification.ARABLE)) {
 				arableCount++;
-			} else if (landClassification.equals(LandClassification.DEVELOPED)) {
+			} else if (classification.equals(Classification.DEVELOPED)) {
 				developedCount++;
-			} else if (landClassification.equals(LandClassification.DESERT)) {
+			} else if (classification.equals(Classification.DESERT)) {
 				desertCount++;
-			} else if (landClassification.equals(LandClassification.FOREST)) {
+			} else if (classification.equals(Classification.FOREST)) {
 				forestCount++;
 			}
 		}

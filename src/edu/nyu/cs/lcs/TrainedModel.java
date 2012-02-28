@@ -87,7 +87,7 @@ public class TrainedModel {
 	 * @return 
 	 * @throws Exception 
 	 */
-	public LandClassification classifyImage(Image image) throws Exception {
+	public Classification classifyImage(Image image) throws Exception {
 		float[] values = Features.getFeatureValuesForImage(image, featureSets);
 		Instance instance = new Instance(attributes.size());
 		for(int i=0; i<values.length; i++){
@@ -106,8 +106,8 @@ public class TrainedModel {
 			classifier.distributionForInstance(instance);
 		for(int i=0; i<distributions.length; i++)
 			if(distributions[i] > CONFIDENCE_THRESHOLD)
-				return LandClassification.values()[i];
-		return LandClassification.UNKNOWN;
+				return Classification.values()[i];
+		return Classification.UNKNOWN;
 	}
 	
 	/**
@@ -163,9 +163,9 @@ public class TrainedModel {
 		@Override
 		protected List<Image> getKnownImages() {
 			List<Image> knownImages = Lists.newArrayList();
-			for(LandClassification landClassification : LandClassification.values())
-				if(landClassification.isTrainable()) 
-					knownImages.addAll(landClassification.getTestingImages());
+			for(Classification classification : Classification.values())
+				if(classification.isTrainable()) 
+					knownImages.addAll(classification.getTestingImages());
 			return knownImages;
 		}
 	}
@@ -185,10 +185,10 @@ public class TrainedModel {
 			for(int i=0; i<features.size(); i++)
 				attributes.addElement(new Attribute(features.get(i).toString(), i));
 			FastVector classifications = 
-				new FastVector(LandClassification.values().length-1);
-			for(LandClassification landClassification: LandClassification.values())
-				if(landClassification.isTrainable())
-					classifications.addElement(landClassification.toString());
+				new FastVector(Classification.values().length-1);
+			for(Classification classification: Classification.values())
+				if(classification.isTrainable())
+					classifications.addElement(classification.toString());
 			// Class attribute is last
 			attributes.addElement(new Attribute("classification", classifications, features.size()));
 			instancesFile = new File(serializationDirectory + "/" + 
@@ -227,9 +227,9 @@ public class TrainedModel {
 		
 		protected List<Image> getKnownImages() {
 			List<Image> knownImages = Lists.newArrayList();
-			for(LandClassification landClassification : LandClassification.values())
-				if(landClassification.isTrainable()) 
-					knownImages.addAll(landClassification.getTrainingImages());
+			for(Classification classification : Classification.values())
+				if(classification.isTrainable()) 
+					knownImages.addAll(classification.getTrainingImages());
 			return knownImages;
 		}
 		

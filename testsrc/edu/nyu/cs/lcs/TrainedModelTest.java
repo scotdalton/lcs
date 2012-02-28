@@ -17,7 +17,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.LandClassification;
+import edu.nyu.cs.lcs.Classification;
 import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.Features.FeatureSet;
 
@@ -56,11 +56,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect arable images:");
 		for(File file : getCuratedArableTestingImageFiles()) {
 			Image image = new Image(file);
-			LandClassification landClassification = 
+			Classification classification = 
 				trainedModel.classifyImage(image);
-			if(!landClassification.equals(LandClassification.ARABLE)) {
+			if(!classification.equals(Classification.ARABLE)) {
 				incorrectArableCount ++;
-				System.out.println(file.getName()+": "+landClassification);
+				System.out.println(file.getName()+": "+classification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}
@@ -68,11 +68,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect developed images:");
 		for(File file : getCuratedDevelopedTestingImageFiles()) {
 			Image image = new Image(file);
-			LandClassification landClassification = 
+			Classification classification = 
 				trainedModel.classifyImage(image);
-			if(!landClassification.equals(LandClassification.DEVELOPED)) {
+			if(!classification.equals(Classification.DEVELOPED)) {
 				incorrectDevelopedCount ++;
-				System.out.println(file.getName()+": "+landClassification);
+				System.out.println(file.getName()+": "+classification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}
@@ -80,11 +80,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect desert images:");
 		for(File file : getCuratedDesertTestingImageFiles()) {
 			Image image = new Image(file);
-			LandClassification landClassification = 
+			Classification classification = 
 				trainedModel.classifyImage(image);
-			if(!landClassification.equals(LandClassification.DESERT)) {
+			if(!classification.equals(Classification.DESERT)) {
 				incorrectDesertCount ++;
-				System.out.println(file.getName()+": "+landClassification);
+				System.out.println(file.getName()+": "+classification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}
@@ -92,11 +92,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect forest images:");
 		for(File file : getCuratedForestTestingImageFiles()) {
 			Image image = new Image(file);
-			LandClassification landClassification = 
+			Classification classification = 
 				trainedModel.classifyImage(image);
-			if(!landClassification.equals(LandClassification.FOREST)) {
+			if(!classification.equals(Classification.FOREST)) {
 				incorrectForestCount ++;
-				System.out.println(file.getName()+": "+landClassification);
+				System.out.println(file.getName()+": "+classification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}

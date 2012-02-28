@@ -30,7 +30,7 @@ import com.google.common.collect.Lists;
  * @author Scot Dalton
  * 
  */
-public enum LandClassification {
+public enum Classification {
 	ARABLE(true, CURATED_ARABLE_TRAINING_IMAGE_PATH, CURATED_ARABLE_TESTING_IMAGE_PATH) {
 		@Override
 		int getRed() {
@@ -141,7 +141,7 @@ public enum LandClassification {
 	private String trainingDirectory;
 	private String testingDirectory;
 	
-	private LandClassification(boolean isTrainable, 
+	private Classification(boolean isTrainable, 
 			String trainingDirectory, String testingDirectory) {
 		this.isTrainable = isTrainable;
 		this.trainingDirectory = trainingDirectory;

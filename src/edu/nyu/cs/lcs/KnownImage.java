@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class KnownImage extends Image {
 
-	public KnownImage(File imageFile, LandClassification classfication) {
+	public KnownImage(File imageFile, Classification classfication) {
 		super(imageFile, classfication);
 	}
 }
