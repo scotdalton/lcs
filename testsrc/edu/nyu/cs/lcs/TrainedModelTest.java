@@ -1,12 +1,12 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedArableTestingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedDesertTestingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedDevelopedTestingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getCuratedForestTestingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getCuratedArableTestingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getCuratedDesertTestingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getCuratedDevelopedTestingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getCuratedForestTestingImageFiles;
 
 import java.io.File;
 import java.util.Calendar;
@@ -16,7 +16,10 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import edu.nyu.cs.sysproj.arability.Features.FeatureSet;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.LandClassification;
+import edu.nyu.cs.lcs.TrainedModel;
+import edu.nyu.cs.lcs.Features.FeatureSet;
 
 /**
  * @author Scot Dalton
@@ -53,11 +56,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect arable images:");
 		for(File file : getCuratedArableTestingImageFiles()) {
 			Image image = new Image(file);
-			Classification classification = 
+			LandClassification landClassification = 
 				trainedModel.classifyImage(image);
-			if(!classification.equals(Classification.ARABLE)) {
+			if(!landClassification.equals(LandClassification.ARABLE)) {
 				incorrectArableCount ++;
-				System.out.println(file.getName()+": "+classification);
+				System.out.println(file.getName()+": "+landClassification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}
@@ -65,11 +68,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect developed images:");
 		for(File file : getCuratedDevelopedTestingImageFiles()) {
 			Image image = new Image(file);
-			Classification classification = 
+			LandClassification landClassification = 
 				trainedModel.classifyImage(image);
-			if(!classification.equals(Classification.DEVELOPED)) {
+			if(!landClassification.equals(LandClassification.DEVELOPED)) {
 				incorrectDevelopedCount ++;
-				System.out.println(file.getName()+": "+classification);
+				System.out.println(file.getName()+": "+landClassification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}
@@ -77,11 +80,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect desert images:");
 		for(File file : getCuratedDesertTestingImageFiles()) {
 			Image image = new Image(file);
-			Classification classification = 
+			LandClassification landClassification = 
 				trainedModel.classifyImage(image);
-			if(!classification.equals(Classification.DESERT)) {
+			if(!landClassification.equals(LandClassification.DESERT)) {
 				incorrectDesertCount ++;
-				System.out.println(file.getName()+": "+classification);
+				System.out.println(file.getName()+": "+landClassification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}
@@ -89,11 +92,11 @@ public class TrainedModelTest {
 		System.out.println("Incorrect forest images:");
 		for(File file : getCuratedForestTestingImageFiles()) {
 			Image image = new Image(file);
-			Classification classification = 
+			LandClassification landClassification = 
 				trainedModel.classifyImage(image);
-			if(!classification.equals(Classification.FOREST)) {
+			if(!landClassification.equals(LandClassification.FOREST)) {
 				incorrectForestCount ++;
-				System.out.println(file.getName()+": "+classification);
+				System.out.println(file.getName()+": "+landClassification);
 				commands[3] = file.getAbsolutePath();
 //				runtime.exec(commands);
 			}

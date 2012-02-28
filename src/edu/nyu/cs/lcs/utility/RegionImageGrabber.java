@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility;
+package edu.nyu.cs.lcs.utility;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.TMP_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.TMP_IMAGE_PATH;
 
 /**
  * @author Scot Dalton

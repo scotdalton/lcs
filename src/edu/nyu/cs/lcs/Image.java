@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import java.awt.AWTException;
 import java.awt.Color;
@@ -55,8 +55,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Floats;
 
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
-import edu.nyu.cs.sysproj.arability.utility.FileUtil;
+import edu.nyu.cs.lcs.utility.Configuration;
+import edu.nyu.cs.lcs.utility.FileUtil;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -89,7 +89,7 @@ public class Image {
 	private float choppedHeight;
 	private int choppedColumns;
 	private int choppedRows;
-	private Classification classification;
+	private LandClassification landClassification;
 	private Date date;
 	private static final float[] FREI_CHEN_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
 		1.414F, 0.0F, -1.414F, 1.0F, 0.0F, -1.0F };
@@ -158,41 +158,41 @@ public class Image {
 		return new Image(bufferedImage);
 	}
 	
-	public static Image getImageKeyForClassification(Classification classification) {
-		Image key = getImageForColor(classification.getRed(), classification.getGreen(), classification.getBlue(), classification.getAlpha());
+	public static Image getImageKeyForClassification(LandClassification landClassification) {
+		Image key = getImageForColor(landClassification.getRed(), landClassification.getGreen(), landClassification.getBlue(), landClassification.getAlpha());
 		BufferedImage bufferedImage = key.getAsBufferedImage();
 		Graphics graphics = bufferedImage.getGraphics();
 		graphics.setColor(Color.black);
 		graphics.setFont(new Font("Serif", Font.BOLD, 10));
 		FontMetrics fontMetrics = graphics.getFontMetrics();
 		int stringWidth = 
-			fontMetrics.stringWidth(classification.toString());
+			fontMetrics.stringWidth(landClassification.toString());
 		int x = key.getWidth() - stringWidth;
 		int y = fontMetrics.getHeight();
-		graphics.drawString(classification.toString(), x, y);
+		graphics.drawString(landClassification.toString(), x, y);
 		graphics.dispose();
 		//graphics.drawChars(classification.toString().toCharArray(), key.getMinX(), classification.toString().toCharArray().length, 0, 50);
 		return new Image(bufferedImage);
 	}
 	
 	public static Image getArableClassificationKey() {
-		return getImageKeyForClassification(Classification.ARABLE);
+		return getImageKeyForClassification(LandClassification.ARABLE);
 	}
 
 	public static Image getDevelopedClassificationKey() {
-		return getImageKeyForClassification(Classification.DEVELOPED);
+		return getImageKeyForClassification(LandClassification.DEVELOPED);
 	}
 
 	public static Image getDesertClassificationKey() {
-		return getImageKeyForClassification(Classification.DESERT);
+		return getImageKeyForClassification(LandClassification.DESERT);
 	}
 
 	public static Image getForestClassificationKey() {
-		return getImageKeyForClassification(Classification.FOREST);
+		return getImageKeyForClassification(LandClassification.FOREST);
 	}
 
 	public static Image getUnknownClassificationKey() {
-		return getImageKeyForClassification(Classification.UNKNOWN);
+		return getImageKeyForClassification(LandClassification.UNKNOWN);
 	}
 	
 	public static Image getImageForRegion(File imageDirectory, int columns, int rows) {
@@ -309,27 +309,27 @@ public class Image {
 		downImage = image.downImage;
 		greyscaleImage = image.greyscaleImage;
 		histogram = image.histogram;
-		classification = image.classification;
+		landClassification = image.landClassification;
 		date = image.date;
 	}
 
 	/**
 	 * Protected contructor for known images (training data).
 	 * @param imageFileName
-	 * @param classification
+	 * @param landClassification
 	 */
-	protected Image(String imageFileName, Classification classification) {
-		this(new File(imageFileName), classification);
+	protected Image(String imageFileName, LandClassification landClassification) {
+		this(new File(imageFileName), landClassification);
 	}
 	
 	/**
 	 * Protected contructor for known images (training data).
 	 * @param imageFile
-	 * @param classification
+	 * @param landClassification
 	 */
-	protected Image(File imageFile, Classification classification) {
+	protected Image(File imageFile, LandClassification landClassification) {
 		this(imageFile);
-		this.classification = classification;
+		this.landClassification = landClassification;
 	}
 	
 	/**
@@ -404,9 +404,9 @@ public class Image {
 		Graphics graphics = bufferedImage.getGraphics();
 		for(int index=0; index<getChoppedImages().size(); index++) {
 			Image toImage = getChoppedImages().get(index);
-			Classification toImageClassification = 
+			LandClassification toImageClassification = 
 				toImage.getClassification();
-			Classification fromImageClassification = 
+			LandClassification fromImageClassification = 
 				fromImage.getChoppedImages().get(index).getClassification();
 			if(!toImageClassification.equals(
 					fromImageClassification)) {
@@ -465,11 +465,11 @@ public class Image {
 	 * @return
 	 * @throws Exception
 	 */
-	public Classification getClassification() throws Exception {
-		if(classification == null)
-			classification = 
+	public LandClassification getClassification() throws Exception {
+		if(landClassification == null)
+			landClassification = 
 				TrainedModel.getTrainedModel().classifyImage(this);
-		return classification;
+		return landClassification;
 	}
 	
 	public Image getClassificationOverlay() throws Exception {
@@ -929,8 +929,8 @@ public class Image {
 				originX, originY, width, height));
 		// If the (parent) image has a classification, 
 		// it's crop (child) has the same classification 
-		if(classification != null)
-			croppedImage.classification = image.classification;
+		if(landClassification != null)
+			croppedImage.landClassification = image.landClassification;
 		return croppedImage;
 	}
 	

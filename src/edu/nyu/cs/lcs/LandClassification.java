@@ -1,19 +1,25 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_ARABLE_TESTING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_ARABLE_TRAINING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_DESERT_TESTING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_DESERT_TRAINING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_DEVELOPED_TESTING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_DEVELOPED_TRAINING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_FOREST_TESTING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.CURATED_FOREST_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_ARABLE_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_ARABLE_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_DESERT_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_DESERT_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_DEVELOPED_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_DEVELOPED_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_FOREST_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.CURATED_FOREST_TRAINING_IMAGE_PATH;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
 
 import com.google.common.collect.Lists;
 
@@ -24,7 +30,7 @@ import com.google.common.collect.Lists;
  * @author Scot Dalton
  * 
  */
-public enum Classification {
+public enum LandClassification {
 	ARABLE(true, CURATED_ARABLE_TRAINING_IMAGE_PATH, CURATED_ARABLE_TESTING_IMAGE_PATH) {
 		@Override
 		int getRed() {
@@ -135,7 +141,7 @@ public enum Classification {
 	private String trainingDirectory;
 	private String testingDirectory;
 	
-	private Classification(boolean isTrainable, 
+	private LandClassification(boolean isTrainable, 
 			String trainingDirectory, String testingDirectory) {
 		this.isTrainable = isTrainable;
 		this.trainingDirectory = trainingDirectory;
@@ -165,18 +171,12 @@ public enum Classification {
 	private List<Image> getKnownImages(
 			String directoryName) {
 		List<Image> knownImages = Lists.newArrayList();
-		File directory = new File(directoryName);
-		if (directory.isDirectory()) {
-			String[] filenames = directory.list();
-			for (String filename: filenames) {
-				File file = 
-					new File(directoryName + "/" + filename);
-				if(file.isFile() && !file.isHidden()) {
-					KnownImage image = new KnownImage(file, this);
-					knownImages.add(image);
-				}
-			}
-		}
+		Collection<File> files = 
+			FileUtils.listFiles(new File(directoryName), 
+				new AndFileFilter(HiddenFileFilter.VISIBLE, 
+					FileFileFilter.FILE), null);
+		for (File file: files)
+			knownImages.add(new KnownImage(file, this));
 		return knownImages;
 	}
 }

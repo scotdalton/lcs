@@ -1,11 +1,11 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.features;
+package edu.nyu.cs.lcs.features;
 
 import java.util.Map;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 
 //import javax.media.jai.RenderedOp;

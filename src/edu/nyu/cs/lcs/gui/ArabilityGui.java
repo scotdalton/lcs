@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -21,7 +21,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import edu.nyu.cs.sysproj.arability.TrainedModel;
+import edu.nyu.cs.lcs.TrainedModel;
 
 /**
  * @author Scot Dalton

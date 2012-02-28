@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import java.io.File;
 
@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class KnownImage extends Image {
 
-	public KnownImage(File imageFile, Classification classfication) {
+	public KnownImage(File imageFile, LandClassification classfication) {
 		super(imageFile, classfication);
 	}
 }

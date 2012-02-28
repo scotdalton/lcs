@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import java.util.List;
 import java.util.Map;
@@ -9,13 +9,13 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import edu.nyu.cs.sysproj.arability.features.DCT;
-import edu.nyu.cs.sysproj.arability.features.DCTDownSample;
-import edu.nyu.cs.sysproj.arability.features.Feature;
-import edu.nyu.cs.sysproj.arability.features.GradientMagnitude;
-import edu.nyu.cs.sysproj.arability.features.MeanPixel;
-import edu.nyu.cs.sysproj.arability.features.SURF;
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
+import edu.nyu.cs.lcs.features.DCT;
+import edu.nyu.cs.lcs.features.DCTDownSample;
+import edu.nyu.cs.lcs.features.Feature;
+import edu.nyu.cs.lcs.features.GradientMagnitude;
+import edu.nyu.cs.lcs.features.MeanPixel;
+import edu.nyu.cs.lcs.features.SURF;
+import edu.nyu.cs.lcs.utility.Configuration;
 
 
 /**

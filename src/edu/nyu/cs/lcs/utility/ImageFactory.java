@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility;
+package edu.nyu.cs.lcs.utility;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
+import static edu.nyu.cs.lcs.utility.Configuration.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,13 +12,13 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.utility.google_earth.GoogleEarth;
-import edu.nyu.cs.sysproj.arability.utility.google_earth.GoogleEarthFactory;
-import edu.nyu.cs.sysproj.arability.utility.kml.Camera;
-import edu.nyu.cs.sysproj.arability.utility.kml.Document;
-import edu.nyu.cs.sysproj.arability.utility.kml.Kml;
-import edu.nyu.cs.sysproj.arability.utility.kml.Placemark;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
+import edu.nyu.cs.lcs.utility.google_earth.GoogleEarthFactory;
+import edu.nyu.cs.lcs.utility.kml.Camera;
+import edu.nyu.cs.lcs.utility.kml.Document;
+import edu.nyu.cs.lcs.utility.kml.Kml;
+import edu.nyu.cs.lcs.utility.kml.Placemark;
 
 /**
  * @author Scot Dalton

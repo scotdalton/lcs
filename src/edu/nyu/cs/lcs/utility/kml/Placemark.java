@@ -1,13 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility.kml;
+package edu.nyu.cs.lcs.utility.kml;
 
 /**
  * @author Scot Dalton
  *
  */
-public class Placemark extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBase {
+public class Placemark extends edu.nyu.cs.lcs.utility.kml.AbstractBase {
 	private String name;
 	private Camera camera;
 

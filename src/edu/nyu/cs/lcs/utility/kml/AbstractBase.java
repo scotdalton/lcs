@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility.kml;
+package edu.nyu.cs.lcs.utility.kml;
 
 /**
  * @author Scot Dalton

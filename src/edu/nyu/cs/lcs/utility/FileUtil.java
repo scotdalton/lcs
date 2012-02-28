@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility;
+package edu.nyu.cs.lcs.utility;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -14,7 +14,7 @@ import java.util.zip.ZipOutputStream;
 
 import com.google.common.collect.Lists;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton

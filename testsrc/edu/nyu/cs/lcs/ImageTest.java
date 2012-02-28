@@ -1,18 +1,18 @@
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 /**
  * 
  */
-import static edu.nyu.cs.sysproj.arability.TestUtility.getArableTestingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getArableTrainingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getDevelopedTestingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getDevelopedTrainingImageFiles;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getTestImage1;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.ARABLE_TESTING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.ARABLE_TRAINING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.DEVELOPED_TESTING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.DEVELOPED_TRAINING_IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.IMAGE_PATH;
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.TMP_IMAGE_PATH;
+import static edu.nyu.cs.lcs.TestUtility.getArableTestingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getArableTrainingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getDevelopedTestingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getDevelopedTrainingImageFiles;
+import static edu.nyu.cs.lcs.TestUtility.getTestImage1;
+import static edu.nyu.cs.lcs.utility.Configuration.ARABLE_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.ARABLE_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.DEVELOPED_TESTING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.DEVELOPED_TRAINING_IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.IMAGE_PATH;
+import static edu.nyu.cs.lcs.utility.Configuration.TMP_IMAGE_PATH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,7 +21,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.utility.Configuration;
 
 /**
  * @author Scot Dalton

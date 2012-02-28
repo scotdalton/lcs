@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;

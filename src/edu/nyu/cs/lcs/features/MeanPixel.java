@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.features;
+package edu.nyu.cs.lcs.features;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 
 

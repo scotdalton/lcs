@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility.google_earth;
+package edu.nyu.cs.lcs.utility.google_earth;
 
 /**
  * @author Scot Dalton

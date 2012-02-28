@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility;
+package edu.nyu.cs.lcs.utility;
 
 import java.net.URL;
 import java.net.URLEncoder;

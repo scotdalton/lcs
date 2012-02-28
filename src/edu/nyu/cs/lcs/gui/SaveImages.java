@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
@@ -12,7 +12,7 @@ import java.io.FilenameFilter;
 import javax.swing.Action;
 import javax.swing.JButton;
 
-import edu.nyu.cs.sysproj.arability.utility.FileUtil;
+import edu.nyu.cs.lcs.utility.FileUtil;
 
 /**
  * @author Scot Dalton

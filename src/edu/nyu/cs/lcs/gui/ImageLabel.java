@@ -1,14 +1,14 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton

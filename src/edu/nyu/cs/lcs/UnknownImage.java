@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import java.util.List;
 
@@ -58,15 +58,15 @@ public class UnknownImage extends Image {
 		int forestCount = 0;
 		List<Image> choppedImages = getChoppedImages();
 		for(Image choppedImage : choppedImages) {
-			Classification classification = 
+			LandClassification landClassification = 
 				choppedImage.getClassification();
-			if(classification.equals(Classification.ARABLE)) {
+			if(landClassification.equals(LandClassification.ARABLE)) {
 				arableCount++;
-			} else if (classification.equals(Classification.DEVELOPED)) {
+			} else if (landClassification.equals(LandClassification.DEVELOPED)) {
 				developedCount++;
-			} else if (classification.equals(Classification.DESERT)) {
+			} else if (landClassification.equals(LandClassification.DESERT)) {
 				desertCount++;
-			} else if (classification.equals(Classification.FOREST)) {
+			} else if (landClassification.equals(LandClassification.FOREST)) {
 				forestCount++;
 			}
 		}

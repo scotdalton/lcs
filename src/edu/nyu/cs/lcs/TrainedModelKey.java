@@ -1,11 +1,11 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import java.util.List;
 
-import edu.nyu.cs.sysproj.arability.Features.FeatureSet;
+import edu.nyu.cs.lcs.Features.FeatureSet;
 
 /**
  * @author Scot Dalton

@@ -1,9 +1,9 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
+import edu.nyu.cs.lcs.utility.Configuration;
 
 /**
  * Some images are invalid, so we have some checks validity.

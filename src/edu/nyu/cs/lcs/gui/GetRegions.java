@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -20,12 +20,12 @@ import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.Region;
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
-import edu.nyu.cs.sysproj.arability.utility.Geocoder;
-import edu.nyu.cs.sysproj.arability.utility.ImageFactory;
-import edu.nyu.cs.sysproj.arability.utility.google_earth.GoogleEarth;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.Region;
+import edu.nyu.cs.lcs.utility.Configuration;
+import edu.nyu.cs.lcs.utility.Geocoder;
+import edu.nyu.cs.lcs.utility.ImageFactory;
+import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
 
 /**
  * @author Scot Dalton

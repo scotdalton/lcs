@@ -1,16 +1,16 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.KML_DIRECTORY;
+import static edu.nyu.cs.lcs.utility.Configuration.KML_DIRECTORY;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.arability.utility.google_earth.GoogleEarth;
-import edu.nyu.cs.sysproj.arability.utility.google_earth.GoogleEarthFactory;
-import edu.nyu.cs.sysproj.arability.utility.google_earth.MacOsxGoogleEarth;
+import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
+import edu.nyu.cs.lcs.utility.google_earth.GoogleEarthFactory;
+import edu.nyu.cs.lcs.utility.google_earth.MacOsxGoogleEarth;
 
 /**
  * @author Scot Dalton

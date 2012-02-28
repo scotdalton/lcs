@@ -1,14 +1,14 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import java.util.Calendar;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import edu.nyu.cs.sysproj.arability.Features.FeatureSet;
+import edu.nyu.cs.lcs.Features.FeatureSet;
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,10 +12,11 @@ import javax.swing.JFrame;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.Region;
-import edu.nyu.cs.sysproj.arability.TestUtility;
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.Region;
+import edu.nyu.cs.lcs.TestUtility;
+import edu.nyu.cs.lcs.gui.ImageTabbedPane;
+import edu.nyu.cs.lcs.utility.Configuration;
 
 /**
  * @author Scot Dalton

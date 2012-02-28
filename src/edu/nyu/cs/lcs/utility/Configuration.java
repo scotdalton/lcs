@@ -1,13 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility;
+package edu.nyu.cs.lcs.utility;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import edu.nyu.cs.sysproj.arability.Features.FeatureSet;
+import edu.nyu.cs.lcs.Features.FeatureSet;
 
 /**
  * Utilility class for defaults, etc.

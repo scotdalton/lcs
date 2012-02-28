@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.util.Collections;
 import java.util.Map;
@@ -11,7 +11,7 @@ import javax.swing.JTabbedPane;
 
 import com.google.common.collect.Maps;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton

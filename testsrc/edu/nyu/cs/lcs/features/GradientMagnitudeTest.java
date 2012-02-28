@@ -1,12 +1,12 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.features;
+package edu.nyu.cs.lcs.features;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.TestUtility;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.TestUtility;
 
 
 /**

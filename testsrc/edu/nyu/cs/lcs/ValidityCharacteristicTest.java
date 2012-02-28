@@ -1,12 +1,12 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.sysproj.arability.TestUtility.getBlurryTestImage1;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getBrightTestImage1;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getCloudyTestImage1;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getTestImage1;
+import static edu.nyu.cs.lcs.TestUtility.getBlurryTestImage1;
+import static edu.nyu.cs.lcs.TestUtility.getBrightTestImage1;
+import static edu.nyu.cs.lcs.TestUtility.getCloudyTestImage1;
+import static edu.nyu.cs.lcs.TestUtility.getTestImage1;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

@@ -1,13 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.arability.utility.Geocoder;
+import edu.nyu.cs.lcs.utility.Geocoder;
 
 
 /**

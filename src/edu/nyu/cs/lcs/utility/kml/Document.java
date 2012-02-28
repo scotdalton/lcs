@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility.kml;
+package edu.nyu.cs.lcs.utility.kml;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @author Scot Dalton
  *
  */
-public class Document extends edu.nyu.cs.sysproj.arability.utility.kml.AbstractBase {
+public class Document extends edu.nyu.cs.lcs.utility.kml.AbstractBase {
 	private String name;
 	private List<Placemark> placemarks;
 

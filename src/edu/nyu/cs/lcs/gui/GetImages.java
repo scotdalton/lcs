@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.gui;
+package edu.nyu.cs.lcs.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -19,10 +19,10 @@ import javax.swing.JOptionPane;
 
 import com.google.common.collect.Maps;
 
-import edu.nyu.cs.sysproj.arability.Image;
-import edu.nyu.cs.sysproj.arability.utility.Configuration;
-import edu.nyu.cs.sysproj.arability.utility.Geocoder;
-import edu.nyu.cs.sysproj.arability.utility.ImageFactory;
+import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.utility.Configuration;
+import edu.nyu.cs.lcs.utility.Geocoder;
+import edu.nyu.cs.lcs.utility.ImageFactory;
 
 /**
  * @author Scot Dalton

@@ -1,13 +1,13 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.sysproj.arability.TestUtility.*;
+import static edu.nyu.cs.lcs.TestUtility.*;
 
 import org.junit.Test;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton

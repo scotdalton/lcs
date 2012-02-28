@@ -1,14 +1,14 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability.utility;
+package edu.nyu.cs.lcs.utility;
 
-import static edu.nyu.cs.sysproj.arability.utility.Configuration.*;
+import static edu.nyu.cs.lcs.utility.Configuration.*;
 
 import java.io.File;
 import java.util.List;
 
-import edu.nyu.cs.sysproj.arability.Image;
+import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton

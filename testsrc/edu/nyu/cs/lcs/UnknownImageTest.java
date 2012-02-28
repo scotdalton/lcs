@@ -1,13 +1,15 @@
 /**
  * 
  */
-package edu.nyu.cs.sysproj.arability;
+package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.sysproj.arability.TestUtility.getTestFileName1;
-import static edu.nyu.cs.sysproj.arability.TestUtility.getTestFileName2;
+import static edu.nyu.cs.lcs.TestUtility.getTestFileName1;
+import static edu.nyu.cs.lcs.TestUtility.getTestFileName2;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import edu.nyu.cs.lcs.UnknownImage;
 
 /**
  * @author Scot Dalton
