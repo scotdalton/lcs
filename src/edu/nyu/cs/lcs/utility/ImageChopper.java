@@ -12,7 +12,7 @@ import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton
- *
+ * Utility class for creating training data.
  */
 public class ImageChopper {
 	
@@ -21,7 +21,7 @@ public class ImageChopper {
 		for(String arg: args)
 			if (arg.startsWith("imageDirectory="))
 				imageDirectory=arg.split("=")[1];
-		for(File file: FileUtil.getFiles(imageDirectory)) {
+		for(File file: FileUtil.getFiles(new File(imageDirectory))) {
 			Image image = new Image(file);
 			List<Image> choppedImages = image.getChoppedImages();
 			File choppedDir = new File(imageDirectory+"/chopped");

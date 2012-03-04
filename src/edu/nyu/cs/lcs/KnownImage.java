@@ -5,6 +5,8 @@ package edu.nyu.cs.lcs;
 
 import java.io.File;
 
+import edu.nyu.cs.lcs.classifications.Classification;
+
 /**
  * KnownImage extends Image for training and testing images.
  *  

@@ -22,33 +22,23 @@ import com.google.inject.BindingAnnotation;
  * @author Scot Dalton
  *
  */
-public class ClassificationModule extends AbstractModule {
+public class TrainedModelModule extends AbstractModule {
 
 	private final static String PROPERTIES_FILE_NAME = 
-		"./config/classification.properties";
+		"./config/trainedmodel.properties";
 	private Properties properties;
 	
 	@BindingAnnotation 
 	@Target({ FIELD, PARAMETER, METHOD }) 
 	@Retention(RUNTIME)
-	public @interface ConnectionURL {};
+	public @interface SerializationDirectory {};
 
-	@BindingAnnotation 
-	@Target({ FIELD, PARAMETER, METHOD }) 
-	@Retention(RUNTIME)
-	public @interface Username {};
-
-	@BindingAnnotation 
-	@Target({ FIELD, PARAMETER, METHOD }) 
-	@Retention(RUNTIME)
-	public @interface Password {};
-
-	public ClassificationModule() 
+	public TrainedModelModule() 
 			throws FileNotFoundException, IOException {
 		this(PROPERTIES_FILE_NAME);
 	}
 	
-	public ClassificationModule(String propertiesFileName) 
+	public TrainedModelModule(String propertiesFileName) 
 			throws FileNotFoundException, IOException {
 		super();
 		properties = new Properties();
@@ -57,11 +47,7 @@ public class ClassificationModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(String.class).annotatedWith(ConnectionURL.class).
-			toInstance(properties.getProperty("connectionURL"));
-		bind(String.class).annotatedWith(Username.class).
-			toInstance(properties.getProperty("username"));
-		bind(String.class).annotatedWith(Password.class).
-			toInstance(properties.getProperty("password"));
+		bind(String.class).annotatedWith(SerializationDirectory.class).
+			toInstance(properties.getProperty("serializationDirectory"));
 	}
 }

@@ -22,8 +22,10 @@ import weka.core.SerializationHelper;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 import edu.nyu.cs.lcs.Features.FeatureSet;
+import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.features.Feature;
 
 /**
@@ -36,7 +38,8 @@ public class TrainedModel {
 	private static Map<TrainedModelKey, TrainedModel> trainedModels;
 	private static String classifierName = CLASSIFIER;
 	private static String[] classifierOptions = CLASSIFIER_OPTIONS;
-	private static List<FeatureSet> featureSets = Features.DEFAULT_FEATURE_SET;
+	private static List<FeatureSet> featureSets = 
+		Features.DEFAULT_FEATURE_SET;
 	private static TrainedModelKey trainedModelKey = 
 		new TrainedModelKey(TrainedModel.classifierName, TrainedModel.featureSets);
 	private Classifier classifier;
@@ -66,6 +69,7 @@ public class TrainedModel {
 		this(SERIALIZATION_DIRECTORY);
 	}
 	
+	@Inject
 	private TrainedModel(String serializationDirectory) throws Exception {
 		String featuresDirectory = "";
 		for(FeatureSet featureSet: TrainedModel.featureSets)

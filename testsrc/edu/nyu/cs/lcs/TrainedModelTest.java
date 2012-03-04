@@ -17,9 +17,9 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.Classification;
 import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.Features.FeatureSet;
+import edu.nyu.cs.lcs.classifications.Classification;
 
 /**
  * @author Scot Dalton

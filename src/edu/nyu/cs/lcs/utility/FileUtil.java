@@ -7,10 +7,17 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
 
 import com.google.common.collect.Lists;
 
@@ -18,23 +25,20 @@ import edu.nyu.cs.lcs.Image;
 
 /**
  * @author Scot Dalton
- *
+ * Utility class for common file operations.
  */
 public class FileUtil {
-	public static List<File> getFiles(String directoryName) {
-		List<File> fileList = Lists.newArrayList();
-		File directory = new File(directoryName);
-		if (directory.isDirectory()) {
-			String[] filenames = directory.list();
-			for (String filename: filenames) {
-				File file = 
-					new File(directoryName + "/" + filename);
-				if(file.isFile() && !file.isHidden()) {
-					fileList.add(file);
-				}
-			}
-		}
-		return fileList;
+	public static List<File> getFiles(File directory) {
+		return Lists.newArrayList(FileUtils.listFiles(directory, 
+			new AndFileFilter(HiddenFileFilter.VISIBLE, 
+				FileFileFilter.FILE), null));
+	}
+	
+	public static List<File> getFilesSortedByLastModified(File directory) {
+		List<File> files = getFiles(directory);
+		Collections.sort(files, 
+			LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+		return files;
 	}
 	
 	public static void zipImages(String zipFileName, Map<String, Image> images) throws Exception {

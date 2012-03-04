@@ -5,6 +5,8 @@ package edu.nyu.cs.lcs;
 
 import java.util.List;
 
+import edu.nyu.cs.lcs.classifications.Classification;
+
 /**
  * UnknownImage extends Image for candidate images.
  * 

@@ -44,8 +44,6 @@ import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RenderedOp;
 
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
-
 import boofcv.alg.feature.describe.DescribePointSurf;
 import boofcv.core.image.ConvertBufferedImage;
 import boofcv.struct.feature.SurfFeature;
@@ -55,6 +53,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Floats;
 
+import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.utility.Configuration;
 import edu.nyu.cs.lcs.utility.FileUtil;
 
@@ -175,29 +174,9 @@ public class Image {
 		return new Image(bufferedImage);
 	}
 	
-	public static Image getArableClassificationKey() {
-		return getImageKeyForClassification(Classification.CROPLAND);
-	}
-
-	public static Image getDevelopedClassificationKey() {
-		return getImageKeyForClassification(Classification.DEVELOPED);
-	}
-
-	public static Image getDesertClassificationKey() {
-		return getImageKeyForClassification(Classification.DESERT);
-	}
-
-	public static Image getForestClassificationKey() {
-		return getImageKeyForClassification(Classification.FOREST);
-	}
-
-	public static Image getUnknownClassificationKey() {
-		return getImageKeyForClassification(Classification.UNKNOWN);
-	}
-	
 	public static Image getImageForRegion(File imageDirectory, int columns, int rows) {
-		List<File> imageFiles = FileUtil.getFiles(imageDirectory.getAbsolutePath());
-		Collections.sort(imageFiles, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+		List<File> imageFiles = 
+			FileUtil.getFilesSortedByLastModified(imageDirectory);
 		// Assume all images are the same size and date
 		Image firstImage = new Image(imageFiles.get(0));
 		Date regionImageDate = firstImage.getDate();
