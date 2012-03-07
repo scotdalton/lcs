@@ -75,8 +75,7 @@ public class TrainedModelPropertiesModule extends AbstractModule {
 				toInstance(new File(properties.
 					getProperty("serializationDirectory")));
 			bind(new TypeLiteral<List<FeatureSet>>() {}).
-				toInstance(Lists.newArrayList(FeatureSet.MEAN_PIXELS, 
-					FeatureSet.GRADIENT_MAGNITUDE));
+				toInstance(Lists.newArrayList(FeatureSet.MEAN_PIXELS));
 			bind(Double.class).annotatedWith(ConfidenceThreshold.class).
 				toInstance(Double.valueOf(
 					properties.getProperty("confidenceThreshold")));
