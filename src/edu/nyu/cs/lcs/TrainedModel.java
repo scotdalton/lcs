@@ -3,14 +3,13 @@
  */
 package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.lcs.utility.Configuration.CLASSIFIER;
-import static edu.nyu.cs.lcs.utility.Configuration.CLASSIFIER_OPTIONS;
-import static edu.nyu.cs.lcs.utility.Configuration.CONFIDENCE_THRESHOLD;
-import static edu.nyu.cs.lcs.utility.Configuration.SERIALIZATION_DIRECTORY;
+//import static edu.nyu.cs.lcs.utility.Configuration.CLASSIFIER;
+//import static edu.nyu.cs.lcs.utility.Configuration.CLASSIFIER_OPTIONS;
+//import static edu.nyu.cs.lcs.utility.Configuration.CONFIDENCE_THRESHOLD;
+//import static edu.nyu.cs.lcs.utility.Configuration.SERIALIZATION_DIRECTORY;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -21,10 +20,14 @@ import weka.core.Instances;
 import weka.core.SerializationHelper;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import edu.nyu.cs.lcs.Features.FeatureSet;
+import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ClassifierName;
+import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ClassifierOptions;
+import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ConfidenceThreshold;
+import edu.nyu.cs.lcs.TrainedModelPropertiesModule.SerializationDirectory;
 import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.features.Feature;
 
@@ -34,55 +37,40 @@ import edu.nyu.cs.lcs.features.Feature;
  * @author Scot Dalton
  *
  */
+@Singleton
 public class TrainedModel {
-	private static Map<TrainedModelKey, TrainedModel> trainedModels;
-	private static String classifierName = CLASSIFIER;
-	private static String[] classifierOptions = CLASSIFIER_OPTIONS;
-	private static List<FeatureSet> featureSets = 
-		Features.DEFAULT_FEATURE_SET;
-	private static TrainedModelKey trainedModelKey = 
-		new TrainedModelKey(TrainedModel.classifierName, TrainedModel.featureSets);
+	private List<FeatureSet> featureSets; 
 	private Classifier classifier;
 	private TrainingSet trainingSet;
 	private FastVector attributes;
+	private double confidenceThreshold;
 	private File classifierFile;
 //	private double[][] confusionMatrix;
 
-	public static TrainedModel getTrainedModel() throws Exception {
-		if (trainedModels == null)
-			trainedModels = Maps.newHashMap();
-		if (!trainedModels.containsKey(trainedModelKey))
-			trainedModels.put(trainedModelKey, new TrainedModel());
-		return trainedModels.get(trainedModelKey);
-	}
-	
-	protected static void reset(String classifierName, 
-			String[] classifierOptions, List<FeatureSet> featureSets) {
-		TrainedModel.classifierName = classifierName;
-		TrainedModel.classifierOptions = classifierOptions;
-		TrainedModel.featureSets = featureSets;
-		TrainedModel.trainedModelKey = 
-			new TrainedModelKey(TrainedModel.classifierName, TrainedModel.featureSets);
-	}
-	
-	private TrainedModel() throws Exception {
-		this(SERIALIZATION_DIRECTORY);
-	}
-	
 	@Inject
-	private TrainedModel(String serializationDirectory) throws Exception {
+	public TrainedModel(@ClassifierName String classifierName,
+			@ClassifierOptions List<String> classifierOptions,
+			List<FeatureSet> featureSets, 
+			@SerializationDirectory File serializationDirectory,
+			@ConfidenceThreshold double confidenceThreshold) throws Exception {
+		this.featureSets = featureSets;
+		this.confidenceThreshold = confidenceThreshold;
 		String featuresDirectory = "";
-		for(FeatureSet featureSet: TrainedModel.featureSets)
+		for(FeatureSet featureSet: featureSets)
 			featuresDirectory += featureSet.toString();
 		classifierFile = 
-			new File(serializationDirectory + "/" + featuresDirectory +
-				"/" + TrainedModel.classifierName + ".model");
-		this.trainingSet = getTrainingSet(classifierFile.getParent());
+			new File(serializationDirectory.getAbsolutePath() + 
+				"/" + featuresDirectory + "/" + classifierName + ".model");
+		this.trainingSet = getTrainingSet();
 		attributes = trainingSet.getAttributes();
 		if(classifierFile.exists()) {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
-			refresh();
+			classifier = 
+				Classifier.forName(classifierName, classifierOptions.
+					toArray(new String[0]));
+			classifier.buildClassifier(trainingSet.getInstances());
+			serializeClassifier(classifierFile, classifier);
 		}
 	}
 	
@@ -109,24 +97,13 @@ public class TrainedModel {
 		double[] distributions = 
 			classifier.distributionForInstance(instance);
 		for(int i=0; i<distributions.length; i++)
-			if(distributions[i] > CONFIDENCE_THRESHOLD)
+			if(distributions[i] > confidenceThreshold)
 				return Classification.values()[i];
 		return Classification.UNKNOWN;
 	}
 	
-	/**
-	 * For testing purposes.
-	 * @throws Exception
-	 */
-	protected void refresh() throws Exception {
-		classifier = 
-			Classifier.forName(TrainedModel.classifierName, TrainedModel.classifierOptions);
-		classifier.buildClassifier(trainingSet.getInstances());
-		serializeClassifier(classifierFile, classifier);
-	}
-
 	public String test() throws Exception {
-		TrainingSet testingSet = getTestingSet(classifierFile.getParent());
+		TrainingSet testingSet = getTestingSet();
 		Evaluation eTest;
 		eTest = new Evaluation(trainingSet.getInstances());
 		eTest.evaluateModel(classifier, testingSet.getInstances());
@@ -136,12 +113,12 @@ public class TrainedModel {
 		return eTest.toSummaryString();
 	}
 	
-	private TrainingSet getTrainingSet(String serializationDirectory) throws Exception {
-		return new TrainingSet("train", serializationDirectory);
+	private TrainingSet getTrainingSet() throws Exception {
+		return new TrainingSet("train", classifierFile.getParent(), featureSets);
 	}
 	
-	private TrainingSet getTestingSet(String serializationDirectory) throws Exception {
-		return new TestingSet("test", serializationDirectory);
+	private TrainingSet getTestingSet() throws Exception {
+		return new TestingSet("test", classifierFile.getParent(), featureSets);
 	}
 	
 	private void serializeClassifier(File classifierFile, 
@@ -160,8 +137,9 @@ public class TrainedModel {
 	
 	private class TestingSet extends TrainingSet {
 		private TestingSet(String name,
-				String serializationDirectory) throws Exception {
-			super(name, serializationDirectory);
+				String serializationDirectory, 
+				List<FeatureSet> featureSets) throws Exception {
+			super(name, serializationDirectory, featureSets);
 		}
 		
 		@Override
@@ -181,10 +159,11 @@ public class TrainedModel {
 		private FastVector attributes;
 		
 		private TrainingSet(String name,
-					String serializationDirectory) throws Exception {
+					String serializationDirectory,
+					List<FeatureSet> featureSets) throws Exception {
 			this.name = name;
 			// Set attributes
-			List<Feature> features = Features.getFeatures(TrainedModel.featureSets);
+			List<Feature> features = Features.getFeatures(featureSets);
 			attributes = new FastVector(features.size() + 1);
 			for(int i=0; i<features.size(); i++)
 				attributes.addElement(new Attribute(features.get(i).toString(), i));
@@ -208,7 +187,7 @@ public class TrainedModel {
 				instances.setClassIndex(classAttributeIndex);
 				for(Image trainingImage: knownImages) {
 					float[] values = 
-						Features.getFeatureValuesForImage(trainingImage, TrainedModel.featureSets);
+						Features.getFeatureValuesForImage(trainingImage, featureSets);
 					Instance instance = new Instance(attributes.size());
 					for(int i=0; i<values.length; i++)
 						instance.setValue((Attribute)attributes.elementAt(i), values[i]);

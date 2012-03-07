@@ -3,6 +3,7 @@
  */
 package edu.nyu.cs.lcs;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.List;
 
@@ -58,15 +59,19 @@ import edu.nyu.cs.lcs.Features.FeatureSet;
 public class TrainedModelComparator {
 
 	public static void main(String[] args) throws Exception {
+		double confidenceThreshold = 0.95;
 		List<String> classifierNames = Lists.newArrayList(args);
 		for (String classifierName: classifierNames) {
 			for(List<FeatureSet> featureSets: getFeatureSetsList()) {
 				try {
-					String[] classifierOptions = {};
+					List<String> classifierOptions = 
+						Lists.newArrayList();
 					long startGet = Calendar.getInstance().getTimeInMillis();
-					TrainedModel.reset(classifierName, classifierOptions, featureSets);
 					TrainedModel trainedModel = 
-						TrainedModel.getTrainedModel();
+						new TrainedModel(
+							classifierName, 
+							classifierOptions, 
+							featureSets, new File("/~/.arability"), confidenceThreshold);
 					long endGet = Calendar.getInstance().getTimeInMillis();
 					System.out.println("---");
 					System.out.println(classifierName);

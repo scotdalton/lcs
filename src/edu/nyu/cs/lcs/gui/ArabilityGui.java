@@ -21,8 +21,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import edu.nyu.cs.lcs.TrainedModel;
-
 /**
  * @author Scot Dalton
  *
@@ -33,12 +31,6 @@ public class ArabilityGui {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// Set up training data.
-		try {
-			TrainedModel.getTrainedModel();
-		} catch (Exception e) {
-			System.exit(1);
-		}
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGUI();

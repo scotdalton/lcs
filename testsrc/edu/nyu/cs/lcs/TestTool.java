@@ -16,7 +16,6 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.UnknownImage;
 import edu.nyu.cs.lcs.utility.ImageFactory;
 import edu.nyu.cs.lcs.utility.kml.Camera;
@@ -35,8 +34,6 @@ public class TestTool {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		// Train model at the start.		
-		TrainedModel.getTrainedModel();
 		double latitude = Double.parseDouble(args[0]);
 		double longitude = Double.parseDouble(args[1]);
 		String name = "Test Place";

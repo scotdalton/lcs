@@ -8,14 +8,26 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTDownSampleXs;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTDownSampleYs;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTHeight;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTWidth;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeBands;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeHeight;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeWidth;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.MeanPixelBands;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.NumSurfs;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.SurfLength;
 import edu.nyu.cs.lcs.features.DCT;
 import edu.nyu.cs.lcs.features.DCTDownSample;
 import edu.nyu.cs.lcs.features.Feature;
 import edu.nyu.cs.lcs.features.GradientMagnitude;
 import edu.nyu.cs.lcs.features.MeanPixel;
 import edu.nyu.cs.lcs.features.SURF;
-import edu.nyu.cs.lcs.utility.Configuration;
 
 
 /**
@@ -24,28 +36,16 @@ import edu.nyu.cs.lcs.utility.Configuration;
  */
 public class Features {
 	private static Map<List<FeatureSet>, List<Feature>> features;
-	private static int BANDS = 3;
-	private static int DCT_HEIGHT = Configuration.CHOPPED_HEIGHT;
-	private static int DCT_WIDTH = Configuration.CHOPPED_WIDTH;
-	private static int DCT_DOWN_SAMPLE_HEIGHT = 
-		Configuration.DOWN_SAMPLE_SQUARE_ROOT;
-	private static int DCT_DOWN_SAMPLE_WIDTH = 
-		Configuration.DOWN_SAMPLE_SQUARE_ROOT;
-	private static int GRADIENT_MAGNITUDE_HEIGHT= 
-		Configuration.CHOPPED_HEIGHT;
-	private static int GRADIENT_MAGNITUDE_WIDTH = 
-		Configuration.CHOPPED_WIDTH;
-	private static int GRADIENT_MAGNITUDE_BANDS = 0;
-	private static int NUM_SURFS = 1;
-	private static int SURF_LENGTH = 64;
-	public static List<FeatureSet> DEFAULT_FEATURE_SET = 
-		Configuration.DEFAULT_FEATURE_SET;
+	private static Injector injector = 
+		Guice.createInjector(new FeaturesPropertiesModule());
 	public enum FeatureSet{
 		MEAN_PIXELS {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int i=0; i < BANDS; i++) {
+				int bands = injector.getInstance(Key.
+					get(Integer.class, MeanPixelBands.class));
+				for(int i=0; i < bands; i++) {
 					Feature feature = new MeanPixel();
 					Map<String, Object> options = Maps.newHashMap();
 					options.put("band", i);
@@ -59,8 +59,12 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int x=0; x < DCT_WIDTH; x++) {
-					for(int y=0; y < DCT_HEIGHT; y++) {
+				int width = injector.getInstance(Key.
+					get(Integer.class, DCTWidth.class));
+				int height = injector.getInstance(Key.
+					get(Integer.class, DCTHeight.class));
+				for(int x=0; x < width; x++) {
+					for(int y=0; y < height; y++) {
 						Feature feature = new DCT();
 						Map<String, Object> options = Maps.newHashMap();
 						options.put("x", x);
@@ -76,8 +80,12 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int x=0; x < DCT_DOWN_SAMPLE_WIDTH; x++) {
-					for(int y=0; y < DCT_DOWN_SAMPLE_HEIGHT; y++) {
+				int width = injector.getInstance(Key.
+					get(Integer.class, DCTDownSampleXs.class));
+				int height = injector.getInstance(Key.
+					get(Integer.class, DCTDownSampleYs.class));
+				for(int x=0; x < width; x++) {
+					for(int y=0; y < height; y++) {
 						Feature feature = new DCTDownSample();
 						Map<String, Object> options = Maps.newHashMap();
 						options.put("x", x);
@@ -93,9 +101,15 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int x=0; x < GRADIENT_MAGNITUDE_WIDTH; x++) {
-					for(int y=0; y < GRADIENT_MAGNITUDE_HEIGHT; y++) {
-						for(int b=0; b < GRADIENT_MAGNITUDE_BANDS; b++) {
+				int width = injector.getInstance(Key.
+					get(Integer.class, GradientMagnitudeWidth.class));
+				int height = injector.getInstance(Key.
+					get(Integer.class, GradientMagnitudeHeight.class));
+				int bands = injector.getInstance(Key.
+					get(Integer.class, GradientMagnitudeBands.class));
+				for(int x=0; x < width; x++) {
+					for(int y=0; y < height; y++) {
+						for(int b=0; b < bands; b++) {
 							Feature feature = new GradientMagnitude();
 							Map<String, Object> options = Maps.newHashMap();
 							options.put("x", x);
@@ -113,8 +127,12 @@ public class Features {
 			@Override
 			public List<Feature> getFeatures() {
 				List<Feature> features = Lists.newArrayList();
-				for(int a=0; a < NUM_SURFS; a++) {
-					for(int i=0; i < SURF_LENGTH; i++) {
+				int num = injector.getInstance(Key.
+					get(Integer.class, NumSurfs.class));
+				int length = injector.getInstance(Key.
+					get(Integer.class, SurfLength.class));
+				for(int a=0; a < num; a++) {
+					for(int i=0; i < length; i++) {
 						Feature feature = new SURF();
 						Map<String, Object> options = Maps.newHashMap();
 						options.put("a", a);

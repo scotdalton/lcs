@@ -24,6 +24,8 @@ import java.awt.image.renderable.ParameterBlock;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,9 +54,15 @@ import boofcv.struct.image.ImageFloat32;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.primitives.Floats;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 
+import edu.nyu.cs.lcs.ImageModule.ChoppedHeight;
+import edu.nyu.cs.lcs.ImageModule.ChoppedWidth;
+import edu.nyu.cs.lcs.ImageModule.DownSampleSquareRoot;
 import edu.nyu.cs.lcs.classifications.Classification;
-import edu.nyu.cs.lcs.utility.Configuration;
 import edu.nyu.cs.lcs.utility.FileUtil;
 
 /**
@@ -76,6 +84,7 @@ public class Image {
 	private List<float[]> surf;
 	private Image greyscaleImage;
 	private Histogram histogram;
+	@Inject private TrainedModel trainedModel;
 	private int width;
 	private int height;
 	private int minX;
@@ -84,12 +93,13 @@ public class Image {
 	private float downSampleSize;
 	private float croppedWidth;
 	private float croppedHeight;
-	private float choppedWidth;
-	private float choppedHeight;
+	@Inject private float choppedWidth;
+	@Inject private float choppedHeight;
 	private int choppedColumns;
 	private int choppedRows;
 	private Classification classification;
 	private Date date;
+	private String name;
 	private static final float[] FREI_CHEN_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
 		1.414F, 0.0F, -1.414F, 1.0F, 0.0F, -1.0F };
 	private static final float[] FREI_CHEN_VERTICAL = { -1.0F, -1.414F, -1.0F,
@@ -255,6 +265,7 @@ public class Image {
 	 */
 	public Image(File imageFile) {
 		this(JAI.create("fileload", imageFile.getAbsolutePath()));
+		this.name = imageFile.getName();
 	}
 	
 	/**
@@ -264,6 +275,7 @@ public class Image {
 	 */
 	public Image(File imageFile, Date date) {
 		this(JAI.create("fileload", imageFile.getAbsolutePath()));
+		this.name = imageFile.getName();
 		this.date = date;
 	}
 	
@@ -314,6 +326,16 @@ public class Image {
 	/**
 	 * Private constructor
 	 * @param renderedImage
+	 * @param date
+	 */
+	private Image(RenderedImage renderedImage, Date date) {
+		this(renderedImage);
+		this.date = date;
+	}
+	
+	/**
+	 * Private constructor
+	 * @param renderedImage
 	 */
 	private Image(RenderedImage renderedImage) {
 		setDefaults();
@@ -330,23 +352,13 @@ public class Image {
 	}
 	
 	/**
-	 * Private constructor
-	 * @param renderedImage
-	 * @param date
+	 * Persist the image to a file with the given filename.
+	 * @param filename
 	 */
-	private Image(RenderedImage renderedImage, Date date) {
-		setDefaults();
-		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
-		if(skipChop(renderedImage))
-			this.renderedImage = renderedImage;
-		else {
-			croppedWidth = getCroppedWidth(renderedImage);
-			croppedHeight = getCroppedHeight(renderedImage);
-			this.renderedImage = 
-				centeredCrop(renderedImage, croppedWidth, croppedHeight);
-		}
-		setDimensions(this.renderedImage);
-		this.date = date;
+	public void persist(String fileName) {
+		ParameterBlock fileStoreParams = (new ParameterBlock()).
+			addSource(renderedImage).add(fileName).add("PNG");
+		JAI.create("filestore", fileStoreParams);
 	}
 	
 	public Image getClassificationHeatMap() throws Exception {
@@ -389,34 +401,6 @@ public class Image {
 				fromImage.getChoppedImages().get(index).getClassification();
 			if(!toImageClassification.equals(
 					fromImageClassification)) {
-//				int fromImageRed = 
-//					fromImageClassification.getRed();
-//				int fromImageGreen = 
-//					fromImageClassification.getGreen();
-//				int fromImageBlue = 
-//					fromImageClassification.getBlue();
-//				int fromImageAlpha = 
-//					fromImageClassification.getAlpha();
-//				graphics.setColor(new Color(fromImageRed, 
-//						fromImageGreen, fromImageBlue, fromImageAlpha));
-//				int fromImageRectX = fromImage.getMinX()-getMinX();
-//				int fromImageRectY = fromImage.getMinY()-getMinY();
-//				graphics.fillRect(fromImageRectX, fromImageRectY, 
-//					toImage.getWidth()/2, toImage.getHeight());
-//				int toImageRed = 
-//					toImageClassification.getRed();
-//				int toImageGreen = 
-//					toImageClassification.getGreen();
-//				int toImageBlue = 
-//					toImageClassification.getBlue();
-//				int toImageAlpha = 
-//					toImageClassification.getAlpha();
-//				graphics.setColor(new Color(toImageRed, 
-//					toImageGreen, toImageBlue, toImageAlpha));
-//				int toImageRectX = fromImageRectX+(toImage.getWidth()/2);
-//				int toImageRectY = fromImageRectY;
-//				graphics.fillRect(toImageRectX, toImageRectY, 
-//					toImage.getWidth()/2, toImage.getHeight());
 				graphics.setColor(new Color(255, 0, 0, 63));
 				int rectX = toImage.getMinX()-getMinX();
 				int rectY = toImage.getMinY()-getMinY();
@@ -429,8 +413,6 @@ public class Image {
 					" to " + toImageClassification.toString();
 				int stringWidth = fontMetrics.stringWidth(fromToString);
 				int stringHeight = fontMetrics.getHeight();
-//				int stringX = fromImageRectX + toImage.getWidth()/2 - stringWidth/2;
-//				int stringY = fromImageRectY + toImage.getHeight()/2 - stringHeight/2;
 				int stringX = rectX + toImage.getWidth()/2 - stringWidth/2;
 				int stringY = rectY + toImage.getHeight()/2 - stringHeight/2;
 				graphics.drawString(fromToString, stringX, stringY);
@@ -446,8 +428,7 @@ public class Image {
 	 */
 	public Classification getClassification() throws Exception {
 		if(classification == null)
-			classification = 
-				TrainedModel.getTrainedModel().classifyImage(this);
+			trainedModel.classifyImage(this);
 		return classification;
 	}
 	
@@ -459,7 +440,6 @@ public class Image {
 		int blue = getClassification().getBlue();
 		int alpha = getClassification().getAlpha();
 		graphics.setColor(new Color(red, green, blue, alpha));
-//		graphics.setColor(new Color(255, 0, 0, 63));
 		graphics.fillRect(0, 0, width, height);
 		graphics.dispose();
 		return new Image(bufferedImage);
@@ -505,6 +485,13 @@ public class Image {
 		return date;
 	}
 	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
 	public GradientKernel getGradientKernel() {
 		return gradientKernel;
 	}
@@ -707,16 +694,6 @@ public class Image {
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
 		return new Image(JAI.create("subtract", subtractParams));
-	}
-	
-	/**
-	 * Persist the image to a file with the given filename.
-	 * @param filename
-	 */
-	public void persist(String fileName) {
-		ParameterBlock fileStoreParams = (new ParameterBlock()).
-			addSource(renderedImage).add(fileName).add("PNG");
-		JAI.create("filestore", fileStoreParams);
 	}
 	
 	public InputStream getAsInputStream() throws Exception {
@@ -950,13 +927,25 @@ public class Image {
 	}
 	
 	private void setDefaults() {
-		downSampleSquareRoot = Configuration.DOWN_SAMPLE_SQUARE_ROOT;
-//		croppedWidth = Configuration.CROPPED_WIDTH;
-//		croppedHeight = Configuration.CROPPED_HEIGHT;
-		choppedWidth = Configuration.CHOPPED_WIDTH;
-		choppedHeight = Configuration.CHOPPED_HEIGHT;
-//		choppedColumns = Configuration.CHOPPED_COLUMNS;
-//		choppedRows = Configuration.CHOPPED_ROWS;
+		try {
+			Injector imageInjector;
+			imageInjector = Guice.createInjector(new ImageModule());
+			downSampleSquareRoot = imageInjector.getInstance(Key.
+				get(Integer.class, DownSampleSquareRoot.class));
+			choppedWidth = imageInjector.getInstance(Key.
+					get(Float.class, ChoppedWidth.class));
+			choppedHeight = imageInjector.getInstance(Key.
+					get(Float.class, ChoppedHeight.class));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Injector trainedModelInjector;
+		trainedModelInjector = 
+			Guice.createInjector(new TrainedModelModule());
+		trainedModel = 
+			trainedModelInjector.getInstance(TrainedModel.class);
 		gradientKernel = GradientKernel.SOBEL;
 	}
 }
