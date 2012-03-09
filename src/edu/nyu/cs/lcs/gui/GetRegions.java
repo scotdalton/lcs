@@ -78,9 +78,7 @@ public class GetRegions extends GetImages {
 				Map<String, String> imageFileNames = Maps.newLinkedHashMap();
 				Map<String, Image> capturedImages = Maps.newLinkedHashMap();
 				double longitudeStepFactor = getLongitudeStepFactor();
-				System.out.println(longitudeStepFactor);
 				double latitudeStepFactor = getLatitudeStepFactor();
-				System.out.println(latitudeStepFactor);
 				List<List<Image>> regionImagesByDate = Lists.newArrayList();
 				for(int dateIndex=0; dateIndex<dates.size(); dateIndex++) {
 					List<Image> regionImages = Lists.newArrayList();
@@ -123,7 +121,6 @@ public class GetRegions extends GetImages {
 //					imageFileNames.put(regionName, fileName);
 //				}
 				for(Date date: dates) {
-					System.out.println(getRegionDateDirectory(date));
 					Region region = new Region(getRegionDateDirectory(date), columns, rows);
 					Image regionImage = region.getImage();
 					String regionName = regionAddress + dateFormat.format(date);
@@ -169,12 +166,9 @@ public class GetRegions extends GetImages {
 		double regionXDistance = 
 			LatLngTool.distance(northwestLatLng, northeastLatLng, 
 				LengthUnit.KILOMETER );
-		System.out.println(regionXDistance);
 		double imageWidth = Image.getScreenWidth() - xCropFactor;
 		double imageXDistance = GoogleEarth.SCALE * imageWidth;
 		double xRatio = imageXDistance/regionXDistance;
-		System.out.println(xRatio);
-		System.out.println(Math.abs(eastLongitude - westLongitude));
 		return Math.abs((eastLongitude - westLongitude)*xRatio);
 	}
 
@@ -185,12 +179,9 @@ public class GetRegions extends GetImages {
 		double regionYDistance = 
 			LatLngTool.distance(northwestLatLng, southwestLatLng, 
 				LengthUnit.KILOMETER );
-		System.out.println(regionYDistance);
 		double imageHeight = Image.getScreenHeight() - yCropFactor;
 		double imageYDistance = GoogleEarth.SCALE * imageHeight;
 		double yRatio = imageYDistance/regionYDistance;
-		System.out.println(yRatio);
-		System.out.println(Math.abs(northLatitude - southLatitude));
 		return Math.abs((northLatitude - southLatitude)*yRatio);
 	}
 }

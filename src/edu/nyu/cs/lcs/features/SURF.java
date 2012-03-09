@@ -15,7 +15,7 @@ public class SURF extends Feature {
 	public void setValue(Image image) {
 		Integer a = (Integer) options.get("a");
 		Integer i = (Integer) options.get("i");
-		value = (float) image.getSURF().get(a)[i];
+		value = image.getSURF().get(a)[i];
 	}
 	
 	@Override

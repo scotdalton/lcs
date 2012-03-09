@@ -15,8 +15,7 @@ public class DCT extends Feature {
 	public void setValue(Image image) {
 		Integer x = (Integer) options.get("x");
 		Integer y = (Integer) options.get("y");
-		value = 
-			(float) image.getDiscreteCosineTransform().getSample(x, y, 0);
+		value = image.getDiscreteCosineTransform().getSample(x, y, 0);
 	}
 	
 	@Override

@@ -16,8 +16,7 @@ public class GradientMagnitude extends Feature {
 		Integer x = (Integer) options.get("x");
 		Integer y = (Integer) options.get("y");
 		Integer b = (Integer) options.get("b");
-		value = 
-			(float) image.getGradientMagnitude().getSample(x, y, b);
+		value = image.getGradientMagnitude().getSample(x, y, b);
 	}
 	
 	@Override

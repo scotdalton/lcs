@@ -15,8 +15,7 @@ public class DCTDownSample extends Feature {
 	public void setValue(Image image) {
 		Integer x = (Integer) options.get("x");
 		Integer y = (Integer) options.get("y");
-		value = 
-			(float) image.getDiscreteCosineTransform().getDownSample(x, y, 0);
+		value = image.getDiscreteCosineTransform().getDownSample(x, y, 0);
 	}
 	
 	@Override

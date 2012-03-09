@@ -73,7 +73,6 @@ public class Geocoder {
 			geocoderURLString += 
 				"latlng="+latitude+","+longitude;
 		}
-		System.out.println(geocoderURLString);
 		URL geocoderURL = new URL(geocoderURLString);
 		JSONObject geocoding = 
 			new JSONObject(new JSONTokener(geocoderURL.openStream()));
@@ -86,7 +85,6 @@ public class Geocoder {
 
 	private void processGeocoding(String address) throws Exception {
 		geocoding = getGeocoding(address);
-		System.out.println(geocoding);
 		JSONObject results = 
 			geocoding.getJSONArray("results").getJSONObject(0);
 		this.address = results.getString("formatted_address");
