@@ -28,7 +28,7 @@ import edu.nyu.cs.lcs.utility.ImageFactory;
  * @author Scot Dalton
  *
  */
-public class GetImages extends ArabilityAction {
+public class GetImages extends LcsAction {
 
 	private static final long serialVersionUID = -5852278101756597007L;
 
@@ -96,7 +96,7 @@ public class GetImages extends ArabilityAction {
 					imageFileNames.put(imageName, fileName);
 					capturedImages.put(imageName, image);
 				}
-				arabilityFrame.setImageFileNames(imageFileNames);
+				lcsFrame.setImageFileNames(imageFileNames);
 				ImageTabbedPane imageTabbedPane = new ImageTabbedPane(capturedImages);
 				resultsPanel.removeAll();
 				resultsPanel.add(imageTabbedPane);

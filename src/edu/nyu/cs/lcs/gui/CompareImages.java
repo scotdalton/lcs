@@ -22,7 +22,7 @@ import edu.nyu.cs.lcs.UnknownImage;
  * @author Scot Dalton
  *
  */
-public class CompareImages extends ArabilityAction {
+public class CompareImages extends LcsAction {
 	
 	private static final long serialVersionUID = -5644593796043614642L;
 
@@ -37,7 +37,7 @@ public class CompareImages extends ArabilityAction {
 		JButton compareButton = (JButton) event.getSource();
 		setComponentsFromButton(compareButton);
 		try {
-			Map<String, String> imageFileNames = arabilityFrame.getImageFileNames(); 
+			Map<String, String> imageFileNames = lcsFrame.getImageFileNames(); 
 		    Iterator<Map.Entry<String, String>> imageFileNameIterator = 
 	    			imageFileNames.entrySet().iterator();
 		    Map<String, Image> unknownImages = Maps.newLinkedHashMap();

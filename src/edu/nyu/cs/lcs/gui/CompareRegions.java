@@ -28,7 +28,7 @@ public class CompareRegions extends CompareImages {
 		JButton compareButton = (JButton) event.getSource();
 		setComponentsFromButton(compareButton);
 		try {
-			Map<String, String> imageFileNames = arabilityFrame.getImageFileNames(); 
+			Map<String, String> imageFileNames = lcsFrame.getImageFileNames(); 
 			Iterator<Map.Entry<String, String>> imageFileNameIterator = 
 			imageFileNames.entrySet().iterator();
 			Map<String, Image> unknownRegionImages = Maps.newLinkedHashMap();

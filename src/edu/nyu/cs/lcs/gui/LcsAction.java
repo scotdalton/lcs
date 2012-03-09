@@ -16,10 +16,10 @@ import javax.swing.SwingUtilities;
  * @author Scot Dalton
  *
  */
-public abstract class ArabilityAction extends AbstractAction {
+public abstract class LcsAction extends AbstractAction {
 
 	private static final long serialVersionUID = -7738053606176155146L;
-	ArabilityFrame arabilityFrame;
+	LcsFrame lcsFrame;
 	JSplitPane arabilitySplitPane;
 	JTabbedPane arabilityTabbedPane;
 	JPanel addressPanel;
@@ -48,12 +48,12 @@ public abstract class ArabilityAction extends AbstractAction {
 	/**
 	 * @param string
 	 */
-	public ArabilityAction(String string) {
+	public LcsAction(String string) {
 		super(string);
 	}
 	
 	void setComponentsFromButton(JButton button) {
-		arabilityFrame = (ArabilityFrame) SwingUtilities.getRoot(button);
+		lcsFrame = (LcsFrame) SwingUtilities.getRoot(button);
 		arabilitySplitPane = (JSplitPane) SwingUtilities.
 			getAncestorOfClass(JSplitPane.class, button);
 		arabilityTabbedPane = (JTabbedPane)arabilitySplitPane.getComponent(1);

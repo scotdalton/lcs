@@ -132,7 +132,7 @@ public class GetRegions extends GetImages {
 					regionImage.persist(fileName);
 					imageFileNames.put(regionName, fileName);
 				}
-				arabilityFrame.setImageFileNames(imageFileNames);
+				lcsFrame.setImageFileNames(imageFileNames);
 				ImageTabbedPane imageTabbedPane = new ImageTabbedPane(capturedImages);
 				resultsPanel.removeAll();
 				resultsPanel.add(imageTabbedPane);

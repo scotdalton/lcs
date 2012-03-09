@@ -18,7 +18,7 @@ import edu.nyu.cs.lcs.utility.FileUtil;
  * @author Scot Dalton
  *
  */
-public class SaveImages extends ArabilityAction {
+public class SaveImages extends LcsAction {
 
 	private static final long serialVersionUID = 1431883738094298260L;
 
@@ -43,7 +43,7 @@ public class SaveImages extends ArabilityAction {
 				resultsPanel.getComponent(0) instanceof ImageTabbedPane) {
 			ImageTabbedPane imageTabbedPane = 
 				(ImageTabbedPane) resultsPanel.getComponent(0);
-			FileDialog fileDialog = new FileDialog(arabilityFrame, title, FileDialog.SAVE);
+			FileDialog fileDialog = new FileDialog(lcsFrame, title, FileDialog.SAVE);
 			fileDialog.setFile(filename + ".zip");
 			fileDialog.setFilenameFilter(new ZipFileNameFilter());
 			fileDialog.setVisible(true);

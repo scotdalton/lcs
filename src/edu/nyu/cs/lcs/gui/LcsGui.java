@@ -25,7 +25,7 @@ import javax.swing.SwingUtilities;
  * @author Scot Dalton
  *
  */
-public class ArabilityGui {
+public class LcsGui {
 
 	/**
 	 * @param args
@@ -40,8 +40,8 @@ public class ArabilityGui {
 
 	private static void createAndShowGUI() {
 		//Create and set up the window.
-		ArabilityFrame arabilityFrame = new ArabilityFrame();
-		arabilityFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		LcsFrame lcsFrame = new LcsFrame();
+		lcsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Set up address tab.
 		// Actions
@@ -206,11 +206,11 @@ public class ArabilityGui {
 		arabilitySplitPane.add(resultsPanel);
 
 		// Add split pane to the frame. 
-		arabilityFrame.add(arabilitySplitPane);
+		lcsFrame.add(arabilitySplitPane);
 
 		// Display the window.
-		arabilityFrame.pack();
-		arabilityFrame.setVisible(true);
-		arabilityFrame.setExtendedState(arabilityFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		lcsFrame.pack();
+		lcsFrame.setVisible(true);
+		lcsFrame.setExtendedState(lcsFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 	}
 }

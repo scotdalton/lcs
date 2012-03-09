@@ -12,12 +12,12 @@ import javax.swing.JFrame;
  * @author Scot Dalton
  *
  */
-public class ArabilityFrame extends JFrame {
+public class LcsFrame extends JFrame {
 
 	private static final long serialVersionUID = 4712853905673136405L;
 	private Map<String, String> imageFileNames;
 	
-	public ArabilityFrame() {
+	public LcsFrame() {
 		super("Classify Arability");
 	}
 
