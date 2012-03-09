@@ -428,7 +428,7 @@ public class Image {
 	 */
 	public Classification getClassification() throws Exception {
 		if(classification == null)
-			trainedModel.classifyImage(this);
+			classification = trainedModel.classifyImage(this);
 		return classification;
 	}
 	

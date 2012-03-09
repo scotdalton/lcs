@@ -6,19 +6,15 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/javacpp.jar"/>
 	<classpathentry kind="lib" path="lib/javacv-macosx-x86_64.jar"/>
-	<classpathentry kind="lib" path="lib/javacv.jar" sourcepath="javacv/src"/>
-	<classpathentry kind="lib" path="lib/jwave.jar" sourcepath="jwave/src"/>
+	<classpathentry kind="lib" path="lib/javacv.jar"/>
+	<classpathentry kind="lib" path="lib/jwave.jar"/>
 	<classpathentry kind="lib" path="lib/guava-10.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/weka.jar" sourcepath="weka-3-6-5/weka-src.jar"/>
-	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar" sourcepath="Jama"/>
+	<classpathentry kind="lib" path="lib/weka.jar"/>
+	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/boofcv-v0.2.jar"/>
 	<classpathentry kind="lib" path="lib/libpja.jar"/>
 	<classpathentry kind="lib" path="lib/simplelatlng-1.0.1.jar" sourcepath="lib/simplelatlng-1.0.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-2.1.jar" sourcepath="commons-io-2.1/commons-io-2.1-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/google_earth/commons-io-2.1/commons-io-2.1-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-io-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/javax.inject.jar"/>

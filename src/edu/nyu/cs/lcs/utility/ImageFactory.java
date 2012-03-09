@@ -3,12 +3,12 @@
  */
 package edu.nyu.cs.lcs.utility;
 
-import static edu.nyu.cs.lcs.utility.Configuration.*;
-
+import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import com.google.common.collect.Lists;
 
@@ -33,7 +33,10 @@ public class ImageFactory {
 	public static Image getImage(Kml kml, int xCropFactor, int yCropFactor, 
 			int waitForKml, Date date) throws Exception {
 		Image image = null;
-		String kmlFileName = TMP_KML_DIRECTORY+"/kml.kml";
+		Properties kmlProperties = new Properties();
+		kmlProperties.load(new FileReader("./config/kml.properties"));
+		String kmlFileName = kmlProperties.getProperty("directory")+ 
+			"/"+ kmlProperties.getProperty("file");
 		kml.persistToFile(kmlFileName);
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		googleEarth.launch();
