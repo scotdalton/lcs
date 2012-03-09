@@ -4,13 +4,15 @@
 		Provide a clean build of the land classification system, package
 		as a jar with the GUI as the manifes class.
 	</description>
-	<property name="src" location="src" />
+  <property name="root" location="." />
+  <property name="src" location="src" />
 	<property name="lib"  location="lib" />
 	<property name="build" location="bin" />
 	<property name="dist"  location="dist" />
+	<property name="config"  location="config" />
+	<property name="classifiers"  location=".classifiers" />
 	<fileset dir="${lib}" id="lib.jars" includes="**/*.jar" />
   <pathconvert property="javac.classpath" refid="lib.jars" /> 
-  <pathconvert property="manifest.classpath" refid="lib.jars" pathsep=" " /> 
 
 
 	<target name="clean" description="Clean up the build and dist directories">
@@ -22,6 +24,22 @@
 		<!-- Create the time stamp -->
 		<tstamp />
 		<mkdir dir="${build}" />
+    <mkdir dir="${dist}/lib" />
+    <copy todir="${dist}/lib">
+      <fileset dir="${lib}" includes="**/*.jar" />
+    </copy>
+    <fileset dir="${dist}/lib" id="dist.jars" includes="**/*.jar" />
+    <pathconvert property="manifest.classpath" refid="dist.jars" pathsep=" " /> 
+    <mkdir dir="${dist}/config" />
+    <copy todir="${dist}/config">
+      <fileset dir="${config}" includes="**/*.properties" />
+    </copy>
+    <mkdir dir="${dist}/.classifiers" />
+    <copy todir="${dist}/.classifiers">
+      <fileset dir="${classifiers}" includes="**/*.model" />
+      <fileset dir="${classifiers}" includes="**/*.set" />
+      </copy>
+    <mkdir dir="${dist}/.kml" />
 	</target>
 
 	<target name="compile" depends="init" description="Compile the source into the build directory">
@@ -29,10 +47,13 @@
 			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
-
-	<target name ="jar" depends="compile" description="Generate the distribution.">
-		<mkdir dir="${dist}/lib" />
-		<jar jarfile="${dist}/lib/lcs-${DSTAMP}.jar" basedir="${build}">
+	
+	<target name="jar" depends="compile" description="Generate the distribution.">
+		<jar jarfile="${dist}/lib/lcs-${DSTAMP}.jar">
+		  <fileset dir="${build}"/>
+      <fileset dir="${root}" includes="**/*.model" />
+      <fileset dir="${root}" includes="**/*.set" />
+      <fileset dir="${root}" includes="**/*.properties" />
 			<manifest>
 				<attribute name="Main-Class" value="edu.nyu.cs.lcs.gui.LcsGui" />
 				<attribute name="Class-Path" value="${manifest.classpath}" />
