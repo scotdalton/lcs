@@ -20,9 +20,10 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.utility.Configuration;
 import edu.nyu.cs.lcs.utility.Geocoder;
-import edu.nyu.cs.lcs.utility.ImageFactory;
+import edu.nyu.cs.lcs.utility.ImageUtil;
 
 /**
  * @author Scot Dalton
@@ -32,8 +33,8 @@ public class GetImages extends LcsAction {
 
 	private static final long serialVersionUID = -5852278101756597007L;
 
-	public GetImages() {
-		super("Get Images");
+	public GetImages(TrainedModel trainedModel) {
+		super("Get Images", trainedModel);
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
 		setEnabled(true);
 	}
@@ -85,7 +86,7 @@ public class GetImages extends LcsAction {
 			List<Image> images;
 			try {
 				Collections.reverse(dates);
-				images = ImageFactory.getImagesForDates(dates, longitude, latitude, address, xCropFactor, yCropFactor, waitTime);
+				images = ImageUtil.getImagesForDates(dates, longitude, latitude, address, xCropFactor, yCropFactor, waitTime);
 				Map<String, String> imageFileNames = Maps.newLinkedHashMap();
 				Map<String, Image> capturedImages = Maps.newLinkedHashMap();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("' circa 'yyyy");

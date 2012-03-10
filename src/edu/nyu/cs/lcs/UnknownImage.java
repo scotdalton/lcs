@@ -23,8 +23,9 @@ public class UnknownImage extends Image {
 	 * @param imageFileName
 	 * @throws Exception 
 	 */
-	public UnknownImage(String imageFileName) throws Exception {
-		super(imageFileName);
+	public UnknownImage(String imageFileName, TrainedModel trainedModel)
+			throws Exception {
+		super(imageFileName, trainedModel);
 		processArability();
 	}
 	

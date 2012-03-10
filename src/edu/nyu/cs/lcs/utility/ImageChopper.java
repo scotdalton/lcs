@@ -22,7 +22,7 @@ public class ImageChopper {
 			if (arg.startsWith("imageDirectory="))
 				imageDirectory=arg.split("=")[1];
 		for(File file: FileUtil.getFiles(new File(imageDirectory))) {
-			Image image = new Image(file);
+			Image image = new Image(file, null);
 			List<Image> choppedImages = image.getChoppedImages();
 			File choppedDir = new File(imageDirectory+"/chopped");
 			if(!choppedDir.exists()) {

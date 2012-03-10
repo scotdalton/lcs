@@ -16,6 +16,6 @@ import edu.nyu.cs.lcs.classifications.Classification;
 public class KnownImage extends Image {
 
 	public KnownImage(File imageFile, Classification classfication) {
-		super(imageFile, classfication);
+		super(imageFile, classfication, null);
 	}
 }

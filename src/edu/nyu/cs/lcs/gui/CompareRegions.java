@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.UnknownImage;
 
 /**
@@ -20,6 +21,13 @@ import edu.nyu.cs.lcs.UnknownImage;
  *
  */
 public class CompareRegions extends CompareImages {
+
+	/**
+	 * @param trainedModel
+	 */
+	public CompareRegions(TrainedModel trainedModel) {
+		super(trainedModel);
+	}
 
 	private static final long serialVersionUID = -5684742403384211626L;
 
@@ -37,14 +45,14 @@ public class CompareRegions extends CompareImages {
 			if(imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				fromImage = new UnknownImage(pair.getValue());
+				fromImage = new UnknownImage(pair.getValue(), trainedModel);
 				unknownRegionImages.put(imageName, fromImage);
 				unknownRegionImages.put(imageName + " Classification Map", fromImage.getClassificationHeatMap());
 			}
 			while (imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				toImage = new UnknownImage(pair.getValue());
+				toImage = new UnknownImage(pair.getValue(), trainedModel);
 				unknownRegionImages.put(imageName, toImage);
 				unknownRegionImages.put(imageName + " Classification Map", toImage.getClassificationHeatMap());
 			}

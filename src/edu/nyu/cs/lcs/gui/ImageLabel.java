@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.TrainedModel;
 
 /**
  * @author Scot Dalton
@@ -21,11 +22,11 @@ public class ImageLabel extends JLabel {
 		super(new ImageIcon(image.getAsBufferedImage()));
 	}
 	
-	public ImageLabel(File file) {
-		this(new Image(file));
+	public ImageLabel(File file, TrainedModel trainedModel) {
+		this(new Image(file, trainedModel));
 	}
 	
-	public ImageLabel(String fileName) {
-		this(new Image(fileName));
+	public ImageLabel(String fileName, TrainedModel trainedModel) {
+		this(new Image(fileName, trainedModel));
 	}
 }

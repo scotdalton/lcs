@@ -70,7 +70,7 @@ public class ImageGrabber {
 					latitude > latitudeEnd; 
 						latitude = latitude - .125) {
 				List<Image> images = 
-					ImageFactory.getImagesForDates(dates, (float)longitude, (float)latitude, null, 5, 5);
+					ImageUtil.getImagesForDates(dates, (float)longitude, (float)latitude, null, 5, 5);
 				for(Image image: images) {
 //					if (image.isValid()) {
 						String imageName = longitude + "_" + latitude;

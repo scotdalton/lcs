@@ -3,15 +3,11 @@
  */
 package edu.nyu.cs.lcs;
 
-import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
@@ -63,7 +59,6 @@ import edu.nyu.cs.lcs.ImageModule.ChoppedHeight;
 import edu.nyu.cs.lcs.ImageModule.ChoppedWidth;
 import edu.nyu.cs.lcs.ImageModule.DownSampleSquareRoot;
 import edu.nyu.cs.lcs.classifications.Classification;
-import edu.nyu.cs.lcs.utility.FileUtil;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -75,6 +70,10 @@ import edu.nyu.cs.lcs.utility.FileUtil;
  * 
  */
 public class Image {
+	@Inject private TrainedModel trainedModel;
+	@Inject private float choppedWidth;
+	@Inject private float choppedHeight;
+	@Inject private int downSampleSquareRoot;
 	private RenderedImage renderedImage;
 	private ImageFloat32 imageFloat32;
 	private Image discreteCosineTransform;
@@ -84,17 +83,13 @@ public class Image {
 	private List<float[]> surf;
 	private Image greyscaleImage;
 	private Histogram histogram;
-	@Inject private TrainedModel trainedModel;
 	private int width;
 	private int height;
 	private int minX;
 	private int minY;
-	private int downSampleSquareRoot;
 	private float downSampleSize;
 	private float croppedWidth;
 	private float croppedHeight;
-	@Inject private float choppedWidth;
-	@Inject private float choppedHeight;
 	private int choppedColumns;
 	private int choppedRows;
 	private Classification classification;
@@ -137,117 +132,12 @@ public class Image {
 	};
 	private GradientKernel gradientKernel;
 
-	public static Image takeScreenShot(int xCropFactor, int yCropFactor, Date date, int delay) throws AWTException {
-		int width = (int) (getScreenWidth() - xCropFactor);
-		int height = (int) (getScreenHeight() - yCropFactor);
-		Rectangle rectangle = new Rectangle(xCropFactor/2, yCropFactor/2, 
-			width, height);
-		Robot robot = new Robot();
-		robot.setAutoWaitForIdle(true);
-		// Wait for 4 seconds.
-		robot.delay(delay);
-		return new Image(robot.createScreenCapture(rectangle), date);
-	}
-	
-	public static double getScreenWidth() {
-		return Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-	}
-	
-	public static double getScreenHeight() {
-		return Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-	}
-	
-	public static Image getImageForColor(int red, int green, int blue, int alpha) {
-		BufferedImage bufferedImage = 
-			new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-		Graphics graphics = bufferedImage.getGraphics();
-		graphics.setColor(new Color(red, green, blue, alpha));
-		graphics.fillRect(0, 0, 100, 100);
-		graphics.dispose();
-		return new Image(bufferedImage);
-	}
-	
-	public static Image getImageKeyForClassification(Classification classification) {
-		Image key = getImageForColor(classification.getRed(), classification.getGreen(), classification.getBlue(), classification.getAlpha());
-		BufferedImage bufferedImage = key.getAsBufferedImage();
-		Graphics graphics = bufferedImage.getGraphics();
-		graphics.setColor(Color.black);
-		graphics.setFont(new Font("Serif", Font.BOLD, 10));
-		FontMetrics fontMetrics = graphics.getFontMetrics();
-		int stringWidth = 
-			fontMetrics.stringWidth(classification.toString());
-		int x = key.getWidth() - stringWidth;
-		int y = fontMetrics.getHeight();
-		graphics.drawString(classification.toString(), x, y);
-		graphics.dispose();
-		//graphics.drawChars(classification.toString().toCharArray(), key.getMinX(), classification.toString().toCharArray().length, 0, 50);
-		return new Image(bufferedImage);
-	}
-	
-	public static Image getImageForRegion(File imageDirectory, int columns, int rows) {
-		List<File> imageFiles = 
-			FileUtil.getFilesSortedByLastModified(imageDirectory);
-		// Assume all images are the same size and date
-		Image firstImage = new Image(imageFiles.get(0));
-		Date regionImageDate = firstImage.getDate();
-		int regionImageWidth = firstImage.getWidth() * columns;
-		int regionImageHeight = firstImage.getHeight() * rows;
-		BufferedImage bufferedImage = 
-			new BufferedImage(regionImageWidth, regionImageHeight, BufferedImage.TYPE_INT_RGB);
-		Graphics graphics = bufferedImage.getGraphics();
-		int column = 0;
-		int row = 0;
-		// Start at top right (NE) and move down, then left
-		// Last image is lower left (SW)
-		for(int index = 0; index < imageFiles.size(); index++) {
-			if(rows <= index && index % rows == 0) {
-				// Increment column (left) and reset row
-				column ++; 
-				row = 0;
-			}
-			Image image = new Image(imageFiles.get(index));
-			int x = firstImage.getWidth() * (columns - 1 - column);
-			int y = image.getHeight() * row;
-			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
-			row++;
-		}
-		return new Image(bufferedImage, regionImageDate);
-	}
-
-	public static Image getImageForRegion(List<Image> images, int columns, int rows) {
-		// Assume all images are the same size and date
-		Image firstImage = images.get(0);
-		Date regionImageDate = firstImage.getDate();
-		int regionImageWidth = firstImage.getWidth() * columns;
-		int regionImageHeight = firstImage.getHeight() * rows;
-		BufferedImage bufferedImage = 
-			new BufferedImage(regionImageWidth, regionImageHeight, BufferedImage.TYPE_INT_RGB);
-		Graphics graphics = bufferedImage.getGraphics();
-		int column = 0;
-		int row = 0;
-		// Start at top right (NE) and move down, then left
-		// Last image is lower left (SW)
-		for(int index = 0; index < images.size(); index++) {
-			if(rows <= index && index % rows == 0) {
-				// Increment column (left) and reset row
-				column ++; 
-				row = 0;
-			}
-			Image image = images.get(index);
-			int x = firstImage.getWidth() * (columns - 1 - column);
-			int y = image.getHeight() * row;
-			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
-			row++;
-		}
-		return new Image(bufferedImage, regionImageDate);
-	}
-	
 	/**
 	 * Constructor for general use.
 	 * @param imageFileName
 	 */
-	public Image(String imageFileName) {
-		this(new File(imageFileName));
+	public Image(String imageFileName, TrainedModel trainedModel) {
+		this(new File(imageFileName), trainedModel);
 	}
 	
 	/**
@@ -255,16 +145,16 @@ public class Image {
 	 * @param imageFileName
 	 * @param date
 	 */
-	public Image(String imageFileName, Date date) {
-		this(new File(imageFileName), date);
+	public Image(String imageFileName, Date date, TrainedModel trainedModel) {
+		this(new File(imageFileName), date, trainedModel);
 	}
 	
 	/**
 	 * Constructor for general use.
 	 * @param imageFile
 	 */
-	public Image(File imageFile) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()));
+	public Image(File imageFile, TrainedModel trainedModel) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()), trainedModel);
 		this.name = imageFile.getName();
 	}
 	
@@ -273,8 +163,8 @@ public class Image {
 	 * @param imageFile
 	 * @param date
 	 */
-	public Image(File imageFile, Date date) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()));
+	public Image(File imageFile, Date date, TrainedModel trainedModel) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()), trainedModel);
 		this.name = imageFile.getName();
 		this.date = date;
 	}
@@ -294,6 +184,7 @@ public class Image {
 	 */
 	public Image(Image image) {
 		setDefaults();
+		trainedModel = image.trainedModel;
 		renderedImage = image.renderedImage;
 		setDimensions(this.renderedImage);
 		discreteCosineTransform = image.discreteCosineTransform;
@@ -309,8 +200,8 @@ public class Image {
 	 * @param imageFileName
 	 * @param classification
 	 */
-	protected Image(String imageFileName, Classification classification) {
-		this(new File(imageFileName), classification);
+	protected Image(String imageFileName, Classification classification, TrainedModel trainedModel) {
+		this(new File(imageFileName), classification, trainedModel);
 	}
 	
 	/**
@@ -318,8 +209,8 @@ public class Image {
 	 * @param imageFile
 	 * @param classification
 	 */
-	protected Image(File imageFile, Classification classification) {
-		this(imageFile);
+	protected Image(File imageFile, Classification classification, TrainedModel trainedModel) {
+		this(imageFile, trainedModel);
 		this.classification = classification;
 	}
 	
@@ -328,8 +219,8 @@ public class Image {
 	 * @param renderedImage
 	 * @param date
 	 */
-	private Image(RenderedImage renderedImage, Date date) {
-		this(renderedImage);
+	public Image(RenderedImage renderedImage, Date date, TrainedModel trainedModel) {
+		this(renderedImage, trainedModel);
 		this.date = date;
 	}
 	
@@ -337,7 +228,8 @@ public class Image {
 	 * Private constructor
 	 * @param renderedImage
 	 */
-	private Image(RenderedImage renderedImage) {
+	public Image(RenderedImage renderedImage, TrainedModel trainedModel) {
+		this.trainedModel = trainedModel;
 		setDefaults();
 		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
 		if(skipChop(renderedImage))
@@ -385,7 +277,7 @@ public class Image {
 				graphics.drawString(choppedImage.getClassification().toString(), x, y);
 			}
 			graphics.dispose();
-			classificationHeatMap = new Image(bufferedImage);
+			classificationHeatMap = new Image(bufferedImage, trainedModel);
 		}
 		return classificationHeatMap;
 	}
@@ -418,7 +310,7 @@ public class Image {
 				graphics.drawString(fromToString, stringX, stringY);
 			}
 		}
-		return new Image(bufferedImage);
+		return new Image(bufferedImage, trainedModel);
 	}
 	
 	/**
@@ -442,7 +334,7 @@ public class Image {
 		graphics.setColor(new Color(red, green, blue, alpha));
 		graphics.fillRect(0, 0, width, height);
 		graphics.dispose();
-		return new Image(bufferedImage);
+		return new Image(bufferedImage, trainedModel);
 	}
 	
 	/**
@@ -575,7 +467,7 @@ public class Image {
 			RenderingHints greyscaleRH = 
 				new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
 			greyscaleImage = 
-				new Image(JAI.create("ColorConvert", greyscalePB, greyscaleRH));
+				new Image(JAI.create("ColorConvert", greyscalePB, greyscaleRH), trainedModel);
 		}
 		return greyscaleImage;
 	}
@@ -608,7 +500,7 @@ public class Image {
 			ParameterBlock dctPB = 
 				(new ParameterBlock()).addSource(getGreyscaleImage().renderedImage);
 			discreteCosineTransform = 
-				new Image(JAI.create("dct", dctPB, null));
+				new Image(JAI.create("dct", dctPB, null), trainedModel);
 		}
 		return discreteCosineTransform;
 	}
@@ -621,7 +513,7 @@ public class Image {
 	public Image getInverseDiscreteCosineTransform() {
 		ParameterBlock idctParams = (new ParameterBlock()).
 			addSource(getDiscreteCosineTransform().renderedImage);
-		return new Image(JAI.create("idct", idctParams, null));
+		return new Image(JAI.create("idct", idctParams, null), trainedModel);
 	}
 	
 	public Image getGradientMagnitude() {
@@ -662,14 +554,14 @@ public class Image {
 			new RenderingHints(JAI.KEY_BORDER_EXTENDER, convolutionBorderExtender);
  
 		return new Image((PlanarImage) JAI.create("convolve", renderedImage, 
-			new KernelJAI(width, height, data), convolutionRH));
+			new KernelJAI(width, height, data), convolutionRH), trainedModel);
 	}
 	
 	public Image overlay(Image image) {
 		ParameterBlock overlayParams = 
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
-		return new Image(JAI.create("overlay", overlayParams));
+		return new Image(JAI.create("overlay", overlayParams), trainedModel);
 	}
 	
 	/**
@@ -681,7 +573,7 @@ public class Image {
 		ParameterBlock addParams = 
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
-		return new Image(JAI.create("add", addParams));
+		return new Image(JAI.create("add", addParams), trainedModel);
 	}
 	
 	/**
@@ -693,7 +585,7 @@ public class Image {
 		ParameterBlock subtractParams = 
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
-		return new Image(JAI.create("subtract", subtractParams));
+		return new Image(JAI.create("subtract", subtractParams), trainedModel);
 	}
 	
 	public InputStream getAsInputStream() throws Exception {
@@ -764,7 +656,7 @@ public class Image {
 	     // Create the Gradient operation.
 		Image gradientMagnitude = 
 			new Image(JAI.create("gradientmagnitude", renderedImage,
-				horizontalKernel, verticalKernel));
+				horizontalKernel, verticalKernel), trainedModel);
 		return gradientMagnitude;
 	}
 	
@@ -783,7 +675,7 @@ public class Image {
 			RenderedOp combiner = (RenderedOp) add(this).renderedImage;
 			ImagePyramid pyramid = 
 				new ImagePyramid(renderedImage, downSampler, upSampler, differencer, combiner);
-			downImage = new Image(pyramid.getDownImage());
+			downImage = new Image(pyramid.getDownImage(), trainedModel);
 		}
 		return downImage;
 	}
@@ -882,7 +774,7 @@ public class Image {
 			float width, float height) {
 		Image croppedImage = 
 			new Image(crop(image.renderedImage, 
-				originX, originY, width, height));
+				originX, originY, width, height), trainedModel);
 		// If the (parent) image has a classification, 
 		// it's crop (child) has the same classification 
 		if(classification != null)
@@ -941,11 +833,6 @@ public class Image {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Injector trainedModelInjector;
-		trainedModelInjector = 
-			Guice.createInjector(new TrainedModelModule());
-		trainedModel = 
-			trainedModelInjector.getInstance(TrainedModel.class);
 		gradientKernel = GradientKernel.SOBEL;
 	}
 }

@@ -6,6 +6,8 @@ package edu.nyu.cs.lcs;
 import java.io.File;
 import java.util.List;
 
+import edu.nyu.cs.lcs.utility.ImageUtil;
+
 /**
  * @author Scot Dalton
  *
@@ -32,10 +34,10 @@ public class Region {
 	public Image getImage() {
 		if(image == null)
 			if(images != null)
-				image = Image.getImageForRegion(images, columns, rows);
+				image = ImageUtil.getImageForRegion(images, columns, rows);
 			else if(imageDirectory != null)
 				image = 
-					Image.getImageForRegion(imageDirectory, columns, rows);
+					ImageUtil.getImageForRegion(imageDirectory, columns, rows);
 			else
 				throw new NullPointerException("Neither image nor image directory was defined.");
 		return image;

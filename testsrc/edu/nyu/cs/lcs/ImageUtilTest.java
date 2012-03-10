@@ -14,7 +14,6 @@ import java.util.List;
 import org.junit.Test;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.utility.ImageFactory;
 import edu.nyu.cs.lcs.utility.kml.Camera;
 import edu.nyu.cs.lcs.utility.kml.Document;
 import edu.nyu.cs.lcs.utility.kml.Kml;
@@ -24,7 +23,7 @@ import edu.nyu.cs.lcs.utility.kml.Placemark;
  * @author Scot Dalton
  *
  */
-public class ImageFactoryTest {
+public class ImageUtilTest {
 	@Test
 	public void testGetImage() throws Exception {
 		double latitude = -1.30785;
@@ -58,7 +57,7 @@ public class ImageFactoryTest {
 		List<Document> documents = new ArrayList<Document>();
 		documents.add(document);
 		Kml kml = new Kml.Builder().documents(documents).build();
-		Image image = ImageFactory.getImage(kml, 5, 5, 5000);
+		Image image = ImageUtil.getImage(kml, 5, 5, 5000);
 		String fileName = IMAGE_PATH + "/captured/image.png";
 		image.persist(fileName);
 	}

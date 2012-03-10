@@ -11,9 +11,6 @@
 	<property name="dist"  location="dist" />
 	<property name="config"  location="config" />
 	<property name="classifiers"  location=".classifiers" />
-	<fileset dir="${lib}" id="lib.jars" includes="**/*.jar" />
-  <pathconvert property="javac.classpath" refid="lib.jars" /> 
-
 
 	<target name="clean" description="Clean up the build and dist directories">
 		<delete dir="${build}"/>
@@ -24,12 +21,10 @@
 		<!-- Create the time stamp -->
 		<tstamp />
 		<mkdir dir="${build}" />
-    <mkdir dir="${dist}/lib" />
+		<mkdir dir="${dist}/lib" />
     <copy todir="${dist}/lib">
       <fileset dir="${lib}" includes="**/*.jar" />
     </copy>
-    <fileset dir="${dist}/lib" id="dist.jars" includes="**/*.jar" />
-    <pathconvert property="manifest.classpath" refid="dist.jars" pathsep=" " /> 
     <mkdir dir="${dist}/config" />
     <copy todir="${dist}/config">
       <fileset dir="${config}" includes="**/*.properties" />
@@ -43,12 +38,16 @@
 	</target>
 
 	<target name="compile" depends="init" description="Compile the source into the build directory">
+		<fileset dir="${lib}" id="lib.jars" includes="**/*.jar" />
+		<pathconvert property="javac.classpath" refid="lib.jars" /> 
 		<javac srcdir="${src}" destdir="${build}" classpath="${javac.classpath}" includeantruntime="false">
 			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
 	
 	<target name="jar" depends="compile" description="Generate the distribution.">
+		<fileset dir="${dist}/lib" id="dist.jars" includes="**/*.jar" />
+		<pathconvert property="manifest.classpath" refid="dist.jars" pathsep=" " /> 
 		<jar jarfile="${dist}/lib/lcs-${DSTAMP}.jar">
 		  <fileset dir="${build}"/>
       <fileset dir="${root}" includes="**/*.model" />

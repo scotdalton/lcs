@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.UnknownImage;
 
 
@@ -26,8 +27,8 @@ public class CompareImages extends LcsAction {
 	
 	private static final long serialVersionUID = -5644593796043614642L;
 
-	public CompareImages() {
-		super("Classify/Compare");
+	public CompareImages(TrainedModel trainedModel) {
+		super("Classify/Compare", trainedModel);
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_B);
 		setEnabled(true);
 	}
@@ -46,14 +47,14 @@ public class CompareImages extends LcsAction {
 		    if(imageFileNameIterator.hasNext()) {
 		        Map.Entry<String, String> pair = imageFileNameIterator.next();
 		        String imageName = pair.getKey(); 
-		        fromImage = new UnknownImage(pair.getValue());
+		        fromImage = new UnknownImage(pair.getValue(), trainedModel);
 		        unknownImages.put(imageName, fromImage);
 		        unknownImages.put(imageName + " Classification Map", fromImage.getClassificationHeatMap());
 		    }
 		    while (imageFileNameIterator.hasNext()) {
 		        Map.Entry<String, String> pair = imageFileNameIterator.next();
 		        String imageName = pair.getKey(); 
-		        toImage = new UnknownImage(pair.getValue());
+		        toImage = new UnknownImage(pair.getValue(), trainedModel);
 		        unknownImages.put(imageName, toImage);
 		        unknownImages.put(imageName + " Classification Map", toImage.getClassificationHeatMap());
 		    }

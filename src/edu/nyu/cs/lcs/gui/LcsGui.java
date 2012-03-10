@@ -21,6 +21,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
+import edu.nyu.cs.lcs.TrainedModel;
+import edu.nyu.cs.lcs.TrainedModelModule;
+
 /**
  * @author Scot Dalton
  *
@@ -39,16 +45,20 @@ public class LcsGui {
 	}
 
 	private static void createAndShowGUI() {
+		Injector injector = 
+			Guice.createInjector(new TrainedModelModule());
+		TrainedModel trainedModel = 
+			injector.getInstance(TrainedModel.class);
 		//Create and set up the window.
 		LcsFrame lcsFrame = new LcsFrame();
 		lcsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Set up address tab.
 		// Actions
-		Action addressGetImages = new GetImages();
+		Action addressGetImages = new GetImages(trainedModel);
 		addressGetImages.putValue(Action.ACTION_COMMAND_KEY, "address");
-		Action addressCompare = new CompareImages();
-		Action addressSaveImages = new SaveImages();
+		Action addressCompare = new CompareImages(trainedModel);
+		Action addressSaveImages = new SaveImages(trainedModel);
 		// Elements
 		JLabel addressLabel = new JLabel("Address:");
 		addressLabel.setPreferredSize(new Dimension(100, 50));
@@ -79,9 +89,9 @@ public class LcsGui {
 		
 		// Set up region tab.
 		// Actions
-		Action regionGetImages = new GetRegions();
-		Action regionCompare = new CompareRegions();
-		Action regionSaveImages = new SaveRegions();
+		Action regionGetImages = new GetRegions(trainedModel);
+		Action regionCompare = new CompareRegions(trainedModel);
+		Action regionSaveImages = new SaveRegions(trainedModel);
 		// Elements
 		JLabel regionLabel = new JLabel("Region:");
 		regionLabel.setPreferredSize(new Dimension(100, 50));
@@ -112,10 +122,10 @@ public class LcsGui {
 		
 		// Set up latLng tab.
 		// Actions
-		Action latLngGetImages = new GetImages();
+		Action latLngGetImages = new GetImages(trainedModel);
 		latLngGetImages.putValue(Action.ACTION_COMMAND_KEY, "latLng");
-		Action latLngCompare = new CompareImages();
-		Action latLngSaveImages = new SaveImages();
+		Action latLngCompare = new CompareImages(trainedModel);
+		Action latLngSaveImages = new SaveImages(trainedModel);
 		// Elements
 		JLabel latitudeLabel = new JLabel("Latitude:");
 		JLabel longitudeLabel = new JLabel("Longitude:");

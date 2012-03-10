@@ -22,9 +22,10 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
 
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.Region;
+import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.utility.Configuration;
 import edu.nyu.cs.lcs.utility.Geocoder;
-import edu.nyu.cs.lcs.utility.ImageFactory;
+import edu.nyu.cs.lcs.utility.ImageUtil;
 import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
 
 /**
@@ -38,6 +39,10 @@ public class GetRegions extends GetImages {
 	private double eastLongitude = 0;
 	private double southLatitude = 0;
 	private double westLongitude = 0;
+
+	public GetRegions(TrainedModel trainedModel) {
+		super(trainedModel);
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
@@ -95,7 +100,7 @@ public class GetRegions extends GetImages {
 							latitude > (southLatitude); 
 								latitude = latitude - latitudeStepFactor) {
 						List<Image> dateImages = 
-							ImageFactory.getImagesForDates(dates, 
+							ImageUtil.getImagesForDates(dates, 
 								longitude, latitude, regionAddress, 
 									xCropFactor, yCropFactor, waitTime);
 //						for(int dateIndex = 0; dateIndex < dates.size(); dateIndex++) {
@@ -166,7 +171,7 @@ public class GetRegions extends GetImages {
 		double regionXDistance = 
 			LatLngTool.distance(northwestLatLng, northeastLatLng, 
 				LengthUnit.KILOMETER );
-		double imageWidth = Image.getScreenWidth() - xCropFactor;
+		double imageWidth = ImageUtil.getScreenWidth() - xCropFactor;
 		double imageXDistance = GoogleEarth.SCALE * imageWidth;
 		double xRatio = imageXDistance/regionXDistance;
 		return Math.abs((eastLongitude - westLongitude)*xRatio);
@@ -179,7 +184,7 @@ public class GetRegions extends GetImages {
 		double regionYDistance = 
 			LatLngTool.distance(northwestLatLng, southwestLatLng, 
 				LengthUnit.KILOMETER );
-		double imageHeight = Image.getScreenHeight() - yCropFactor;
+		double imageHeight = ImageUtil.getScreenHeight() - yCropFactor;
 		double imageYDistance = GoogleEarth.SCALE * imageHeight;
 		double yRatio = imageYDistance/regionYDistance;
 		return Math.abs((northLatitude - southLatitude)*yRatio);
