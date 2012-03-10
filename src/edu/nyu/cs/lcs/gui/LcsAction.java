@@ -12,8 +12,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import edu.nyu.cs.lcs.TrainedModel;
-
 /**
  * @author Scot Dalton
  *
@@ -21,7 +19,6 @@ import edu.nyu.cs.lcs.TrainedModel;
 public abstract class LcsAction extends AbstractAction {
 
 	private static final long serialVersionUID = -7738053606176155146L;
-	TrainedModel trainedModel;
 	LcsFrame lcsFrame;
 	JSplitPane arabilitySplitPane;
 	JTabbedPane arabilityTabbedPane;
@@ -51,9 +48,8 @@ public abstract class LcsAction extends AbstractAction {
 	/**
 	 * @param string
 	 */
-	public LcsAction(String string, TrainedModel trainedModel) {
+	public LcsAction(String string) {
 		super(string);
-		this.trainedModel = trainedModel;
 	}
 	
 	void setComponentsFromButton(JButton button) {

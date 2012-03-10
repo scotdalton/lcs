@@ -3,8 +3,6 @@
  */
 package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.lcs.utility.Configuration.IMAGE_PATH;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,7 +67,7 @@ public class TestTool {
 			List<Document> documents = new ArrayList<Document>();
 			documents.add(document);
 			Kml kml = new Kml.Builder().documents(documents).build();
-			String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
+			String fileName =  "tmp/"+imageName+".png";
 			Image image = ImageUtil.getImage(kml, 5, 5, 5000);
 			image.persist(fileName);
 			try {

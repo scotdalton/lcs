@@ -70,7 +70,6 @@ import edu.nyu.cs.lcs.classifications.Classification;
  * 
  */
 public class Image {
-	@Inject private TrainedModel trainedModel;
 	@Inject private float choppedWidth;
 	@Inject private float choppedHeight;
 	@Inject private int downSampleSquareRoot;
@@ -92,7 +91,7 @@ public class Image {
 	private float croppedHeight;
 	private int choppedColumns;
 	private int choppedRows;
-	private Classification classification;
+	protected Classification classification;
 	private Date date;
 	private String name;
 	private static final float[] FREI_CHEN_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
@@ -136,8 +135,8 @@ public class Image {
 	 * Constructor for general use.
 	 * @param imageFileName
 	 */
-	public Image(String imageFileName, TrainedModel trainedModel) {
-		this(new File(imageFileName), trainedModel);
+	public Image(String imageFileName) {
+		this(new File(imageFileName));
 	}
 	
 	/**
@@ -145,16 +144,16 @@ public class Image {
 	 * @param imageFileName
 	 * @param date
 	 */
-	public Image(String imageFileName, Date date, TrainedModel trainedModel) {
-		this(new File(imageFileName), date, trainedModel);
+	public Image(String imageFileName, Date date) {
+		this(new File(imageFileName), date);
 	}
 	
 	/**
 	 * Constructor for general use.
 	 * @param imageFile
 	 */
-	public Image(File imageFile, TrainedModel trainedModel) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()), trainedModel);
+	public Image(File imageFile) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()));
 		this.name = imageFile.getName();
 	}
 	
@@ -163,8 +162,8 @@ public class Image {
 	 * @param imageFile
 	 * @param date
 	 */
-	public Image(File imageFile, Date date, TrainedModel trainedModel) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()), trainedModel);
+	public Image(File imageFile, Date date) {
+		this(JAI.create("fileload", imageFile.getAbsolutePath()));
 		this.name = imageFile.getName();
 		this.date = date;
 	}
@@ -184,7 +183,6 @@ public class Image {
 	 */
 	public Image(Image image) {
 		setDefaults();
-		trainedModel = image.trainedModel;
 		renderedImage = image.renderedImage;
 		setDimensions(this.renderedImage);
 		discreteCosineTransform = image.discreteCosineTransform;
@@ -196,40 +194,20 @@ public class Image {
 	}
 
 	/**
-	 * Protected contructor for known images (training data).
-	 * @param imageFileName
-	 * @param classification
-	 */
-	protected Image(String imageFileName, Classification classification, TrainedModel trainedModel) {
-		this(new File(imageFileName), classification, trainedModel);
-	}
-	
-	/**
-	 * Protected contructor for known images (training data).
-	 * @param imageFile
-	 * @param classification
-	 */
-	protected Image(File imageFile, Classification classification, TrainedModel trainedModel) {
-		this(imageFile, trainedModel);
-		this.classification = classification;
-	}
-	
-	/**
-	 * Private constructor
+	 * Public constructor
 	 * @param renderedImage
 	 * @param date
 	 */
-	public Image(RenderedImage renderedImage, Date date, TrainedModel trainedModel) {
-		this(renderedImage, trainedModel);
+	public Image(RenderedImage renderedImage, Date date) {
+		this(renderedImage);
 		this.date = date;
 	}
 	
 	/**
-	 * Private constructor
+	 * Public constructor
 	 * @param renderedImage
 	 */
-	public Image(RenderedImage renderedImage, TrainedModel trainedModel) {
-		this.trainedModel = trainedModel;
+	public Image(RenderedImage renderedImage) {
 		setDefaults();
 		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
 		if(skipChop(renderedImage))
@@ -277,7 +255,7 @@ public class Image {
 				graphics.drawString(choppedImage.getClassification().toString(), x, y);
 			}
 			graphics.dispose();
-			classificationHeatMap = new Image(bufferedImage, trainedModel);
+			classificationHeatMap = new Image(bufferedImage);
 		}
 		return classificationHeatMap;
 	}
@@ -310,7 +288,7 @@ public class Image {
 				graphics.drawString(fromToString, stringX, stringY);
 			}
 		}
-		return new Image(bufferedImage, trainedModel);
+		return new Image(bufferedImage);
 	}
 	
 	/**
@@ -318,9 +296,7 @@ public class Image {
 	 * @return
 	 * @throws Exception
 	 */
-	public Classification getClassification() throws Exception {
-		if(classification == null)
-			classification = trainedModel.classifyImage(this);
+	public Classification getClassification() {
 		return classification;
 	}
 	
@@ -334,7 +310,7 @@ public class Image {
 		graphics.setColor(new Color(red, green, blue, alpha));
 		graphics.fillRect(0, 0, width, height);
 		graphics.dispose();
-		return new Image(bufferedImage, trainedModel);
+		return new Image(bufferedImage);
 	}
 	
 	/**
@@ -467,7 +443,7 @@ public class Image {
 			RenderingHints greyscaleRH = 
 				new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
 			greyscaleImage = 
-				new Image(JAI.create("ColorConvert", greyscalePB, greyscaleRH), trainedModel);
+				new Image(JAI.create("ColorConvert", greyscalePB, greyscaleRH));
 		}
 		return greyscaleImage;
 	}
@@ -500,7 +476,7 @@ public class Image {
 			ParameterBlock dctPB = 
 				(new ParameterBlock()).addSource(getGreyscaleImage().renderedImage);
 			discreteCosineTransform = 
-				new Image(JAI.create("dct", dctPB, null), trainedModel);
+				new Image(JAI.create("dct", dctPB, null));
 		}
 		return discreteCosineTransform;
 	}
@@ -513,7 +489,7 @@ public class Image {
 	public Image getInverseDiscreteCosineTransform() {
 		ParameterBlock idctParams = (new ParameterBlock()).
 			addSource(getDiscreteCosineTransform().renderedImage);
-		return new Image(JAI.create("idct", idctParams, null), trainedModel);
+		return new Image(JAI.create("idct", idctParams, null));
 	}
 	
 	public Image getGradientMagnitude() {
@@ -554,14 +530,14 @@ public class Image {
 			new RenderingHints(JAI.KEY_BORDER_EXTENDER, convolutionBorderExtender);
  
 		return new Image((PlanarImage) JAI.create("convolve", renderedImage, 
-			new KernelJAI(width, height, data), convolutionRH), trainedModel);
+			new KernelJAI(width, height, data), convolutionRH));
 	}
 	
 	public Image overlay(Image image) {
 		ParameterBlock overlayParams = 
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
-		return new Image(JAI.create("overlay", overlayParams), trainedModel);
+		return new Image(JAI.create("overlay", overlayParams));
 	}
 	
 	/**
@@ -573,7 +549,7 @@ public class Image {
 		ParameterBlock addParams = 
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
-		return new Image(JAI.create("add", addParams), trainedModel);
+		return new Image(JAI.create("add", addParams));
 	}
 	
 	/**
@@ -585,7 +561,7 @@ public class Image {
 		ParameterBlock subtractParams = 
 			new ParameterBlock().addSource(renderedImage).
 				addSource(image.renderedImage);
-		return new Image(JAI.create("subtract", subtractParams), trainedModel);
+		return new Image(JAI.create("subtract", subtractParams));
 	}
 	
 	public InputStream getAsInputStream() throws Exception {
@@ -656,7 +632,7 @@ public class Image {
 	     // Create the Gradient operation.
 		Image gradientMagnitude = 
 			new Image(JAI.create("gradientmagnitude", renderedImage,
-				horizontalKernel, verticalKernel), trainedModel);
+				horizontalKernel, verticalKernel));
 		return gradientMagnitude;
 	}
 	
@@ -675,7 +651,7 @@ public class Image {
 			RenderedOp combiner = (RenderedOp) add(this).renderedImage;
 			ImagePyramid pyramid = 
 				new ImagePyramid(renderedImage, downSampler, upSampler, differencer, combiner);
-			downImage = new Image(pyramid.getDownImage(), trainedModel);
+			downImage = new Image(pyramid.getDownImage());
 		}
 		return downImage;
 	}
@@ -774,7 +750,7 @@ public class Image {
 			float width, float height) {
 		Image croppedImage = 
 			new Image(crop(image.renderedImage, 
-				originX, originY, width, height), trainedModel);
+				originX, originY, width, height));
 		// If the (parent) image has a classification, 
 		// it's crop (child) has the same classification 
 		if(classification != null)

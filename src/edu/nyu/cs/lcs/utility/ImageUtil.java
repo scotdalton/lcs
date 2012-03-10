@@ -13,7 +13,9 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +25,6 @@ import java.util.Properties;
 import com.google.common.collect.Lists;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
 import edu.nyu.cs.lcs.utility.google_earth.GoogleEarthFactory;
@@ -37,7 +38,8 @@ import edu.nyu.cs.lcs.utility.kml.Placemark;
  *
  */
 public class ImageUtil {
-	private static TrainedModel trainedModel;
+	private static String kmlFilename;
+	
 	public static Image takeScreenShot(int xCropFactor, int yCropFactor, Date date, int delay) throws AWTException {
 		int width = (int) (getScreenWidth() - xCropFactor);
 		int height = (int) (getScreenHeight() - yCropFactor);
@@ -47,7 +49,7 @@ public class ImageUtil {
 		robot.setAutoWaitForIdle(true);
 		// Wait for 4 seconds.
 		robot.delay(delay);
-		return new Image(robot.createScreenCapture(rectangle), date, trainedModel);
+		return new Image(robot.createScreenCapture(rectangle), date);
 	}
 	
 	public static double getScreenWidth() {
@@ -65,7 +67,7 @@ public class ImageUtil {
 		graphics.setColor(new Color(red, green, blue, alpha));
 		graphics.fillRect(0, 0, 100, 100);
 		graphics.dispose();
-		return new Image(bufferedImage, trainedModel);
+		return new Image(bufferedImage);
 	}
 	
 	public static Image getImageKeyForClassification(Classification classification) {
@@ -82,14 +84,14 @@ public class ImageUtil {
 		graphics.drawString(classification.toString(), x, y);
 		graphics.dispose();
 		//graphics.drawChars(classification.toString().toCharArray(), key.getMinX(), classification.toString().toCharArray().length, 0, 50);
-		return new Image(bufferedImage, trainedModel);
+		return new Image(bufferedImage);
 	}
 	
 	public static Image getImageForRegion(File imageDirectory, int columns, int rows) {
 		List<File> imageFiles = 
 			FileUtil.getFilesSortedByLastModified(imageDirectory);
 		// Assume all images are the same size and date
-		Image firstImage = new Image(imageFiles.get(0), trainedModel);
+		Image firstImage = new Image(imageFiles.get(0));
 		Date regionImageDate = firstImage.getDate();
 		int regionImageWidth = firstImage.getWidth() * columns;
 		int regionImageHeight = firstImage.getHeight() * rows;
@@ -106,13 +108,13 @@ public class ImageUtil {
 				column ++; 
 				row = 0;
 			}
-			Image image = new Image(imageFiles.get(index), trainedModel);
+			Image image = new Image(imageFiles.get(index));
 			int x = firstImage.getWidth() * (columns - 1 - column);
 			int y = image.getHeight() * row;
 			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
 			row++;
 		}
-		return new Image(bufferedImage, regionImageDate, trainedModel);
+		return new Image(bufferedImage, regionImageDate);
 	}
 
 	public static Image getImageForRegion(List<Image> images, int columns, int rows) {
@@ -140,7 +142,7 @@ public class ImageUtil {
 			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
 			row++;
 		}
-		return new Image(bufferedImage, regionImageDate, trainedModel);
+		return new Image(bufferedImage, regionImageDate);
 	}
 	
 	public static Image getImage(Kml kml, int xCropFactor, int yCropFactor, 
@@ -151,17 +153,24 @@ public class ImageUtil {
 	public static Image getImage(Kml kml, int xCropFactor, int yCropFactor, 
 			int waitForKml, Date date) throws Exception {
 		Image image = null;
-		Properties kmlProperties = new Properties();
-		kmlProperties.load(new FileReader("./config/kml.properties"));
-		String kmlFileName = kmlProperties.getProperty("directory")+ 
-			"/"+ kmlProperties.getProperty("file");
-		kml.persistToFile(kmlFileName);
+		kml.persistToFile(getKmlFilename());
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		googleEarth.launch();
-		googleEarth.openKml(kmlFileName, waitForKml);
+		googleEarth.openKml(getKmlFilename(), waitForKml);
 		image = ImageUtil.takeScreenShot(xCropFactor, yCropFactor, date, 4000);
 		googleEarth.destroy();
 		return image;
+	}
+	
+	public static String getKmlFilename() 
+			throws FileNotFoundException, IOException {
+		if (kmlFilename == null) {
+			Properties kmlProperties = new Properties();
+			kmlProperties.load(new FileReader("./config/kml.properties"));
+			kmlFilename = kmlProperties.getProperty("directory")+ 
+			"/"+ kmlProperties.getProperty("file");
+		}
+		return kmlFilename;
 	}
 	
 	public static List<Image> getImagesForDates(List<Date> dates, 

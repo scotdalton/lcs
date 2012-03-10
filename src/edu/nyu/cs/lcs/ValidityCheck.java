@@ -3,8 +3,6 @@
  */
 package edu.nyu.cs.lcs;
 
-import edu.nyu.cs.lcs.utility.Configuration;
-
 /**
  * Some images are invalid, so we have some checks validity.
  * 
@@ -16,7 +14,7 @@ public enum ValidityCheck {
 		boolean isValid(Image image) {
 			double[] means = image.getMeans();
 			for (double mean: means)
-				if (mean > Configuration.CLOUDY_MEAN_THRESHOLD) 
+				if (mean > CLOUDY_MEAN_THRESHOLD) 
 					return false;
 			return true;
 		}
@@ -27,7 +25,7 @@ public enum ValidityCheck {
 				image.getStandardDeviations();
 			for (double standardDeviation: standardDeviations)
 				if (standardDeviation < 
-						Configuration.BLURRY_STANDARD_DEVIATION_THRESHOLD) 
+						BLURRY_STANDARD_DEVIATION_THRESHOLD) 
 					return false;
 			return true;
 		}
@@ -36,12 +34,15 @@ public enum ValidityCheck {
 		boolean isValid(Image image) {
 			double[] means = image.getMeans();
 			for (double mean: means)
-				if (mean > Configuration.BRIGHT_MEAN_THRESHOLD) 
+				if (mean > BRIGHT_MEAN_THRESHOLD) 
 					return false;
 			return true;
 		}
 	};
 	
+	public final static double CLOUDY_MEAN_THRESHOLD = 230.0;
+	public final static double BLURRY_STANDARD_DEVIATION_THRESHOLD = 13.0;
+	public final static double BRIGHT_MEAN_THRESHOLD = 200.0;
 	abstract boolean isValid(Image image);
 	
 }

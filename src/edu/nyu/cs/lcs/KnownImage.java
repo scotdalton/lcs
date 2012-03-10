@@ -15,7 +15,23 @@ import edu.nyu.cs.lcs.classifications.Classification;
  */
 public class KnownImage extends Image {
 
-	public KnownImage(File imageFile, Classification classfication) {
-		super(imageFile, classfication, null);
+	/**
+	 * Public constructor for known images (training data).
+	 * @param imageFile
+	 * @param classfication
+	 */
+	public KnownImage(File imageFile, Classification classification) {
+		super(imageFile);
+		this.classification = classification;
 	}
+
+	/**
+	 * Public contructor for known images (training data).
+	 * @param imageFileName
+	 * @param classification
+	 */
+	public KnownImage(String imageFileName, Classification classification) {
+		this(new File(imageFileName), classification);
+	}
+	
 }

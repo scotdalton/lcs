@@ -11,12 +11,15 @@ import javax.swing.JFrame;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.Region;
 import edu.nyu.cs.lcs.TestUtility;
-import edu.nyu.cs.lcs.gui.ImageTabbedPane;
-import edu.nyu.cs.lcs.utility.Configuration;
+import edu.nyu.cs.lcs.TrainedModel;
+import edu.nyu.cs.lcs.TrainedModelModule;
+import edu.nyu.cs.lcs.UnknownImage;
 
 /**
  * @author Scot Dalton
@@ -28,9 +31,13 @@ public class ImageGui {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+		Injector injector = 
+			Guice.createInjector(new TrainedModelModule());
+		TrainedModel trainedModel = 
+			injector.getInstance(TrainedModel.class);
 		Map<String, Image> images = Maps.newLinkedHashMap();
 		for(String arg: args)
-			images.put(arg, new Image(arg));
+			images.put(arg, new UnknownImage(arg, trainedModel));
 		Image image1 = TestUtility.getTestImage1();
 		Image screenshot = TestUtility.getTestImage1();
 //		images.put("Johannesburg, South Africa 2003", image1);
@@ -56,10 +63,9 @@ public class ImageGui {
 		regionImages.add(image4);
 		regionImages.add(image5);
 		Region region = new Region(regionImages, 3, 2);
-//		Image regionImage = region.getImage();
-//		images.put("Region", regionImage);
-//		images.put("Region Classification", region.getClassificationHeatMap());
-//		regionImage.persist(Configuration.TMP_BASE_PATH+"/region.png");
+		Image regionImage = region.getImage();
+		images.put("Region", regionImage);
+		images.put("Region Classification", region.getClassificationHeatMap());
 		Image choppedImage = TestUtility.getTestImage1().getChoppedImages().get(0);
 //		images.put("Tamale_Ghana_1_20041004.png", image1);
 //		images.put("Classification", image.getChoppedImages().get(0).getClassificationOverlay());
@@ -77,9 +83,9 @@ public class ImageGui {
 //					choppedImage.getClassificationOverlay());
 		images.put("Image", choppedImage);
 		Image greyScale = choppedImage.getGreyscaleImage(); 
-//		images.put(choppedImage.getClassification() + " (" + choppedImage.getMinX() + ", " + choppedImage.getMinY() + ")", choppedImage.getClassificationOverlay());
-//		images.put("Greyscale", greyScale);
-//		images.put("Greyscale", choppedImage.convolve(100, 100, choppedImage.getDiscreteCosineTransform().getPixels((float[]) null)));
+		images.put(choppedImage.getClassification() + " (" + choppedImage.getMinX() + ", " + choppedImage.getMinY() + ")", choppedImage.getClassificationOverlay());
+		images.put("Greyscale", greyScale);
+		images.put("Greyscale", choppedImage.convolve(100, 100, choppedImage.getDiscreteCosineTransform().getPixels((float[]) null)));
 		Image surfImage = choppedImage.getGreyscaleImage(); 
 		for(int i=0; i<choppedImage.getSURF().size(); i++) {
 			surfImage = choppedImage.convolve(8, 8, choppedImage.getSURF().get(i));

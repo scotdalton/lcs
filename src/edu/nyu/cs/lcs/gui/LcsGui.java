@@ -8,6 +8,11 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -39,26 +44,35 @@ public class LcsGui {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createAndShowGUI();
+				try {
+					createAndShowGUI();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});	
 	}
 
-	private static void createAndShowGUI() {
+	private static void createAndShowGUI() 
+			throws FileNotFoundException, IOException {
 		Injector injector = 
 			Guice.createInjector(new TrainedModelModule());
 		TrainedModel trainedModel = 
 			injector.getInstance(TrainedModel.class);
+		Properties properties = new Properties();
+		properties.load(new FileReader("config/gui.properties"));
+		File persistDirectory = 
+			new File(properties.getProperty("persistDirectory"));
 		//Create and set up the window.
 		LcsFrame lcsFrame = new LcsFrame();
 		lcsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Set up address tab.
 		// Actions
-		Action addressGetImages = new GetImages(trainedModel);
+		Action addressGetImages = new GetImages(persistDirectory);
 		addressGetImages.putValue(Action.ACTION_COMMAND_KEY, "address");
 		Action addressCompare = new CompareImages(trainedModel);
-		Action addressSaveImages = new SaveImages(trainedModel);
+		Action addressSaveImages = new SaveImages();
 		// Elements
 		JLabel addressLabel = new JLabel("Address:");
 		addressLabel.setPreferredSize(new Dimension(100, 50));
@@ -89,9 +103,9 @@ public class LcsGui {
 		
 		// Set up region tab.
 		// Actions
-		Action regionGetImages = new GetRegions(trainedModel);
+		Action regionGetImages = new GetRegions(persistDirectory);
 		Action regionCompare = new CompareRegions(trainedModel);
-		Action regionSaveImages = new SaveRegions(trainedModel);
+		Action regionSaveImages = new SaveRegions();
 		// Elements
 		JLabel regionLabel = new JLabel("Region:");
 		regionLabel.setPreferredSize(new Dimension(100, 50));
@@ -122,10 +136,10 @@ public class LcsGui {
 		
 		// Set up latLng tab.
 		// Actions
-		Action latLngGetImages = new GetImages(trainedModel);
+		Action latLngGetImages = new GetImages(persistDirectory);
 		latLngGetImages.putValue(Action.ACTION_COMMAND_KEY, "latLng");
 		Action latLngCompare = new CompareImages(trainedModel);
-		Action latLngSaveImages = new SaveImages(trainedModel);
+		Action latLngSaveImages = new SaveImages();
 		// Elements
 		JLabel latitudeLabel = new JLabel("Latitude:");
 		JLabel longitudeLabel = new JLabel("Longitude:");

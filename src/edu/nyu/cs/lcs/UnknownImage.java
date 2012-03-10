@@ -5,6 +5,8 @@ package edu.nyu.cs.lcs;
 
 import java.util.List;
 
+import com.google.inject.Inject;
+
 import edu.nyu.cs.lcs.classifications.Classification;
 
 /**
@@ -14,6 +16,7 @@ import edu.nyu.cs.lcs.classifications.Classification;
  *
  */
 public class UnknownImage extends Image {
+	@Inject private TrainedModel trainedModel;
 	private double arablePercentage;
 	private double developedPercentage;
 	private double desertPercentage;
@@ -23,21 +26,31 @@ public class UnknownImage extends Image {
 	 * @param imageFileName
 	 * @throws Exception 
 	 */
+	@Inject
 	public UnknownImage(String imageFileName, TrainedModel trainedModel)
 			throws Exception {
-		super(imageFileName, trainedModel);
+		super(imageFileName);
+		this.trainedModel = trainedModel;
 		processArability();
 	}
 	
 	/**
-	 * @param renderedImage
-	 * @throws Exception 
+	 * Returns the classification of the image.
+	 * @return
+	 * @throws Exception
 	 */
-	public UnknownImage(Image image) throws Exception {
-		super(image);
-		processArability();
+	@Override
+	public Classification getClassification() {
+		if(classification == null)
+			try {
+				classification = trainedModel.classifyImage(this);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return classification;
 	}
-
+	
 	public double getArablePercentage() {
 		return arablePercentage;
 	}

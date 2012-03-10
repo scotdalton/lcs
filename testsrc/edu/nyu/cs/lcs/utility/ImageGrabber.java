@@ -3,8 +3,6 @@
  */
 package edu.nyu.cs.lcs.utility;
 
-import static edu.nyu.cs.lcs.utility.Configuration.*;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,7 +45,7 @@ public class ImageGrabber {
 				yearlyInterval=Integer.valueOf(arg.split("=")[1]);
 		}
 		grabImages(longitudeStart, longitudeEnd, latitudeStart, 
-			latitudeEnd, numberOfDates, yearlyInterval, TMP_IMAGE_PATH);
+			latitudeEnd, numberOfDates, yearlyInterval, "tmp");
 	}
 
 	public static void grabImages(double longitudeStart, 

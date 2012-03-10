@@ -26,9 +26,11 @@ import edu.nyu.cs.lcs.UnknownImage;
 public class CompareImages extends LcsAction {
 	
 	private static final long serialVersionUID = -5644593796043614642L;
+	TrainedModel trainedModel;
 
 	public CompareImages(TrainedModel trainedModel) {
-		super("Classify/Compare", trainedModel);
+		super("Classify/Compare");
+		this.trainedModel = trainedModel;
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_B);
 		setEnabled(true);
 	}
@@ -42,23 +44,27 @@ public class CompareImages extends LcsAction {
 		    Iterator<Map.Entry<String, String>> imageFileNameIterator = 
 	    			imageFileNames.entrySet().iterator();
 		    Map<String, Image> unknownImages = Maps.newLinkedHashMap();
-		    Image fromImage = null; 
-		    Image toImage = null; 
+		    // Grab oldest and iterate one step
+		    UnknownImage oldestImage = null; 
 		    if(imageFileNameIterator.hasNext()) {
 		        Map.Entry<String, String> pair = imageFileNameIterator.next();
 		        String imageName = pair.getKey(); 
-		        fromImage = new UnknownImage(pair.getValue(), trainedModel);
-		        unknownImages.put(imageName, fromImage);
-		        unknownImages.put(imageName + " Classification Map", fromImage.getClassificationHeatMap());
+		        oldestImage = new UnknownImage(pair.getValue(), trainedModel);
+		        unknownImages.put(imageName, oldestImage);
+		        unknownImages.put(imageName + " Classification Map", oldestImage.getClassificationHeatMap());
 		    }
+		    // Get the rest of the images
+		    UnknownImage unkownImage = null; 
 		    while (imageFileNameIterator.hasNext()) {
 		        Map.Entry<String, String> pair = imageFileNameIterator.next();
 		        String imageName = pair.getKey(); 
-		        toImage = new UnknownImage(pair.getValue(), trainedModel);
-		        unknownImages.put(imageName, toImage);
-		        unknownImages.put(imageName + " Classification Map", toImage.getClassificationHeatMap());
+		        unkownImage = new UnknownImage(pair.getValue(), trainedModel);
+		        unknownImages.put(imageName, unkownImage);
+		        unknownImages.put(imageName + " Classification Map", unkownImage.getClassificationHeatMap());
 		    }
-		    unknownImages.put(address + " Comparison", toImage.getComparisonImage(fromImage));
+		    // Newest image is the last one.
+		    UnknownImage newestImage = unkownImage; 
+		    unknownImages.put(address + " Comparison", newestImage.getComparisonImage(oldestImage));
 			ImageTabbedPane imageTabbedPaneWithClassifications = 
 				new ImageTabbedPane(unknownImages);
 			resultsPanel.removeAll();

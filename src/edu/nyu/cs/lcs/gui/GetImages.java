@@ -5,6 +5,7 @@ package edu.nyu.cs.lcs.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,8 +21,6 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TrainedModel;
-import edu.nyu.cs.lcs.utility.Configuration;
 import edu.nyu.cs.lcs.utility.Geocoder;
 import edu.nyu.cs.lcs.utility.ImageUtil;
 
@@ -32,9 +31,11 @@ import edu.nyu.cs.lcs.utility.ImageUtil;
 public class GetImages extends LcsAction {
 
 	private static final long serialVersionUID = -5852278101756597007L;
+	File persistDirectory;
 
-	public GetImages(TrainedModel trainedModel) {
-		super("Get Images", trainedModel);
+	public GetImages(File persistDirectory) {
+		super("Get Images");
+		this.persistDirectory = persistDirectory;
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
 		setEnabled(true);
 	}
@@ -92,13 +93,15 @@ public class GetImages extends LcsAction {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("' circa 'yyyy");
 				for(Image image: images) {
 					String imageName = address + dateFormat.format(image.getDate());
-					String fileName = Configuration.TMP_IMAGE_PATH + "/captured/"+imageName+".png";
+					String fileName = persistDirectory.getAbsolutePath() + 
+						"/captured/"+imageName+".png";
 					image.persist(fileName);
 					imageFileNames.put(imageName, fileName);
 					capturedImages.put(imageName, image);
 				}
 				lcsFrame.setImageFileNames(imageFileNames);
-				ImageTabbedPane imageTabbedPane = new ImageTabbedPane(capturedImages);
+				ImageTabbedPane imageTabbedPane = 
+					new ImageTabbedPane(capturedImages);
 				resultsPanel.removeAll();
 				resultsPanel.add(imageTabbedPane);
 				resultsPanel.validate();

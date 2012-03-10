@@ -23,10 +23,10 @@ public class ImageLabel extends JLabel {
 	}
 	
 	public ImageLabel(File file, TrainedModel trainedModel) {
-		this(new Image(file, trainedModel));
+		this(new Image(file));
 	}
 	
 	public ImageLabel(String fileName, TrainedModel trainedModel) {
-		this(new Image(fileName, trainedModel));
+		this(new Image(fileName));
 	}
 }

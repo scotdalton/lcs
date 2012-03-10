@@ -3,8 +3,6 @@
  */
 package edu.nyu.cs.lcs.utility;
 
-import static edu.nyu.cs.lcs.utility.Configuration.*;
-
 import java.io.File;
 import java.util.List;
 
@@ -17,7 +15,7 @@ import edu.nyu.cs.lcs.Image;
 public class ImageChopper {
 	
 	public static void main(String[] args) throws Exception {
-		String imageDirectory = IMAGE_PATH;
+		String imageDirectory = "tmp";
 		for(String arg: args)
 			if (arg.startsWith("imageDirectory="))
 				imageDirectory=arg.split("=")[1];

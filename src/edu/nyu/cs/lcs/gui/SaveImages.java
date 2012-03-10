@@ -12,7 +12,6 @@ import java.io.FilenameFilter;
 import javax.swing.Action;
 import javax.swing.JButton;
 
-import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.utility.FileUtil;
 
 /**
@@ -26,8 +25,8 @@ public class SaveImages extends LcsAction {
 	/**
 	 * @param string
 	 */
-	public SaveImages(TrainedModel trainedModel) {
-		super("Archive", trainedModel);
+	public SaveImages() {
+		super("Archive");
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
 		setEnabled(true);
 	}

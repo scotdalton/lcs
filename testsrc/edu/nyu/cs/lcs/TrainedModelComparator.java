@@ -71,7 +71,7 @@ public class TrainedModelComparator {
 						new TrainedModel(
 							classifierName, 
 							classifierOptions, 
-							featureSets, new File("/~/.arability"), confidenceThreshold);
+							featureSets, new File(".classifiers"), confidenceThreshold);
 					long endGet = Calendar.getInstance().getTimeInMillis();
 					System.out.println("---");
 					System.out.println(classifierName);

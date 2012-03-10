@@ -22,8 +22,6 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
 
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.Region;
-import edu.nyu.cs.lcs.TrainedModel;
-import edu.nyu.cs.lcs.utility.Configuration;
 import edu.nyu.cs.lcs.utility.Geocoder;
 import edu.nyu.cs.lcs.utility.ImageUtil;
 import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
@@ -40,8 +38,8 @@ public class GetRegions extends GetImages {
 	private double southLatitude = 0;
 	private double westLongitude = 0;
 
-	public GetRegions(TrainedModel trainedModel) {
-		super(trainedModel);
+	public GetRegions(File persistDirectory) {
+		super(persistDirectory);
 	}
 
 	@Override
@@ -130,7 +128,8 @@ public class GetRegions extends GetImages {
 					Image regionImage = region.getImage();
 					String regionName = regionAddress + dateFormat.format(date);
 					capturedImages.put(regionName, regionImage);
-					String fileName = Configuration.TMP_IMAGE_PATH + "/captured/"+regionName+".png";
+					String fileName = persistDirectory.getAbsolutePath() + 
+						"/captured/"+regionName+".png";
 					regionImage.persist(fileName);
 					imageFileNames.put(regionName, fileName);
 				}
@@ -161,7 +160,8 @@ public class GetRegions extends GetImages {
 	
 	private File getRegionDateDirectory(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return new File(Configuration.TMP_IMAGE_PATH + "/" + regionAddress + "/" + dateFormat.format(date));
+		return new File(persistDirectory.getAbsoluteFile() + 
+			"/" + regionAddress + "/" + dateFormat.format(date));
 	}
 
 	private double getLongitudeStepFactor() {

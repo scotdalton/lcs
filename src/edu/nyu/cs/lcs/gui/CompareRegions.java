@@ -40,24 +40,28 @@ public class CompareRegions extends CompareImages {
 			Iterator<Map.Entry<String, String>> imageFileNameIterator = 
 			imageFileNames.entrySet().iterator();
 			Map<String, Image> unknownRegionImages = Maps.newLinkedHashMap();
-			Image fromImage = null; 
-			Image toImage = null; 
+		    // Grab oldest and iterate one step
+			UnknownImage oldestImage = null; 
 			if(imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				fromImage = new UnknownImage(pair.getValue(), trainedModel);
-				unknownRegionImages.put(imageName, fromImage);
-				unknownRegionImages.put(imageName + " Classification Map", fromImage.getClassificationHeatMap());
+				oldestImage = new UnknownImage(pair.getValue(), trainedModel);
+				unknownRegionImages.put(imageName, oldestImage);
+				unknownRegionImages.put(imageName + " Classification Map", oldestImage.getClassificationHeatMap());
 			}
+		    // Get the rest of the images
+			UnknownImage unknownImage = null; 
 			while (imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				toImage = new UnknownImage(pair.getValue(), trainedModel);
-				unknownRegionImages.put(imageName, toImage);
-				unknownRegionImages.put(imageName + " Classification Map", toImage.getClassificationHeatMap());
+				unknownImage = new UnknownImage(pair.getValue(), trainedModel);
+				unknownRegionImages.put(imageName, unknownImage);
+				unknownRegionImages.put(imageName + " Classification Map", unknownImage.getClassificationHeatMap());
 			}
-			if(toImage != null)
-				unknownRegionImages.put(regionAddress + " Comparison", toImage.getComparisonImage(fromImage));
+		    // Newest image is the last one.
+			UnknownImage newestImage = unknownImage;
+			if(newestImage != null)
+				unknownRegionImages.put(regionAddress + " Comparison", newestImage.getComparisonImage(oldestImage));
 			ImageTabbedPane imageTabbedPaneWithClassifications = 
 			new ImageTabbedPane(unknownRegionImages);
 			resultsPanel.removeAll();

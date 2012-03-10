@@ -4,8 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { GeocoderTest.class, 
-	GoogleEarthTest.class, ImageUtilTest.class })
+@Suite.SuiteClasses( { ImageUtilTest.class })
 
 /**
  * @author Scot Dalton

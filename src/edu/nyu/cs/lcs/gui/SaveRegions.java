@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 
-import edu.nyu.cs.lcs.TrainedModel;
-
 /**
  * @author Scot Dalton
  *
@@ -18,8 +16,8 @@ public class SaveRegions extends SaveImages {
 	/**
 	 * @param trainedModel
 	 */
-	public SaveRegions(TrainedModel trainedModel) {
-		super(trainedModel);
+	public SaveRegions() {
+		super();
 	}
 
 	private static final long serialVersionUID = 821354286645168569L;
