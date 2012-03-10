@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
-import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.UnknownImage;
-import edu.nyu.cs.lcs.utility.ImageFactory;
+import edu.nyu.cs.lcs.utility.ImageUtil;
 import edu.nyu.cs.lcs.utility.kml.Camera;
 import edu.nyu.cs.lcs.utility.kml.Document;
 import edu.nyu.cs.lcs.utility.kml.Kml;
@@ -34,6 +34,10 @@ public class TestTool {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+		Injector injector = 
+			Guice.createInjector(new TrainedModelModule());
+		TrainedModel trainedModel = 
+			injector.getInstance(TrainedModel.class);
 		double latitude = Double.parseDouble(args[0]);
 		double longitude = Double.parseDouble(args[1]);
 		String name = "Test Place";
@@ -66,10 +70,10 @@ public class TestTool {
 			documents.add(document);
 			Kml kml = new Kml.Builder().documents(documents).build();
 			String fileName = IMAGE_PATH + "/captured/"+imageName+".png";
-			Image image = ImageFactory.getImage(kml, 5, 5, 5000);
+			Image image = ImageUtil.getImage(kml, 5, 5, 5000);
 			image.persist(fileName);
 			try {
-				imageMap.put(imageName, new UnknownImage(fileName));
+				imageMap.put(imageName, new UnknownImage(fileName, trainedModel));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

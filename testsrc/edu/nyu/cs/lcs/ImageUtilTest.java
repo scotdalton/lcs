@@ -3,7 +3,7 @@
  */
 package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.lcs.utility.Configuration.*;
+import static edu.nyu.cs.lcs.utility.Configuration.IMAGE_PATH;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.utility.ImageUtil;
 import edu.nyu.cs.lcs.utility.kml.Camera;
 import edu.nyu.cs.lcs.utility.kml.Document;
 import edu.nyu.cs.lcs.utility.kml.Kml;

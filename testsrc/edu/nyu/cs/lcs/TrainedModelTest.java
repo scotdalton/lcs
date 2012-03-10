@@ -35,11 +35,11 @@ public class TrainedModelTest {
 				classifierOptions, featureSets, 
 					serializationDirectory, confidenceThreshold);
 		Image croplandTestImage = 
-			new Image("./images/testing/arable/curated/Haryana_India_1.png_1064_427.png");
+			new Image("./images/testing/arable/curated/Haryana_India_1.png_1064_427.png", trainedModel);
 		assertEquals(Classification.CROPLAND, 
 				trainedModel.classifyImage(croplandTestImage));
 		Image desertTestImage = 
-			new Image("./images/testing/desert/curated/26.625_29.75.png_100_500.png");
+			new Image("./images/testing/desert/curated/26.625_29.75.png_100_500.png", trainedModel);
 		assertEquals(Classification.DESERT, 
 				trainedModel.classifyImage(desertTestImage));
 	}
