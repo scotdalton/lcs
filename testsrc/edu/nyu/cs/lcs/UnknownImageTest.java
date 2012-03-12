@@ -75,10 +75,8 @@ public class UnknownImageTest {
 	public void unknownImageTest() throws Exception {
 		UnknownImage unknownImage1 = new UnknownImage(TestUtility.IMAGE1, 
 			trainedModel);
-		System.out.println(unknownImage1.getArablePercentage());
 		UnknownImage unknownImage2 = new UnknownImage(TestUtility.IMAGE2, 
 			trainedModel);
-		System.out.println(unknownImage2.getArablePercentage());
 		assertTrue(
 			unknownImage1.getArablePercentage() > 
 				unknownImage2.getArablePercentage());

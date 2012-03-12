@@ -32,8 +32,8 @@ public class GeocoderTest {
 	public void testGeocoder_corners() throws Exception {
 		Geocoder geocoder = new Geocoder("Ghana");
 		assertTrue((float)11.16666750 == geocoder.getNortheastLatitude());
-		assertTrue((float)1.19956560 == geocoder.getNortheastLongitude());
-		assertTrue((float)4.63390 == geocoder.getSouthwestLatitude());
+		assertTrue((float)1.1995540 == geocoder.getNortheastLongitude());
+		assertTrue((float)4.73929610 == geocoder.getSouthwestLatitude());
 		assertTrue((float)-3.24916690 == geocoder.getSouthwestLongitude());
 	}
 }

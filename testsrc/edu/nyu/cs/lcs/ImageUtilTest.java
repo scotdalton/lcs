@@ -56,7 +56,7 @@ public class ImageUtilTest {
 		documents.add(document);
 		Kml kml = new Kml.Builder().documents(documents).build();
 		Image image = ImageUtil.getImage(kml, 5, 5, 5000);
-		String fileName =  "tmp/captured/image.png";
+		String fileName =  "tst/captured/image.png";
 		image.persist(fileName);
 	}
 }
