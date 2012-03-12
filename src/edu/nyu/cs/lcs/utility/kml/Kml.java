@@ -52,8 +52,10 @@ public class Kml extends edu.nyu.cs.lcs.utility.kml.AbstractBase {
 		this.kml = buildKml();
 	}
 
-	public void persistToFile(String fileName) throws IOException {
-		File file = new File(fileName);
+	public void persistToFile(String filename) throws IOException {
+		File file = new File(filename);
+		File parent = file.getParentFile();
+		if(!parent.exists()) parent.mkdirs();
 		if(!file.exists()) file.createNewFile();
 		persist(new FileOutputStream(file));
 	}

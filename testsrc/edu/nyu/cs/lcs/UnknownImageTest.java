@@ -3,31 +3,81 @@
  */
 package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.lcs.TestUtility.getTestFileName1;
-import static edu.nyu.cs.lcs.TestUtility.getTestFileName2;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import edu.nyu.cs.lcs.UnknownImage;
 
 /**
  * @author Scot Dalton
  *
  */
 public class UnknownImageTest {
-	@Test
-	public void unknownImageTest() throws Exception {
+	private TrainedModel trainedModel;
+	private File persistFile;
+
+	@Before
+	public void setup() {
 		Injector injector = 
 			Guice.createInjector(new TrainedModelModule());
-		TrainedModel trainedModel = 
+		trainedModel = 
 			injector.getInstance(TrainedModel.class);
-		UnknownImage unknownImage1 = new UnknownImage(getTestFileName1(), trainedModel);
+		persistFile = new File("./tmp/persistTest.png");
+		if(persistFile.exists()) persistFile.delete();
+	}
+	
+	@After
+	public void teardown() {
+		if(persistFile.exists()) persistFile.delete();
+	}
+
+	@Test
+	public void testNewImage_fromFileName() {
+		Image image = new UnknownImage(TestUtility.IMAGE1, trainedModel);
+		assertEquals(1500, image.getWidth());
+		assertEquals(1000, image.getHeight());
+	}
+	
+	@Test
+	public void testPersist() {
+		Image image = new UnknownImage(TestUtility.IMAGE1, trainedModel);
+		image.persist(persistFile.getAbsolutePath());
+		assertTrue(persistFile.exists());
+		assertTrue(persistFile.isFile());
+	}
+	
+	@Test
+	public void testGetChoppedUnkownImages() {
+		Image image = new UnknownImage(TestUtility.IMAGE1, null);
+		List<Image> choppedImages = image.getChoppedImages();
+		for (Image choppedImage:choppedImages) {
+			assertEquals(100, choppedImage.getHeight());
+			assertEquals(100, choppedImage.getWidth());
+		}
+	}
+	
+	@Test
+	public void testChoppedUnknownImage() {
+		Image image = new UnknownImage(TestUtility.CHOPPED, null);
+		assertEquals(100, image.getHeight());
+		assertEquals(100, image.getWidth());
+	}
+	
+	@Test
+	public void unknownImageTest() throws Exception {
+		UnknownImage unknownImage1 = new UnknownImage(TestUtility.IMAGE1, 
+			trainedModel);
 		System.out.println(unknownImage1.getArablePercentage());
-		UnknownImage unknownImage2 = new UnknownImage(getTestFileName2(), trainedModel);
+		UnknownImage unknownImage2 = new UnknownImage(TestUtility.IMAGE2, 
+			trainedModel);
 		System.out.println(unknownImage2.getArablePercentage());
 		assertTrue(
 			unknownImage1.getArablePercentage() > 

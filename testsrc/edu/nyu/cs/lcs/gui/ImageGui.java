@@ -38,23 +38,16 @@ public class ImageGui {
 		Map<String, Image> images = Maps.newLinkedHashMap();
 		for(String arg: args)
 			images.put(arg, new UnknownImage(arg, trainedModel));
-		Image image1 = TestUtility.getTestImage1();
-		Image screenshot = TestUtility.getTestImage1();
-//		images.put("Johannesburg, South Africa 2003", image1);
-//		images.put("Classification Map 2003", image1.getClassificationHeatMap());
-		Image image2 = TestUtility.getTestImage2();
+		Image image1 = new Image(TestUtility.IMAGE1);
+		Image screenshot = new Image(TestUtility.IMAGE1);
+		Image image2 = new Image(TestUtility.IMAGE2);
 		images.put("Screenshot", screenshot);
-//		images.put("Classification Map 2005", image2.getClassificationHeatMap());
-		Image image3 = TestUtility.getTestImage3();
+		Image image3 = new Image(TestUtility.IMAGE3);
 		images.put("Johannesburg, South Africa 2007", image3);
-//		images.put("Classification Map 2007", image3.getClassificationHeatMap());
-		Image image4 = TestUtility.getTestImage4();
+		Image image4 = new Image(TestUtility.IMAGE4);
 		images.put("Johannesburg, South Africa 2009", image4);
-//		images.put("Classification Map 2009", image4.getClassificationHeatMap());
-		Image image5 = TestUtility.getTestImage5();
+		Image image5 = new Image(TestUtility.IMAGE5);
 		images.put("Johannesburg, South Africa 2011", image5);
-//		images.put("Classification Map 2011", image5.getClassificationHeatMap());
-//		images.put("Comparison from 2003 to 2011", image5.getComparisonImage(image1));
 		List<Image> regionImages = Lists.newArrayList();
 		regionImages.add(screenshot);
 		regionImages.add(image1);
@@ -66,7 +59,8 @@ public class ImageGui {
 		Image regionImage = region.getImage();
 		images.put("Region", regionImage);
 		images.put("Region Classification", region.getClassificationHeatMap());
-		Image choppedImage = TestUtility.getTestImage1().getChoppedImages().get(0);
+		Image choppedImage = 
+			(new Image(TestUtility.IMAGE1)).getChoppedImages().get(0);
 //		images.put("Tamale_Ghana_1_20041004.png", image1);
 //		images.put("Classification", image.getChoppedImages().get(0).getClassificationOverlay());
 //		images.put("Overlay", image.overlay(image.getChoppedImages().get(0).getClassificationOverlay()));

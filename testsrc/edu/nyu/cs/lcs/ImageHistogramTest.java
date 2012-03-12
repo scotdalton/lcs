@@ -3,8 +3,6 @@
  */
 package edu.nyu.cs.lcs;
 
-import static edu.nyu.cs.lcs.TestUtility.*;
-
 import org.junit.Test;
 
 import edu.nyu.cs.lcs.Image;
@@ -17,7 +15,7 @@ public class ImageHistogramTest {
 
 	@Test
 	public void testCreateImageHistograms() {
-		Image image = getTestImage1();
+		Image image = new Image(TestUtility.IMAGE1);
 		for(double mean : image.getMeans())
 			System.out.println(mean);
 		for(double standardDeviation : image.getStandardDeviations())

@@ -133,38 +133,38 @@ public class Image {
 
 	/**
 	 * Constructor for general use.
-	 * @param imageFileName
+	 * @param filename
 	 */
-	public Image(String imageFileName) {
-		this(new File(imageFileName));
+	public Image(String filename) {
+		this(new File(filename));
 	}
 	
 	/**
 	 * Constructor for general use.
-	 * @param imageFileName
+	 * @param filename
 	 * @param date
 	 */
-	public Image(String imageFileName, Date date) {
-		this(new File(imageFileName), date);
+	public Image(String filename, Date date) {
+		this(new File(filename), date);
 	}
 	
 	/**
 	 * Constructor for general use.
-	 * @param imageFile
+	 * @param file
 	 */
-	public Image(File imageFile) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()));
-		this.name = imageFile.getName();
+	public Image(File file) {
+		this(JAI.create("fileload", file.getAbsolutePath()));
+		this.name = file.getName();
 	}
 	
 	/**
 	 * Constructor for general use.
-	 * @param imageFile
+	 * @param file
 	 * @param date
 	 */
-	public Image(File imageFile, Date date) {
-		this(JAI.create("fileload", imageFile.getAbsolutePath()));
-		this.name = imageFile.getName();
+	public Image(File file, Date date) {
+		this(JAI.create("fileload", file.getAbsolutePath()));
+		this.name = file.getName();
 		this.date = date;
 	}
 	
@@ -210,9 +210,9 @@ public class Image {
 	public Image(RenderedImage renderedImage) {
 		setDefaults();
 		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
-		if(skipChop(renderedImage))
+		if(skipChop(renderedImage)) {
 			this.renderedImage = renderedImage;
-		else {
+		} else {
 			croppedWidth = getCroppedWidth(renderedImage);
 			croppedHeight = getCroppedHeight(renderedImage);
 			this.renderedImage = 
@@ -225,9 +225,12 @@ public class Image {
 	 * Persist the image to a file with the given filename.
 	 * @param filename
 	 */
-	public void persist(String fileName) {
+	public void persist(String filename) {
+		File file = new File(filename);
+		File parent = file.getParentFile();
+		if(!parent.exists()) parent.mkdirs();
 		ParameterBlock fileStoreParams = (new ParameterBlock()).
-			addSource(renderedImage).add(fileName).add("PNG");
+			addSource(renderedImage).add(filename).add("PNG");
 		JAI.create("filestore", fileStoreParams);
 	}
 	

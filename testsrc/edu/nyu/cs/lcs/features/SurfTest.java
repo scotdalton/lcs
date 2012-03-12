@@ -16,7 +16,7 @@ import edu.nyu.cs.lcs.TestUtility;
 public class SurfTest {
 	@Test
 	public void testSurf() {
-		for(Image image: TestUtility.getTestImage1().getChoppedImages()) {
+		for(Image image: (new Image(TestUtility.IMAGE1)).getChoppedImages()) {
 			for(float[] fs: image.getSURF())
 				for (float f: fs)
 				System.out.println(f);
