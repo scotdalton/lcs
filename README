@@ -6,7 +6,7 @@ This system is a prototype and should be treated a such.
 
 
 To run:
-fetch a copy of this repository
+Fetch a copy of this repository then execute
 ant; java -Xms256m -Xmx2048m -jar dist/lcs.jar
 
 For optimum performance:
