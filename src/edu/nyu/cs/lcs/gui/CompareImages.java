@@ -72,7 +72,13 @@ public class CompareImages extends LcsAction {
 			resultsPanel.validate();
 			compareButton.setEnabled(false);
 			compareButton.repaint();
-		    JOptionPane.showMessageDialog(resultsPanel, "Results ready.");
+			String message = "Results ready.\n";
+			if(oldestImage.getArablePercentage() > newestImage.getArablePercentage())
+				croplandLoss = oldestImage.getArablePercentage() - 
+					newestImage.getArablePercentage();
+			if (croplandLoss != null)
+				message += croplandLoss + "% cropland was lost.";
+		    JOptionPane.showMessageDialog(resultsPanel, message);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

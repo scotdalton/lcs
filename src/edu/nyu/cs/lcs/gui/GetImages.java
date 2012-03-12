@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -74,16 +72,7 @@ public class GetImages extends LcsAction {
 		} else {
 			addressTextField.setText(address);
 			addressTextField.repaint();
-			int numberOfDates = 2;
-			int yearlyInterval = -5;
-			Calendar cal = Calendar.getInstance();
-			List<Date> dates = new ArrayList<Date>();
-			Date now = cal.getTime();
-			dates.add(now);
-			for(int i=1; i < numberOfDates; i++) {
-				cal.add(Calendar.YEAR, yearlyInterval);
-				dates.add(cal.getTime());
-			}
+			List<Date> dates = GuiUtil.getDates();
 			List<Image> images;
 			try {
 				Collections.reverse(dates);

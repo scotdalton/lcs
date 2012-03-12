@@ -6,7 +6,6 @@ package edu.nyu.cs.lcs.gui;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -67,16 +66,7 @@ public class GetRegions extends GetImages {
 			try {
 				regionTextField.setText(regionAddress);
 				regionTextField.repaint();
-				int numberOfDates = 2;
-				int yearlyInterval = -5;
-				Calendar cal = Calendar.getInstance();
-				List<Date> dates = Lists.newArrayList();
-				Date now = cal.getTime();
-				dates.add(now);
-				for(int i=1; i < numberOfDates; i++) {
-					cal.add(Calendar.YEAR, yearlyInterval);
-					dates.add(cal.getTime());
-				}
+				List<Date> dates = GuiUtil.getDates();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("' circa 'yyyy");
 				Map<String, String> imageFileNames = Maps.newLinkedHashMap();
 				Map<String, Image> capturedImages = Maps.newLinkedHashMap();

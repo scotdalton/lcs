@@ -44,6 +44,7 @@ public abstract class LcsAction extends AbstractAction {
 	int xCropFactor;
 	int yCropFactor;
 	JPanel resultsPanel;
+	Double croplandLoss;
 
 	/**
 	 * @param string
