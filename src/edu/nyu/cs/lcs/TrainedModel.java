@@ -63,7 +63,6 @@ public class TrainedModel {
 				"/" + featuresDirectory + "/" + classifierName + ".model");
 		this.trainingSet = getTrainingSet();
 		attributes = trainingSet.getAttributes();
-		System.out.println(classifierFile.toString());
 		if(classifierFile.exists()) {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
@@ -124,7 +123,6 @@ public class TrainedModel {
 	
 	private void serializeClassifier(File classifierFile, 
 			Classifier classifier) throws Exception {
-		System.out.println("Serializing classifier.");
 		File serializationDirectory = classifierFile.getParentFile();
 		if(!serializationDirectory.exists()) serializationDirectory.mkdirs();
 		String classifierFileName = classifierFile.getAbsolutePath();
@@ -133,7 +131,6 @@ public class TrainedModel {
 	
 	private Classifier deserializeClassifier(
 			File classifierFile) throws Exception {
-		System.out.println("Deserializing classifier.");
 		String classifierFileName = classifierFile.getAbsolutePath();
 		return (Classifier) SerializationHelper.read(classifierFileName);
 	}

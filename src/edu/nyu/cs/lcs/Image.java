@@ -272,8 +272,8 @@ public class Image {
 				toImage.getClassification();
 			Classification fromImageClassification = 
 				fromImage.getChoppedImages().get(index).getClassification();
-			if(!toImageClassification.equals(
-					fromImageClassification)) {
+			if(fromImageClassification.equals(Classification.CROPLAND) && 
+					!toImageClassification.equals(fromImageClassification)) {
 				graphics.setColor(new Color(255, 0, 0, 63));
 				int rectX = toImage.getMinX()-getMinX();
 				int rectY = toImage.getMinY()-getMinY();
