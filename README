@@ -2,7 +2,8 @@ The LCS land classification system uses historical satellite imagery from
 Google Earth and determines the classification of land in the image for 
 comparison purposes.  
 
-This system is a prototype and should be treated a such. 
+This system is a prototype and should be treated a such.  Currently only 
+Mac OS X is supported.  The system has only been tested with Java 1.6. 
 
 
 To run:
