@@ -77,7 +77,7 @@ public class CompareImages extends LcsAction {
 				croplandLoss = oldestImage.getArablePercentage() - 
 					newestImage.getArablePercentage();
 			if (croplandLoss != null)
-				message += croplandLoss + "% cropland was lost.";
+				message += (int)((double)croplandLoss) + "% cropland was lost.";
 		    JOptionPane.showMessageDialog(resultsPanel, message);
 		} catch (Exception e) {
 			e.printStackTrace();

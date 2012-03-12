@@ -17,6 +17,8 @@ import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTDownSampleYs;
 import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTHeight;
 import edu.nyu.cs.lcs.FeaturesPropertiesModule.DCTWidth;
 import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeBands;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeDownSampleXs;
+import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeDownSampleYs;
 import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeHeight;
 import edu.nyu.cs.lcs.FeaturesPropertiesModule.GradientMagnitudeWidth;
 import edu.nyu.cs.lcs.FeaturesPropertiesModule.MeanPixelBands;
@@ -105,6 +107,32 @@ public class Features {
 					get(Integer.class, GradientMagnitudeWidth.class));
 				int height = injector.getInstance(Key.
 					get(Integer.class, GradientMagnitudeHeight.class));
+				int bands = injector.getInstance(Key.
+					get(Integer.class, GradientMagnitudeBands.class));
+				for(int x=0; x < width; x++) {
+					for(int y=0; y < height; y++) {
+						for(int b=0; b < bands; b++) {
+							Feature feature = new GradientMagnitude();
+							Map<String, Object> options = Maps.newHashMap();
+							options.put("x", x);
+							options.put("y", y);
+							options.put("b", b);
+							feature.setOptions(options);
+							features.add(feature);
+						}
+					}
+				}
+				return features;
+			}
+		}, 
+		GRADIENT_MAGNITUDE_DOWNSAMPLE {
+			@Override
+			public List<Feature> getFeatures() {
+				List<Feature> features = Lists.newArrayList();
+				int width = injector.getInstance(Key.
+					get(Integer.class, GradientMagnitudeDownSampleXs.class));
+				int height = injector.getInstance(Key.
+					get(Integer.class, GradientMagnitudeDownSampleYs.class));
 				int bands = injector.getInstance(Key.
 					get(Integer.class, GradientMagnitudeBands.class));
 				for(int x=0; x < width; x++) {

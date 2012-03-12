@@ -77,6 +77,16 @@ public class FeaturesPropertiesModule extends AbstractModule {
 	@BindingAnnotation 
 	@Target({ FIELD, PARAMETER, METHOD }) 
 	@Retention(RUNTIME)
+	public @interface GradientMagnitudeDownSampleXs {};
+
+	@BindingAnnotation 
+	@Target({ FIELD, PARAMETER, METHOD }) 
+	@Retention(RUNTIME)
+	public @interface GradientMagnitudeDownSampleYs {};
+
+	@BindingAnnotation 
+	@Target({ FIELD, PARAMETER, METHOD }) 
+	@Retention(RUNTIME)
 	public @interface NumSurfs {};
 
 	@BindingAnnotation 
@@ -125,6 +135,12 @@ public class FeaturesPropertiesModule extends AbstractModule {
 			bind(Integer.class).annotatedWith(GradientMagnitudeBands.class).
 				toInstance(Integer.valueOf(properties.
 					getProperty("gradientMagnitudeBands")));
+			bind(Integer.class).annotatedWith(GradientMagnitudeDownSampleXs.class).
+				toInstance(injector.getInstance(Key.
+					get(Integer.class, DownSampleSquareRoot.class)));
+			bind(Integer.class).annotatedWith(GradientMagnitudeDownSampleYs.class).
+				toInstance(injector.getInstance(Key.
+					get(Integer.class, DownSampleSquareRoot.class)));
 			bind(Integer.class).annotatedWith(NumSurfs.class).
 				toInstance(Integer.valueOf(properties.
 					getProperty("numSurfs")));

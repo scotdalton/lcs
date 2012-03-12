@@ -28,12 +28,14 @@ public class TrainedModelTest {
 		String classifierName = "weka.classifiers.lazy.IBk";
 		List<String> classifierOptions = Lists.newArrayList();
 		List<FeatureSet> featureSets = 
-			Lists.newArrayList(FeatureSet.MEAN_PIXELS);
+			Lists.newArrayList(FeatureSet.MEAN_PIXELS, 
+				FeatureSet.GRADIENT_MAGNITUDE_DOWNSAMPLE);
 		File serializationDirectory = new File("./.classifiers");
 		TrainedModel trainedModel = 
 			new TrainedModel(classifierName, 
 				classifierOptions, featureSets, 
 					serializationDirectory, confidenceThreshold);
+		System.out.println(trainedModel.test());
 		Image croplandTestImage = 
 			new UnknownImage(TestUtility.CROPLAND, trainedModel);
 		assertEquals(Classification.CROPLAND, 
