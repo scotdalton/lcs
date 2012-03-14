@@ -3,9 +3,12 @@
  */
 package edu.nyu.cs.lcs.gui;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 
 import com.google.common.collect.Lists;
 
@@ -26,6 +29,13 @@ public class GuiUtil {
 			dates.add(cal.getTime());
 		}
 		return dates;
-
+	}
+	
+	public static List<String> getExistingRegions(File persistDirectory) {
+		List<String> regions = Lists.newArrayList();
+		regions.add("Select Region");
+		for(String regionDirectory: persistDirectory.list(DirectoryFileFilter.INSTANCE))
+			regions.add(regionDirectory);
+		return regions;
 	}
 }

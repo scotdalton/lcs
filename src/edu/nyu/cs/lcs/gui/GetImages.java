@@ -83,7 +83,7 @@ public class GetImages extends LcsAction {
 				for(Image image: images) {
 					String imageName = address + dateFormat.format(image.getDate());
 					String fileName = persistDirectory.getAbsolutePath() + 
-						"/captured/"+imageName+".png";
+						"/"+imageName+".png";
 					image.persist(fileName);
 					imageFileNames.put(imageName, fileName);
 					capturedImages.put(imageName, image);

@@ -119,7 +119,7 @@ public class GetRegions extends GetImages {
 					String regionName = regionAddress + dateFormat.format(date);
 					capturedImages.put(regionName, regionImage);
 					String fileName = persistDirectory.getAbsolutePath() + 
-						"/captured/"+regionName+".png";
+						"/"+regionName+".png";
 					regionImage.persist(fileName);
 					imageFileNames.put(regionName, fileName);
 				}

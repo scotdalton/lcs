@@ -12,10 +12,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -107,19 +109,27 @@ public class LcsGui {
 		Action regionCompare = new CompareRegions(trainedModel);
 		Action regionSaveImages = new SaveRegions();
 		// Elements
-		JLabel regionLabel = new JLabel("Region:");
-		regionLabel.setPreferredSize(new Dimension(100, 50));
-		JTextField regionTextField = new JTextField(50);
+		JLabel newRegionLabel = new JLabel("New Region:");
+		newRegionLabel.setPreferredSize(new Dimension(50, 50));
+		JTextField newRegionTextField = new JTextField(50);
 		JButton regionGetImagesButton = new JButton(regionGetImages);
 		JButton regionCompareButton = new JButton(regionCompare);
 		regionCompareButton.setEnabled(false);
 		JButton regionSaveImagesButton = new JButton(regionSaveImages);
 		regionSaveImagesButton.setEnabled(false);
+		JLabel existingRegionLabel = new JLabel("Region in Progress:");
+		existingRegionLabel.setPreferredSize(new Dimension(50, 50));
+		List<String> existingRegions = 
+			GuiUtil.getExistingRegions(persistDirectory);
+		JComboBox existingRegionComboBox = 
+			new JComboBox(existingRegions.toArray());
 		// Input Panel
 		JComponent regionInputPanel = new JPanel(false);
-		regionInputPanel.setLayout(new GridLayout(1, 2));
-		regionInputPanel.add(regionLabel);
-		regionInputPanel.add(regionTextField);
+		regionInputPanel.setLayout(new GridLayout(2, 2));
+		regionInputPanel.add(newRegionLabel);
+		regionInputPanel.add(newRegionTextField);
+		regionInputPanel.add(existingRegionLabel);
+		regionInputPanel.add(existingRegionComboBox);
 		// Button Panel
 		JComponent regionButtonPanel = new JPanel(false);
 		regionButtonPanel.setLayout(new GridLayout(1, 3));
