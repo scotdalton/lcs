@@ -4,21 +4,16 @@
 package edu.nyu.cs.lcs;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.List;
+import java.util.Properties;
 
+import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 
 import edu.nyu.cs.lcs.Features.FeatureSet;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ClassifierName;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ClassifierOptions;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ConfidenceThreshold;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.SerializationDirectory;
 
 /**
  * @author Scot Dalton
@@ -26,7 +21,7 @@ import edu.nyu.cs.lcs.TrainedModelPropertiesModule.SerializationDirectory;
  */
 public class TrainedModelModule extends AbstractModule {
 	private TrainedModel trainedModel;
-
+	
 	@Override
 	protected void configure() {
 	}
@@ -34,20 +29,19 @@ public class TrainedModelModule extends AbstractModule {
 	@Provides @Singleton
 	TrainedModel provideTrainedModel() {
 		if (trainedModel == null) {
-			Injector injector = 
-				Guice.createInjector(new TrainedModelPropertiesModule());
-			String classifierName = injector.getInstance(
-				Key.get(String.class, ClassifierName.class));
-			List<String> classifierOptions = injector.getInstance(
-				Key.get(new TypeLiteral<List<String>>() {}, 
-					ClassifierOptions.class));
-			List<FeatureSet> featureSets = injector.getInstance(
-				Key.get(new TypeLiteral<List<FeatureSet>>() {}));
-			File serializationDirectory = injector.getInstance(
-				Key.get(File.class, SerializationDirectory.class));
-			double confidenceThreshold = injector.getInstance(
-				Key.get(Double.class, ConfidenceThreshold.class));
 			try {
+				Properties properties = new Properties();
+				properties.load(new FileReader(
+					"./config/trainedmodel.properties"));
+				String classifierName = 
+					properties.getProperty("classifierName");
+				List<String> classifierOptions = Lists.newArrayList(); 
+				List<FeatureSet> featureSets = 
+					Lists.newArrayList(FeatureSet.MEAN_PIXELS);
+				File serializationDirectory = new File(properties.
+						getProperty("serializationDirectory"));
+				double confidenceThreshold = Double.valueOf(
+						properties.getProperty("confidenceThreshold"));
 				trainedModel = new TrainedModel(classifierName, classifierOptions, 
 					featureSets, serializationDirectory, confidenceThreshold);
 			} catch (Exception e) {

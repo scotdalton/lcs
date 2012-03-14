@@ -20,14 +20,9 @@ import weka.core.Instances;
 import weka.core.SerializationHelper;
 
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import edu.nyu.cs.lcs.Features.FeatureSet;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ClassifierName;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ClassifierOptions;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.ConfidenceThreshold;
-import edu.nyu.cs.lcs.TrainedModelPropertiesModule.SerializationDirectory;
 import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.features.Feature;
 
@@ -47,12 +42,11 @@ public class TrainedModel {
 	private File classifierFile;
 //	private double[][] confusionMatrix;
 
-	@Inject
-	public TrainedModel(@ClassifierName String classifierName,
-			@ClassifierOptions List<String> classifierOptions,
+	public TrainedModel(String classifierName,
+			List<String> classifierOptions,
 			List<FeatureSet> featureSets, 
-			@SerializationDirectory File serializationDirectory,
-			@ConfidenceThreshold double confidenceThreshold) throws Exception {
+			File serializationDirectory,
+			double confidenceThreshold) throws Exception {
 		this.featureSets = featureSets;
 		this.confidenceThreshold = confidenceThreshold;
 		String featuresDirectory = "";

@@ -28,8 +28,7 @@ public class TrainedModelTest {
 		String classifierName = "weka.classifiers.lazy.IBk";
 		List<String> classifierOptions = Lists.newArrayList();
 		List<FeatureSet> featureSets = 
-			Lists.newArrayList(FeatureSet.MEAN_PIXELS, 
-				FeatureSet.GRADIENT_MAGNITUDE_DOWNSAMPLE);
+			Lists.newArrayList(FeatureSet.MEAN_PIXELS);
 		File serializationDirectory = new File("./.classifiers");
 		TrainedModel trainedModel = 
 			new TrainedModel(classifierName, 
@@ -49,7 +48,7 @@ public class TrainedModelTest {
 	@Test
 	public void testInjectedTrainedModel() throws Exception {
 		Injector injector = 
-			Guice.createInjector(new TrainedModelPropertiesModule());
+			Guice.createInjector(new TrainedModelModule());
 		TrainedModel trainedModel1 = 
 			injector.getInstance(TrainedModel.class);
 		TrainedModel trainedModel2 = 
