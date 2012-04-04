@@ -26,12 +26,12 @@ import edu.nyu.cs.lcs.utility.ImageUtil;
  * @author Scot Dalton
  *
  */
-public class GetImages extends LcsAction {
+public class GetImage extends LcsAction {
 
 	private static final long serialVersionUID = -5852278101756597007L;
 	File persistDirectory;
 
-	public GetImages(File persistDirectory) {
+	public GetImage(File persistDirectory) {
 		super("Get Images");
 		this.persistDirectory = persistDirectory;
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);

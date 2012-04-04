@@ -5,6 +5,7 @@ package edu.nyu.cs.lcs.gui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
  * @author Scot Dalton
  *
  */
-public class GetRegions extends GetImages {
+public class GetRegion extends GetImage {
 
 	private static final long serialVersionUID = -4098880070895817401L;
 	private double northLatitude = 0;
@@ -37,7 +38,7 @@ public class GetRegions extends GetImages {
 	private double southLatitude = 0;
 	private double westLongitude = 0;
 
-	public GetRegions(File persistDirectory) {
+	public GetRegion(File persistDirectory) {
 		super(persistDirectory);
 	}
 
@@ -98,10 +99,27 @@ public class GetRegions extends GetImages {
 						for (Image dateImage: dateImages) {
 							File regionDateDirectory = 
 								getRegionDateDirectory(dateImage.getDate());
-							if (!regionDateDirectory.exists())
+							if(!regionDateDirectory.exists())
 								regionDateDirectory.mkdirs();
+//							if(!regionPropertiesFile.exists()) regionPropertiesFile.createNewFile();
 							dateImage.persist(regionDateDirectory.getAbsolutePath() + "/" + latitude + "-" + longitude + ".png");
 						}
+						// Set/Update Region Properties.
+						File regionPropertiesFile = 
+							new File(getRegionDirectory().getAbsolutePath() + 
+								"/.region.properties");
+						FileWriter fileWriter = new FileWriter(regionPropertiesFile);
+						fileWriter.write("eastLongitude: "+ eastLongitude);
+						fileWriter.write("westLongitude: "+ westLongitude);
+						fileWriter.write("northLatitude: "+ northLatitude);
+						fileWriter.write("southLatitude: "+ southLatitude);
+						fileWriter.write("regionAddress: "+ regionAddress);
+						fileWriter.write("xCropFactor: "+ xCropFactor);
+						fileWriter.write("yCropFactor: "+ yCropFactor);
+						fileWriter.write("waitTime: "+ waitTime);
+						fileWriter.write("longitude: "+ longitude);
+						fileWriter.write("latitude: "+ latitude);
+						fileWriter.flush();
 					}
 				}
 //				for(List<Image> regionImages: regionImagesByDate) {
@@ -150,8 +168,13 @@ public class GetRegions extends GetImages {
 	
 	private File getRegionDateDirectory(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return new File(persistDirectory.getAbsoluteFile() + 
-			"/" + regionAddress + "/" + dateFormat.format(date));
+		return new File(getRegionDirectory() + "/" + 
+			dateFormat.format(date));
+	}
+	
+	private File getRegionDirectory() {
+		return new File(persistDirectory.getAbsoluteFile() + "/" + 
+			regionAddress);
 	}
 
 	private double getLongitudeStepFactor() {

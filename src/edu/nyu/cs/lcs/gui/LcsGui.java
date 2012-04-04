@@ -71,15 +71,15 @@ public class LcsGui {
 		
 		// Set up address tab.
 		// Actions
-		Action addressGetImages = new GetImages(persistDirectory);
-		addressGetImages.putValue(Action.ACTION_COMMAND_KEY, "address");
+		Action addressGetImage = new GetImage(persistDirectory);
+		addressGetImage.putValue(Action.ACTION_COMMAND_KEY, "address");
 		Action addressCompare = new CompareImages(trainedModel);
 		Action addressSaveImages = new SaveImages();
 		// Elements
 		JLabel addressLabel = new JLabel("Address:");
 		addressLabel.setPreferredSize(new Dimension(100, 50));
 		JTextField addressTextField = new JTextField(50);
-		JButton addressGetImagesButton = new JButton(addressGetImages);
+		JButton addressGetImagesButton = new JButton(addressGetImage);
 		JButton addressCompareButton = new JButton(addressCompare);
 		addressCompareButton.setEnabled(false);
 		JButton addressSaveImagesButton = new JButton(addressSaveImages);
@@ -105,14 +105,14 @@ public class LcsGui {
 		
 		// Set up region tab.
 		// Actions
-		Action regionGetImages = new GetRegions(persistDirectory);
+		Action regionGetRegion = new GetRegion(persistDirectory);
 		Action regionCompare = new CompareRegions(trainedModel);
 		Action regionSaveImages = new SaveRegions();
 		// Elements
 		JLabel newRegionLabel = new JLabel("New Region:");
 		newRegionLabel.setPreferredSize(new Dimension(50, 50));
 		JTextField newRegionTextField = new JTextField(50);
-		JButton regionGetImagesButton = new JButton(regionGetImages);
+		JButton regionGetImagesButton = new JButton(regionGetRegion);
 		JButton regionCompareButton = new JButton(regionCompare);
 		regionCompareButton.setEnabled(false);
 		JButton regionSaveImagesButton = new JButton(regionSaveImages);
@@ -146,7 +146,7 @@ public class LcsGui {
 		
 		// Set up latLng tab.
 		// Actions
-		Action latLngGetImages = new GetImages(persistDirectory);
+		Action latLngGetImages = new GetImage(persistDirectory);
 		latLngGetImages.putValue(Action.ACTION_COMMAND_KEY, "latLng");
 		Action latLngCompare = new CompareImages(trainedModel);
 		Action latLngSaveImages = new SaveImages();
