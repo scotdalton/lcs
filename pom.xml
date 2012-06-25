@@ -6,6 +6,9 @@
 	<version>1.0.0-alpha.1</version>
 	<name>Land Classification System</name>
 	<description>System that classifies satellite images according to their land use.  Classfications are cropland, forest, desert, developed and unknown.</description>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<repositories>
 		<repository>
 			<id>javacpp</id>
@@ -59,29 +62,23 @@
 			<artifactId>weka-stable</artifactId>
 			<version>3.6.7</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.googlecode.efficient-java-matrix-library</groupId>
-			<artifactId>ejml</artifactId>
-			<version>0.19</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.googlecode.efficient-java-matrix-library</groupId> 
+			<artifactId>ejml</artifactId> <version>0.19</version> </dependency> -->
 		<!-- Must be available in a local repository. -->
 		<dependency>
 			<groupId>libpja</groupId>
 			<artifactId>libpja</artifactId>
 			<version>1.0</version>
 		</dependency>
-    <!-- Must be available in a local repository. -->
-    <!-- <dependency>
-      <groupId>georegression</groupId>
-      <artifactId>georegression</artifactId>
-      <version>1.0</version>
-    </dependency> -->
-    <!-- Must be available in a local repository. -->
-    <dependency>
-      <groupId>boofcv</groupId>
-      <artifactId>boofcv</artifactId>
-      <version>0.2</version>
-    </dependency>
+		<!-- Must be available in a local repository. -->
+		<!-- <dependency> <groupId>georegression</groupId> <artifactId>georegression</artifactId> 
+			<version>1.0</version> </dependency> -->
+		<!-- Must be available in a local repository. -->
+		<dependency>
+			<groupId>boofcv</groupId>
+			<artifactId>boofcv</artifactId>
+			<version>0.2</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
@@ -123,9 +120,67 @@
 						</execution>
 					</executions>
 				</plugin>
+				<!-- Ignore/Execute plugin execution -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- copy-dependency plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<mainClass>edu.nyu.cs.lcs.gui.LcsGui</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -190,7 +245,7 @@
 		<tag>HEAD</tag>
 	</scm>
 	<organization>
-		<name>Courant Institute of Mathematical Sciences</name>
-		<url>http://cims.nyu.edu</url>
+		<name>NYU Department of Computer Science</name>
+		<url>http://cs.nyu.edu</url>
 	</organization>
 </project>

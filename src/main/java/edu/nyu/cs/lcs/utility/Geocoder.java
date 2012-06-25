@@ -74,7 +74,6 @@ public class Geocoder {
 			geocoderURLString += 
 				"latlng="+latitude+","+longitude;
 		}
-		System.out.println(geocoderURLString);
 		URL geocoderURL = new URL(geocoderURLString);
 		JSONObject geocoding = new JSONObject(new JSONTokener(
 			new InputStreamReader(geocoderURL.openStream())));

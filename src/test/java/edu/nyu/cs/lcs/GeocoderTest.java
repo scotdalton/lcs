@@ -33,7 +33,7 @@ public class GeocoderTest {
 		Geocoder geocoder = new Geocoder("Ghana");
 		assertTrue((float)11.16666750 == geocoder.getNortheastLatitude());
 		assertTrue((float)1.1995540 == geocoder.getNortheastLongitude());
-		assertTrue((float)4.73929610 == geocoder.getSouthwestLatitude());
+		assertTrue((float)4.738873799999999 == geocoder.getSouthwestLatitude());
 		assertTrue((float)-3.24916690 == geocoder.getSouthwestLongitude());
 	}
 }

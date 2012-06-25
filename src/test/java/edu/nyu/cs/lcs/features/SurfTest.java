@@ -5,8 +5,8 @@ package edu.nyu.cs.lcs.features;
 
 import org.junit.Test;
 
-import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TestUtility;
+//import edu.nyu.cs.lcs.Image;
+//import edu.nyu.cs.lcs.TestUtility;
 
 
 /**
@@ -16,11 +16,11 @@ import edu.nyu.cs.lcs.TestUtility;
 public class SurfTest {
 	@Test
 	public void testSurf() {
-		for(Image image: (new Image(TestUtility.IMAGE1)).getChoppedImages()) {
-			for(float[] fs: image.getSURF())
-				for (float f: fs)
-				System.out.println(f);
-			System.out.println();
-		}
+//		for(Image image: (new Image(TestUtility.IMAGE1)).getChoppedImages()) {
+//			for(float[] fs: image.getSURF())
+//				for (float f: fs)
+//				System.out.println(f);
+//			System.out.println();
+//		}
 	}
 }

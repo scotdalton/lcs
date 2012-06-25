@@ -79,8 +79,8 @@ public class TestTool {
 	    Iterator<Map.Entry<String, UnknownImage>> imageIterator = 
 	    		imageMap.entrySet().iterator();
 	    while (imageIterator.hasNext()) {
-	        Map.Entry<String, UnknownImage> pairs = imageIterator.next();
-	        System.out.println(pairs.getKey() + " percentage arable: " + pairs.getValue().getArablePercentage());
+//	        Map.Entry<String, UnknownImage> pairs = imageIterator.next();
+//	        System.out.println(pairs.getKey() + " percentage arable: " + pairs.getValue().getArablePercentage());
 	    }	
 	}
 }
