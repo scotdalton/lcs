@@ -11,13 +11,16 @@ package edu.nyu.cs.lcs;
 import java.io.File;
 import java.util.List;
 
+import trainableSegmentation.WekaSegmentation;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Attribute;
+import weka.core.DenseInstance;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
+import weka.core.Utils;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -34,6 +37,7 @@ import edu.nyu.cs.lcs.features.Feature;
  */
 @Singleton
 public class TrainedModel {
+	private WekaSegmentation wekaSegmentation;
 	private List<FeatureSet> featureSets; 
 	private Classifier classifier;
 	private TrainingSet trainingSet;
@@ -61,8 +65,12 @@ public class TrainedModel {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
 			classifier = 
-				Classifier.forName(classifierName, classifierOptions.
-					toArray(new String[0]));
+				(Classifier) Utils.forName(Classifier.class, 
+					classifierName, classifierOptions.
+						toArray(new String[0]));
+//			classifier = 
+//				Classifier.forName(classifierName, classifierOptions.
+//					toArray(new String[0]));
 			classifier.buildClassifier(trainingSet.getInstances());
 			serializeClassifier(classifierFile, classifier);
 		}
@@ -75,7 +83,7 @@ public class TrainedModel {
 	 */
 	public Classification classifyImage(Image image) throws Exception {
 		float[] values = Features.getFeatureValuesForImage(image, featureSets);
-		Instance instance = new Instance(attributes.size());
+		Instance instance = new DenseInstance(attributes.size());
 		for(int i=0; i<values.length; i++){
 			Attribute attribute = (Attribute)attributes.elementAt(i);
 			instance.setValue(attribute, values[i]);      
@@ -177,12 +185,12 @@ public class TrainedModel {
 				instances = 
 					new Instances(name, attributes, knownImages.size());
 				// Class attribute is last
-				int classAttributeIndex = attributes.capacity() -1;
+				int classAttributeIndex = attributes.size() -1;
 				instances.setClassIndex(classAttributeIndex);
 				for(Image trainingImage: knownImages) {
 					float[] values = 
 						Features.getFeatureValuesForImage(trainingImage, featureSets);
-					Instance instance = new Instance(attributes.size());
+					Instance instance = new DenseInstance(attributes.size());
 					for(int i=0; i<values.length; i++)
 						instance.setValue((Attribute)attributes.elementAt(i), values[i]);
 					instance.setValue(

@@ -3,12 +3,18 @@
  */
 package edu.nyu.cs.lcs;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
+import ij.ImagePlus;
 
 import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
+
+import trainableSegmentation.FeatureStack;
+import trainableSegmentation.WekaSegmentation;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Guice;
@@ -54,5 +60,26 @@ public class TrainedModelTest {
 		TrainedModel trainedModel2 = 
 			injector.getInstance(TrainedModel.class);
 		assertSame(trainedModel1, trainedModel2);
+	}
+	
+	@Test
+	public void testFeatureStack() {
+		Image image1 = new Image(TestUtility.IMAGE1);
+		ImagePlus imagePlus = image1.getImagePlus();
+		WekaSegmentation wekaSegmentation = new WekaSegmentation();
+		for (Classification classification : Classification.values()) {
+			wekaSegmentation.setClassLabel(classification.ordinal(), classification.name());
+			if (classification.isTrainable()) {
+				List<Image> trainingImages = classification.getTrainingImages();
+				for (Image trainingImage : trainingImages) {
+					wekaSegmentation.setTrainingImage(trainingImage.getImagePlus());
+				}
+			}
+		}
+		
+		wekaSegmentation.saveData("tst/test.arff");
+			
+		for(String label: wekaSegmentation.getClassLabels()) 
+			System.out.println(label);;
 	}
 }

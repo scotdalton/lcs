@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.lcs;
 
+import ij.ImagePlus;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -74,6 +76,7 @@ public class Image {
 	@Inject private float choppedWidth;
 	@Inject private float choppedHeight;
 	@Inject private int downSampleSquareRoot;
+	private ImagePlus imagePlus;
 	private RenderedImage renderedImage;
 	private ImageFloat32 imageFloat32;
 	private Image discreteCosineTransform;
@@ -220,6 +223,14 @@ public class Image {
 				centeredCrop(renderedImage, croppedWidth, croppedHeight);
 		}
 		setDimensions(this.renderedImage);
+	}
+	
+	public ImagePlus getImagePlus() {
+		if (imagePlus == null) {
+			imagePlus = 
+				new ImagePlus(this.name, this.getAsBufferedImage());
+		}
+		return imagePlus;
 	}
 	
 	/**
