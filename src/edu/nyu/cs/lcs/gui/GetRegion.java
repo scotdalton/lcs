@@ -33,10 +33,12 @@ import edu.nyu.cs.lcs.utility.google_earth.GoogleEarth;
 public class GetRegion extends GetImage {
 
 	private static final long serialVersionUID = -4098880070895817401L;
-	private double northLatitude = 0;
-	private double eastLongitude = 0;
-	private double southLatitude = 0;
-	private double westLongitude = 0;
+	protected final static String REGION_PROPERTIES_FILE_NAME = 
+		".region.properties";
+	double northLatitude = 0;
+	double eastLongitude = 0;
+	double southLatitude = 0;
+	double westLongitude = 0;
 
 	public GetRegion(File persistDirectory) {
 		super(persistDirectory);
@@ -44,21 +46,11 @@ public class GetRegion extends GetImage {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		JButton imagesButton = (JButton) event.getSource();
-		setComponentsFromButton(imagesButton);
+		JButton button = (JButton) event.getSource();
+		setComponentsFromButton(button);
 		try {
-			Geocoder geocoder = new Geocoder(regionAddress);
-			northLatitude = 
-				Float.valueOf(geocoder.getNortheastLatitude());
-			eastLongitude = 
-				Float.valueOf(geocoder.getNortheastLongitude());
-			southLatitude = 
-				Float.valueOf(geocoder.getSouthwestLatitude());
-			westLongitude = 
-				Float.valueOf(geocoder.getSouthwestLongitude());
-			regionAddress = geocoder.getAddress();
+			setRegionFields();
 		} catch (Exception e) {
-			regionAddress = null;
 			e.printStackTrace();
 		}
 		if (regionAddress == null) {
@@ -67,8 +59,7 @@ public class GetRegion extends GetImage {
 			try {
 				regionTextField.setText(regionAddress);
 				regionTextField.repaint();
-				List<Date> dates = GuiUtil.getDates();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("' circa 'yyyy");
+				List<Date> dates = getDates();
 				Map<String, String> imageFileNames = Maps.newLinkedHashMap();
 				Map<String, Image> capturedImages = Maps.newLinkedHashMap();
 				double longitudeStepFactor = getLongitudeStepFactor();
@@ -82,57 +73,45 @@ public class GetRegion extends GetImage {
 					(int) Math.ceil((eastLongitude - westLongitude)/longitudeStepFactor);
 				int rows = 
 					(int) Math.ceil((northLatitude - southLatitude)/latitudeStepFactor);
-				for(double longitude = eastLongitude; 
+				for(double longitude = getStartLongitude(); 
 						longitude > (westLongitude); 
 							longitude = longitude - longitudeStepFactor) {
-					for(double latitude = northLatitude; 
+					for(double latitude = getStartLatitude(); 
 							latitude > (southLatitude); 
 								latitude = latitude - latitudeStepFactor) {
 						List<Image> dateImages = 
 							ImageUtil.getImagesForDates(dates, 
 								longitude, latitude, regionAddress, 
 									xCropFactor, yCropFactor, waitTime);
-//						for(int dateIndex = 0; dateIndex < dates.size(); dateIndex++) {
-//							regionImagesByDate.get(dateIndex).add(dateImages.get(dateIndex));
-//						}
 //						Persist Images
 						for (Image dateImage: dateImages) {
 							File regionDateDirectory = 
-								getRegionDateDirectory(dateImage.getDate());
+								getRegionDateDirectory(regionAddress, dateImage.getDate());
 							if(!regionDateDirectory.exists())
 								regionDateDirectory.mkdirs();
-//							if(!regionPropertiesFile.exists()) regionPropertiesFile.createNewFile();
 							dateImage.persist(regionDateDirectory.getAbsolutePath() + "/" + latitude + "-" + longitude + ".png");
 						}
 						// Set/Update Region Properties.
-						File regionPropertiesFile = 
-							new File(getRegionDirectory().getAbsolutePath() + 
-								"/.region.properties");
-						FileWriter fileWriter = new FileWriter(regionPropertiesFile);
-						fileWriter.write("eastLongitude: "+ eastLongitude);
-						fileWriter.write("westLongitude: "+ westLongitude);
-						fileWriter.write("northLatitude: "+ northLatitude);
-						fileWriter.write("southLatitude: "+ southLatitude);
-						fileWriter.write("regionAddress: "+ regionAddress);
-						fileWriter.write("xCropFactor: "+ xCropFactor);
-						fileWriter.write("yCropFactor: "+ yCropFactor);
-						fileWriter.write("waitTime: "+ waitTime);
-						fileWriter.write("longitude: "+ longitude);
-						fileWriter.write("latitude: "+ latitude);
+						FileWriter fileWriter = 
+							new FileWriter(getRegionPropertiesFile(regionAddress));
+						fileWriter.write("eastLongitude: "+ eastLongitude+"\n");
+						fileWriter.write("westLongitude: "+ westLongitude+"\n");
+						fileWriter.write("northLatitude: "+ northLatitude+"\n");
+						fileWriter.write("southLatitude: "+ southLatitude+"\n");
+						fileWriter.write("regionAddress: "+ regionAddress+"\n");
+						fileWriter.write("xCropFactor: "+ xCropFactor+"\n");
+						fileWriter.write("yCropFactor: "+ yCropFactor+"\n");
+						fileWriter.write("waitTime: "+ waitTime+"\n");
+						fileWriter.write("longitude: "+ longitude+"\n");
+						fileWriter.write("latitude: "+ latitude+"\n");
 						fileWriter.flush();
 					}
 				}
-//				for(List<Image> regionImages: regionImagesByDate) {
-//					Region region = new Region(regionImages, columns, rows);
-//					Image regionImage = region.getImage();
-//					String regionName = regionAddress + dateFormat.format(regionImage.getDate());
-//					capturedImages.put(regionName, regionImage);
-//					String fileName = Configuration.TMP_IMAGE_PATH + "/captured/"+regionName+".png";
-//					regionImage.persist(fileName);
-//					imageFileNames.put(regionName, fileName);
-//				}
 				for(Date date: dates) {
-					Region region = new Region(getRegionDateDirectory(date), columns, rows);
+					Region region = 
+						new Region(
+							getRegionDateDirectory(regionAddress, date), 
+							columns, rows);
 					Image regionImage = region.getImage();
 					String regionName = regionAddress + dateFormat.format(date);
 					capturedImages.put(regionName, regionImage);
@@ -148,13 +127,13 @@ public class GetRegion extends GetImage {
 				resultsPanel.validate();
 				// Enable the other buttons.
 				JButton compareButton = 
-					(JButton) imagesButton.getParent().getComponent(1);
+					(JButton) button.getParent().getComponent(1);
 				if(! compareButton.isEnabled()) {
 					compareButton.setEnabled(true);
 					compareButton.repaint();
 				}
 				JButton saveImagesButton = 
-					(JButton) imagesButton.getParent().getComponent(2);
+					(JButton) button.getParent().getComponent(2);
 				if(! saveImagesButton.isEnabled()) {
 					saveImagesButton.setEnabled(true);
 					saveImagesButton.repaint();
@@ -166,13 +145,49 @@ public class GetRegion extends GetImage {
 		}
 	}
 	
-	private File getRegionDateDirectory(Date date) {
+	File getRegionPropertiesFile(String regionAddress) {
+		return new File(getRegionDirectory(regionAddress).getAbsolutePath() + 
+			"/" + REGION_PROPERTIES_FILE_NAME);
+
+	}
+	
+	List<Date> getDates() throws Exception {
+		return GuiUtil.getDates();
+	}
+	
+	double getStartLongitude() {
+		return eastLongitude;
+	}
+	
+	double getStartLatitude() {
+		return this.northLatitude;
+	}
+	
+	void setRegionFields() throws Exception {
+		try {
+			Geocoder geocoder = new Geocoder(regionAddress);
+			northLatitude = 
+				Float.valueOf(geocoder.getNortheastLatitude());
+			eastLongitude = 
+				Float.valueOf(geocoder.getNortheastLongitude());
+			southLatitude = 
+				Float.valueOf(geocoder.getSouthwestLatitude());
+			westLongitude = 
+				Float.valueOf(geocoder.getSouthwestLongitude());
+			regionAddress = geocoder.getAddress();
+		} catch (Exception e) {
+			regionAddress = null;
+			e.printStackTrace();
+		}
+	}
+	
+	File getRegionDateDirectory(String regionAddress, Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return new File(getRegionDirectory() + "/" + 
+		return new File(getRegionDirectory(regionAddress) + "/" + 
 			dateFormat.format(date));
 	}
 	
-	private File getRegionDirectory() {
+	File getRegionDirectory(String regionAddress) {
 		return new File(persistDirectory.getAbsoluteFile() + "/" + 
 			regionAddress);
 	}

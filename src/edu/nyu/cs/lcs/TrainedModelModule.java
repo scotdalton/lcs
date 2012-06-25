@@ -32,7 +32,7 @@ public class TrainedModelModule extends AbstractModule {
 			try {
 				Properties properties = new Properties();
 				properties.load(new FileReader(
-					"./config/trainedmodel.properties"));
+					"META-INF/trainedmodel.properties"));
 				String classifierName = 
 					properties.getProperty("classifierName");
 				List<String> classifierOptions = Lists.newArrayList(); 

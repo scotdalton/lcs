@@ -9,7 +9,7 @@ package edu.nyu.cs.lcs.classifications;
  */
 public class ForestModule extends ClassificationModule {
 	private final static String PROPERTIES_FILE = 
-		"./config/forest.properties";
+		"META-INF/forest.properties";
 
 	public ForestModule() {
 			super(PROPERTIES_FILE);

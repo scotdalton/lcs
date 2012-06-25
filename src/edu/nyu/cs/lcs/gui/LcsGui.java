@@ -62,7 +62,7 @@ public class LcsGui {
 		TrainedModel trainedModel = 
 			injector.getInstance(TrainedModel.class);
 		Properties properties = new Properties();
-		properties.load(new FileReader("config/gui.properties"));
+		properties.load(new FileReader("META-INF/gui.properties"));
 		File persistDirectory = 
 			new File(properties.getProperty("persistDirectory"));
 		//Create and set up the window.
@@ -97,7 +97,8 @@ public class LcsGui {
 		addressButtonPanel.add(addressSaveImagesButton);
 		// Panel
 		JComponent addressPanel = new JPanel(false);
-		addressPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		addressPanel.
+			setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		LayoutManager addresslayoutManager = new GridLayout(2, 1);
 		addressPanel.setLayout(addresslayoutManager);
 		addressPanel.add(addressInputPanel);
@@ -117,19 +118,11 @@ public class LcsGui {
 		regionCompareButton.setEnabled(false);
 		JButton regionSaveImagesButton = new JButton(regionSaveImages);
 		regionSaveImagesButton.setEnabled(false);
-		JLabel existingRegionLabel = new JLabel("Region in Progress:");
-		existingRegionLabel.setPreferredSize(new Dimension(50, 50));
-		List<String> existingRegions = 
-			GuiUtil.getExistingRegions(persistDirectory);
-		JComboBox existingRegionComboBox = 
-			new JComboBox(existingRegions.toArray());
 		// Input Panel
 		JComponent regionInputPanel = new JPanel(false);
-		regionInputPanel.setLayout(new GridLayout(2, 2));
+		regionInputPanel.setLayout(new GridLayout(1, 2));
 		regionInputPanel.add(newRegionLabel);
 		regionInputPanel.add(newRegionTextField);
-		regionInputPanel.add(existingRegionLabel);
-		regionInputPanel.add(existingRegionComboBox);
 		// Button Panel
 		JComponent regionButtonPanel = new JPanel(false);
 		regionButtonPanel.setLayout(new GridLayout(1, 3));
@@ -138,11 +131,53 @@ public class LcsGui {
 		regionButtonPanel.add(regionSaveImagesButton);
 		// Panel
 		JComponent regionPanel = new JPanel(false);
-		regionPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		regionPanel.
+			setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		LayoutManager regionlayoutManager = new GridLayout(2, 1);
 		regionPanel.setLayout(regionlayoutManager);
 		regionPanel.add(regionInputPanel);
 		regionPanel.add(regionButtonPanel);
+		
+		// Set up existingRegion tab.
+		// Actions
+		Action existingRegionGetRegion = 
+			new GetExistingRegion(persistDirectory);
+		Action existingRegionCompare = new CompareRegions(trainedModel);
+		Action existingRegionSaveImages = new SaveRegions();
+		// Elements
+		JLabel existingRegionLabel = new JLabel("Region in Progress:");
+		existingRegionLabel.setPreferredSize(new Dimension(50, 50));
+		List<String> existingRegions = 
+			GuiUtil.getExistingRegions(persistDirectory);
+		JComboBox existingRegionComboBox = 
+			new JComboBox(existingRegions.toArray());
+		JButton existingRegionGetImagesButton = 
+			new JButton(existingRegionGetRegion);
+		JButton existingRegionCompareButton = 
+			new JButton(existingRegionCompare);
+		existingRegionCompareButton.setEnabled(false);
+		JButton existingRegionSaveImagesButton = 
+			new JButton(existingRegionSaveImages);
+		existingRegionSaveImagesButton.setEnabled(false);
+		// Input Panel
+		JComponent existingRegionInputPanel = new JPanel(false);
+		existingRegionInputPanel.setLayout(new GridLayout(1, 2));
+		existingRegionInputPanel.add(existingRegionLabel);
+		existingRegionInputPanel.add(existingRegionComboBox);
+		// Button Panel
+		JComponent existingRegionButtonPanel = new JPanel(false);
+		existingRegionButtonPanel.setLayout(new GridLayout(1, 3));
+		existingRegionButtonPanel.add(existingRegionGetImagesButton);
+		existingRegionButtonPanel.add(existingRegionCompareButton);
+		existingRegionButtonPanel.add(existingRegionSaveImagesButton);
+		// Panel
+		JComponent existingRegionPanel = new JPanel(false);
+		existingRegionPanel.
+			setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		LayoutManager existingRegionlayoutManager = new GridLayout(2, 1);
+		existingRegionPanel.setLayout(existingRegionlayoutManager);
+		existingRegionPanel.add(existingRegionInputPanel);
+		existingRegionPanel.add(existingRegionButtonPanel);
 		
 		// Set up latLng tab.
 		// Actions
@@ -177,30 +212,37 @@ public class LcsGui {
 		latLngButtonPanel.add(latLngSaveImagesButton);
 		// Panel
 		JComponent latLngPanel = new JPanel(false);
-		latLngPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		latLngPanel.
+			setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		latLngPanel.setLayout(new GridLayout(2, 1));
 		latLngPanel.add(latLngInputPanel);
 		latLngPanel.add(latLngButtonPanel);
 		
 		// Set up settings tab.
 		// Elements
-		JLabel waitTimeLabel = new JLabel("Seconds to wait for Google Earth to render:");
+		JLabel waitTimeLabel = 
+			new JLabel("Seconds to wait for Google Earth to render:");
 		waitTimeLabel.setPreferredSize(new Dimension(50, 50));
-		JSlider waitTimeSlider = new JSlider(JSlider.HORIZONTAL, 0, 60, 10);
+		JSlider waitTimeSlider = 
+			new JSlider(JSlider.HORIZONTAL, 0, 60, 5);
 		waitTimeSlider.setMajorTickSpacing(5);
 		waitTimeSlider.setMinorTickSpacing(1);
 		waitTimeSlider.setPaintTicks(true);
 		waitTimeSlider.setPaintLabels(true);
-		JLabel xCropFactorLabel = new JLabel("Number of pixels to crop in the screenshot horizontally:");
+		JLabel xCropFactorLabel = 
+			new JLabel("Number of pixels to crop in the screenshot horizontally:");
 		xCropFactorLabel.setPreferredSize(new Dimension(50, 75));
-		JSlider xCropFactorSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
+		JSlider xCropFactorSlider = 
+			new JSlider(JSlider.HORIZONTAL, 0, 500, 50);
 		xCropFactorSlider.setMajorTickSpacing(50);
 		xCropFactorSlider.setMinorTickSpacing(10);
 		xCropFactorSlider.setPaintTicks(true);
 		xCropFactorSlider.setPaintLabels(true);
-		JLabel yCropFactorLabel = new JLabel("Number of pixels to crop in the screenshot vertically:");
+		JLabel yCropFactorLabel = 
+			new JLabel("Number of pixels to crop in the screenshot vertically:");
 		yCropFactorLabel.setPreferredSize(new Dimension(50, 75));
-		JSlider yCropFactorSlider = new JSlider(JSlider.HORIZONTAL, 0, 500, 250);
+		JSlider yCropFactorSlider = 
+			new JSlider(JSlider.HORIZONTAL, 0, 500, 250);
 		yCropFactorSlider.setMajorTickSpacing(50);
 		yCropFactorSlider.setMinorTickSpacing(10);
 		yCropFactorSlider.setPaintTicks(true);
@@ -223,10 +265,12 @@ public class LcsGui {
 		arabilityTabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 		arabilityTabbedPane.addTab("Region", regionPanel);
 		arabilityTabbedPane.setMnemonicAt(0, KeyEvent.VK_2);
+		arabilityTabbedPane.addTab("Existing Region", existingRegionPanel);
+		arabilityTabbedPane.setMnemonicAt(0, KeyEvent.VK_3);
 		arabilityTabbedPane.addTab("Latitude/Longitude", latLngPanel);
-		arabilityTabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
+		arabilityTabbedPane.setMnemonicAt(1, KeyEvent.VK_4);
 		arabilityTabbedPane.addTab("Settings", settingsPanel);
-		arabilityTabbedPane.setMnemonicAt(2, KeyEvent.VK_4);
+		arabilityTabbedPane.setMnemonicAt(2, KeyEvent.VK_5);
 		
 		// Add tabbed pane to the top of the split pane
 		JSplitPane arabilitySplitPane = 

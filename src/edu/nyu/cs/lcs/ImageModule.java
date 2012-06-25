@@ -24,7 +24,7 @@ import com.google.inject.BindingAnnotation;
  */
 public class ImageModule extends AbstractModule {
 	private final static String PROPERTIES_FILE_NAME = 
-		"./config/image.properties";
+		"META-INF/image.properties";
 	private Properties properties;
 
 	@BindingAnnotation 

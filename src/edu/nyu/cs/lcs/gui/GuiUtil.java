@@ -18,8 +18,8 @@ import com.google.common.collect.Lists;
  */
 public class GuiUtil {
 	public static List<Date> getDates() {
-		int numberOfDates = 2;
-		int yearlyInterval = -5;
+		int numberOfDates = 7;
+		int yearlyInterval = -2;
 		Calendar cal = Calendar.getInstance();
 		List<Date> dates = Lists.newArrayList();
 		Date now = cal.getTime();

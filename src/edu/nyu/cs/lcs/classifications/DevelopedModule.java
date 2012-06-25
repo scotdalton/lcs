@@ -9,7 +9,7 @@ package edu.nyu.cs.lcs.classifications;
  */
 public class DevelopedModule extends ClassificationModule {
 	private final static String PROPERTIES_FILE = 
-		"./config/developed.properties";
+		"META-INF/developed.properties";
 
 	public DevelopedModule() {
 			super(PROPERTIES_FILE);

@@ -9,7 +9,7 @@
 	<property name="lib"  location="lib" />
 	<property name="build" location="bin" />
 	<property name="dist"  location="dist" />
-	<property name="config"  location="config" />
+	<property name="config"  location="META-INF" />
 	<property name="classifiers"  location=".classifiers" />
 
 	<target name="clean" description="Clean up the build and dist directories">
@@ -24,10 +24,6 @@
 		<mkdir dir="${dist}/lib" />
     <copy todir="${dist}/lib">
       <fileset dir="${lib}" includes="**/*.jar" />
-    </copy>
-    <mkdir dir="${dist}/config" />
-    <copy todir="${dist}/config">
-      <fileset dir="${config}" includes="**/*.properties" />
     </copy>
     <mkdir dir="${dist}/.classifiers" />
     <copy todir="${dist}/.classifiers">
@@ -50,9 +46,6 @@
 		<pathconvert property="manifest.classpath" refid="dist.jars" pathsep=" " /> 
 		<jar jarfile="${dist}/lib/lcs-${DSTAMP}.jar">
 		  <fileset dir="${build}"/>
-      <fileset dir="${root}" includes="**/*.model" />
-      <fileset dir="${root}" includes="**/*.set" />
-      <fileset dir="${root}" includes="**/*.properties" />
 			<manifest>
 				<attribute name="Main-Class" value="edu.nyu.cs.lcs.gui.LcsGui" />
 				<attribute name="Class-Path" value="${manifest.classpath}" />
@@ -63,6 +56,7 @@
 					<attribute name="Implementation-Version" value="build-${DSTAMP}" />
 				</section>
 			</manifest>
+			<metainf dir="${config}" includes="**/*.properties" />
 		</jar>
 		<symlink link="${dist}/lcs.jar" resource="${dist}/lib/lcs-${DSTAMP}.jar" />
 	</target>

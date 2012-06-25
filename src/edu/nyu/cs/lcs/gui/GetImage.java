@@ -30,12 +30,14 @@ public class GetImage extends LcsAction {
 
 	private static final long serialVersionUID = -5852278101756597007L;
 	File persistDirectory;
-
+	SimpleDateFormat dateFormat;
+	
 	public GetImage(File persistDirectory) {
 		super("Get Images");
 		this.persistDirectory = persistDirectory;
 		putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
 		setEnabled(true);
+		dateFormat = new SimpleDateFormat("' circa 'yyyy");
 	}
 
 	@Override
@@ -79,7 +81,6 @@ public class GetImage extends LcsAction {
 				images = ImageUtil.getImagesForDates(dates, longitude, latitude, address, xCropFactor, yCropFactor, waitTime);
 				Map<String, String> imageFileNames = Maps.newLinkedHashMap();
 				Map<String, Image> capturedImages = Maps.newLinkedHashMap();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("' circa 'yyyy");
 				for(Image image: images) {
 					String imageName = address + dateFormat.format(image.getDate());
 					String fileName = persistDirectory.getAbsolutePath() + 

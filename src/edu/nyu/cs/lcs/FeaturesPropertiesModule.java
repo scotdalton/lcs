@@ -30,7 +30,7 @@ import edu.nyu.cs.lcs.ImageModule.DownSampleSquareRoot;
 public class FeaturesPropertiesModule extends AbstractModule {
 
 	private final static String PROPERTIES_FILE_NAME = 
-		"./config/features.properties";
+		"META-INF/features.properties";
 	private String propertiesFileName;
 	private Properties properties;
 

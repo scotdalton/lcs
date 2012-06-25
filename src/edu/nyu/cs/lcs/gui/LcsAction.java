@@ -5,6 +5,7 @@ package edu.nyu.cs.lcs.gui;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -30,6 +31,9 @@ public abstract class LcsAction extends AbstractAction {
 	JPanel regionInputPanel;
 	JTextField regionTextField;
 	String regionAddress;
+	JPanel existingRegionPanel;
+	JPanel existingRegionInputPanel;
+	JComboBox existingRegionComboBox;
 	JPanel latLngPanel;
 	JPanel latLngInputPanel;
 	JTextField latitudeTextField;
@@ -59,14 +63,20 @@ public abstract class LcsAction extends AbstractAction {
 			getAncestorOfClass(JSplitPane.class, button);
 		arabilityTabbedPane = (JTabbedPane)arabilitySplitPane.getComponent(1);
 		addressPanel = (JPanel) arabilityTabbedPane.getComponent(0);
+		regionPanel = (JPanel) arabilityTabbedPane.getComponent(1);
+		existingRegionPanel = (JPanel) arabilityTabbedPane.getComponent(2);
+		latLngPanel = (JPanel) arabilityTabbedPane.getComponent(3);
+		settingsPanel = (JPanel) arabilityTabbedPane.getComponent(4);
 		addressInputPanel = (JPanel) addressPanel.getComponent(0);
 		addressTextField = (JTextField) addressInputPanel.getComponent(1);
 		address = addressTextField.getText();
-		regionPanel = (JPanel) arabilityTabbedPane.getComponent(1);
 		regionInputPanel = (JPanel) regionPanel.getComponent(0);
 		regionTextField = (JTextField) regionInputPanel.getComponent(1);
 		regionAddress = regionTextField.getText();
-		latLngPanel = (JPanel) arabilityTabbedPane.getComponent(2);
+		// Existing Region
+		existingRegionInputPanel = (JPanel) existingRegionPanel.getComponent(0);
+		existingRegionComboBox = (JComboBox) existingRegionInputPanel.getComponent(1);
+		// Lat/Long
 		latLngInputPanel = (JPanel) latLngPanel.getComponent(0);
 		latitudeTextField = (JTextField) latLngInputPanel.getComponent(1);
 		longitudeTextField = (JTextField) latLngInputPanel.getComponent(3);
@@ -76,7 +86,7 @@ public abstract class LcsAction extends AbstractAction {
 			latitude = Float.valueOf(latitudeString);
 			longitude = Float.valueOf(longitudeString);
 		}
-		settingsPanel = (JPanel) arabilityTabbedPane.getComponent(3);
+		// Settings
 		waitTimeSlider = (JSlider) settingsPanel.getComponent(1);
 		xCropFactorSlider = (JSlider) settingsPanel.getComponent(3);
 		yCropFactorSlider = (JSlider) settingsPanel.getComponent(5);

@@ -166,7 +166,7 @@ public class ImageUtil {
 			throws FileNotFoundException, IOException {
 		if (kmlFilename == null) {
 			Properties kmlProperties = new Properties();
-			kmlProperties.load(new FileReader("./config/kml.properties"));
+			kmlProperties.load(new FileReader("META-INF/kml.properties"));
 			kmlFilename = kmlProperties.getProperty("directory")+ 
 			"/"+ kmlProperties.getProperty("file");
 		}
