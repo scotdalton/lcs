@@ -14,6 +14,7 @@ import java.util.List;
 import org.junit.Test;
 
 import trainableSegmentation.FeatureStack;
+import trainableSegmentation.FeatureStackArray;
 import trainableSegmentation.WekaSegmentation;
 
 import com.google.common.collect.Lists;
@@ -28,6 +29,42 @@ import edu.nyu.cs.lcs.classifications.Classification;
  *
  */
 public class TrainedModelTest {
+	/** expected membrane thickness */
+	private int membraneThickness = 1;
+	/** size of the patch to use to enhance the membranes */
+	private int membranePatchSize = 19;
+
+	/** minimum sigma to use on the filters */
+	private float minimumSigma = 1f;
+	/** maximum sigma to use on the filters */
+	private float maximumSigma = 16f;
+
+	/** use neighborhood flag */
+	private boolean useNeighbors = false;
+	/** flags of filters to be used */
+	private boolean[] enabledFeatures = new boolean[]{
+			true, 	/* Gaussian_blur */
+			true, 	/* Sobel_filter */
+			true, 	/* Hessian */
+			true, 	/* Difference_of_gaussians */
+			true, 	/* Membrane_projections */
+			false, 	/* Variance */
+			false, 	/* Mean */
+			false, 	/* Minimum */
+			false, 	/* Maximum */
+			false, 	/* Median */
+			false,	/* Anisotropic_diffusion */
+			false, 	/* Bilateral */
+			false, 	/* Lipschitz */
+			false, 	/* Kuwahara */
+			false,	/* Gabor */
+			false, 	/* Derivatives */
+			false, 	/* Laplacian */
+			false,	/* Structure */
+			false,	/* Entropy */
+			false	/* Neighbors */
+	};
+
 	@Test
 	public void testNewTrainedModel() throws Exception {
 		double confidenceThreshold = 0.95;
@@ -65,18 +102,34 @@ public class TrainedModelTest {
 	@Test
 	public void testFeatureStack() {
 		Image image1 = new Image(TestUtility.IMAGE1);
-		ImagePlus imagePlus = image1.getImagePlus();
+//		ImagePlus imagePlus = image1.getImagePlus();
+//		FeatureStack featureStack = new FeatureStack(imagePlus);
+		
+		FeatureStackArray featureStackArrary = 
+			new FeatureStackArray(membranePatchSize, minimumSigma, 
+				maximumSigma, useNeighbors, membraneThickness, 
+					membranePatchSize, enabledFeatures);
 		WekaSegmentation wekaSegmentation = new WekaSegmentation();
-		for (Classification classification : Classification.values()) {
+		System.out.println(wekaSegmentation.getNumOfClasses());
+		for(Classification classification : Classification.values()) {
+			if(classification.ordinal() >= wekaSegmentation.getNumOfClasses())
+				wekaSegmentation.addClass();
 			wekaSegmentation.setClassLabel(classification.ordinal(), classification.name());
-			if (classification.isTrainable()) {
+			if(classification.isTrainable()) {
 				List<Image> trainingImages = classification.getTrainingImages();
-				for (Image trainingImage : trainingImages) {
-					wekaSegmentation.setTrainingImage(trainingImage.getImagePlus());
+				for(int i = 0;  i < 4; i ++) {
+					Image trainingImage = trainingImages.get(i);
+					ImagePlus imagePlus = trainingImage.getImagePlus();
+					wekaSegmentation.setTrainingImage(imagePlus);
+					FeatureStack featureStack = 
+						new FeatureStack(imagePlus);
+					wekaSegmentation.addBinaryData(
+						trainingImage.getImagePlus(), featureStack, 
+							classification.name());
 				}
 			}
 		}
-		
+		System.out.println(wekaSegmentation.getNumOfClasses());
 		wekaSegmentation.saveData("tst/test.arff");
 			
 		for(String label: wekaSegmentation.getClassLabels()) 
