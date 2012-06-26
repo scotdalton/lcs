@@ -30,7 +30,7 @@ public class UnknownImageTest {
 			Guice.createInjector(new TrainedModelModule());
 		trainedModel = 
 			injector.getInstance(TrainedModel.class);
-		persistFile = new File("./tmp/persistTest.png");
+		persistFile = new File("src/test/resources/META-INF/persistTest.png");
 		if(persistFile.exists()) persistFile.delete();
 	}
 	

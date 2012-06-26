@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Test;
+//import org.junit.Test;
 
 import edu.nyu.cs.lcs.utility.ImageUtil;
 import edu.nyu.cs.lcs.utility.kml.Camera;
@@ -22,7 +22,7 @@ import edu.nyu.cs.lcs.utility.kml.Placemark;
  *
  */
 public class ImageUtilTest {
-	@Test
+//	@Test
 	public void testGetImage() throws Exception {
 		double latitude = -1.30785;
 		double longitude = 36.84931;
@@ -56,7 +56,7 @@ public class ImageUtilTest {
 		documents.add(document);
 		Kml kml = new Kml.Builder().documents(documents).build();
 		Image image = ImageUtil.getImage(kml, 5, 5, 5000);
-		String fileName =  "tst/captured/image.png";
+		String fileName = "tst/captured/image.png";
 		image.persist(fileName);
 	}
 }

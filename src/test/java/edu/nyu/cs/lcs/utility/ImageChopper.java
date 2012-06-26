@@ -15,7 +15,7 @@ import edu.nyu.cs.lcs.Image;
 public class ImageChopper {
 	
 	public static void main(String[] args) throws Exception {
-		String imageDirectory = "tmp";
+		String imageDirectory = "src/test/resources/META-INF";
 		for(String arg: args)
 			if (arg.startsWith("imageDirectory="))
 				imageDirectory=arg.split("=")[1];
