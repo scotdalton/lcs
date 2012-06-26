@@ -7,7 +7,6 @@
 *.war
 *.ear
 target
-*.properties
 bin
 *.bak
 dist
