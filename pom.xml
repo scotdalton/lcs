@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.nyu.cims</groupId>
 	<artifactId>lcs</artifactId>
-	<version>1.0.0-alpha.1</version>
+	<version>1.0.0-alpha.1-SNAPSHOT</version>
 	<name>Land Classification System</name>
 	<description>System that classifies satellite images according to their land use.  Classfications are cropland, forest, desert, developed and unknown.</description>
 	<properties>
