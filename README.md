@@ -14,10 +14,10 @@ The project uses [Maven](http://maven.apache.org) to manage dependencies, test,
 build and produce javadocs.
 
 In order to compile the project, you'll need to install [boofcv](http://sourceforge.net/projects/boofcv/files/v0.2/)
-version 0.2 and its dependencies locally.
+version 0.2 and [libpja](https://github.com/lessthanoptimal/BoofCV/blob/master/lib/libpja.jar?raw=true) locally.
 
     $ mvn install:install-file -Dfile=boofcv-0.2.jar -DgroupId=boofcv -DartifactId=boofcv -Dversion=0.8 -Dpackaging=jar
-    $ mvn install:install-file -Dfile=libpja.jar -DgroupId=libpja -DartifactId=libpja -Dversion=1.0 -Dpackaging=jar
+    $ mvn install:install-file -Dfile=pja.jar -DgroupId=com.eteks.pja -DartifactId=pja -Dversion=2.5 -Dpackaging=jar
     
 To run all tests and build the package
 
