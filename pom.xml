@@ -62,17 +62,12 @@
 			<artifactId>weka-stable</artifactId>
 			<version>3.6.7</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.googlecode.efficient-java-matrix-library</groupId> 
-			<artifactId>ejml</artifactId> <version>0.19</version> </dependency> -->
 		<!-- Must be available in a local repository. -->
 		<dependency>
 			<groupId>libpja</groupId>
 			<artifactId>libpja</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- Must be available in a local repository. -->
-		<!-- <dependency> <groupId>georegression</groupId> <artifactId>georegression</artifactId> 
-			<version>1.0</version> </dependency> -->
 		<!-- Must be available in a local repository. -->
 		<dependency>
 			<groupId>boofcv</groupId>
