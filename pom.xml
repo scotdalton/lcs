@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.nyu.cims</groupId>
 	<artifactId>lcs</artifactId>
-	<version>1.0.0-alpha.1</version>
+	<version>1.0.0-alpha.2-SNAPSHOT</version>
 	<name>Land Classification System</name>
 	<description>System that classifies satellite images according to their land use.  Classfications are cropland, forest, desert, developed and unknown.</description>
 	<properties>
@@ -240,7 +240,7 @@
 		<connection>scm:git:git://github.com:scotdalton/lcs.git</connection>
 		<url>scm:git:git@github.com:scotdalton/lcs.git</url>
 		<developerConnection>scm:git:git@github.com:scotdalton/lcs.git</developerConnection>
-		<tag>v1.0.0-alpha.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<organization>
 		<name>NYU Department of Computer Science</name>
