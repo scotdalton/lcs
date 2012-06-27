@@ -18,6 +18,7 @@ you must clone the fiji project and install it in you local maven repository.
 
     $ git clone git://github.com/fiji/fiji.git
     $ cd fiji
+    $ unset JAVA_HOME
     $ make
     $ cd jars
     $ mvn install:install-file -Dfile=fiji-lib.jar -DgroupId=sc.fiji -DartifactId=fiji-lib -Dversion=2.0.0 -Dpackaging=jar
