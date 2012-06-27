@@ -17,7 +17,9 @@ This project leverages the image processing package [Fiji](http://fiji.sc).  In 
 you must clone the fiji project and install it in you local maven repository.
 
     $ git clone git://github.com/fiji/fiji.git
-    $ cd fiji/jars
+    $ cd fiji
+    $ make
+    $ cd jars
     $ mvn install:install-file -Dfile=fiji-lib.jar -DgroupId=sc.fiji -DartifactId=fiji-lib -Dversion=2.0.0 -Dpackaging=jar
     $ mvn install:install-file -Dfile=imagescience.jar -DgroupId=imagescience -DartifactId=imagescience -Dversion=2.4.1 -Dpackaging=jar
     $ cd ../plugins
