@@ -18,7 +18,7 @@ version 0.2 and [libpja](https://github.com/lessthanoptimal/BoofCV/blob/master/l
 repository.
 
     $ mvn install:install-file -Dfile=boofcv-0.2.jar -DgroupId=boofcv -DartifactId=boofcv -Dversion=0.2 -Dpackaging=jar
-    $ mvn install:install-file -Dfile=pja.jar -DgroupId=com.eteks.pja -DartifactId=pja -Dversion=1.0 -Dpackaging=jar
+    $ mvn install:install-file -Dfile=libpja.jar -DgroupId=libpja -DartifactId=libpja -Dversion=1.0 -Dpackaging=jar
     
 To run all tests and build the package
 
