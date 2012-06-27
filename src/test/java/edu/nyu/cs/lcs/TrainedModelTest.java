@@ -7,14 +7,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 import ij.ImagePlus;
+import ij.gui.Roi;
 
 import java.io.File;
 import java.util.List;
 
 import org.junit.Test;
 
-import trainableSegmentation.FeatureStack;
-import trainableSegmentation.FeatureStackArray;
 import trainableSegmentation.WekaSegmentation;
 
 import com.google.common.collect.Lists;
@@ -29,43 +28,7 @@ import edu.nyu.cs.lcs.classifications.Classification;
  *
  */
 public class TrainedModelTest {
-	/** expected membrane thickness */
-	private int membraneThickness = 1;
-	/** size of the patch to use to enhance the membranes */
-	private int membranePatchSize = 19;
-
-	/** minimum sigma to use on the filters */
-	private float minimumSigma = 1f;
-	/** maximum sigma to use on the filters */
-	private float maximumSigma = 16f;
-
-	/** use neighborhood flag */
-	private boolean useNeighbors = false;
-	/** flags of filters to be used */
-	private boolean[] enabledFeatures = new boolean[]{
-			true, 	/* Gaussian_blur */
-			true, 	/* Sobel_filter */
-			true, 	/* Hessian */
-			true, 	/* Difference_of_gaussians */
-			true, 	/* Membrane_projections */
-			false, 	/* Variance */
-			false, 	/* Mean */
-			false, 	/* Minimum */
-			false, 	/* Maximum */
-			false, 	/* Median */
-			false,	/* Anisotropic_diffusion */
-			false, 	/* Bilateral */
-			false, 	/* Lipschitz */
-			false, 	/* Kuwahara */
-			false,	/* Gabor */
-			false, 	/* Derivatives */
-			false, 	/* Laplacian */
-			false,	/* Structure */
-			false,	/* Entropy */
-			false	/* Neighbors */
-	};
-
-	@Test
+//	@Test
 	public void testNewTrainedModel() throws Exception {
 		double confidenceThreshold = 0.95;
 		String classifierName = "weka.classifiers.lazy.IBk";
@@ -88,7 +51,7 @@ public class TrainedModelTest {
 				trainedModel.classifyImage(desertTestImage));
 	}
 
-	@Test
+//	@Test
 	public void testInjectedTrainedModel() throws Exception {
 		Injector injector = 
 			Guice.createInjector(new TrainedModelModule());
@@ -101,38 +64,29 @@ public class TrainedModelTest {
 	
 	@Test
 	public void testFeatureStack() {
-		Image image1 = new Image(TestUtility.IMAGE1);
-//		ImagePlus imagePlus = image1.getImagePlus();
-//		FeatureStack featureStack = new FeatureStack(imagePlus);
-		
-		FeatureStackArray featureStackArrary = 
-			new FeatureStackArray(membranePatchSize, minimumSigma, 
-				maximumSigma, useNeighbors, membraneThickness, 
-					membranePatchSize, enabledFeatures);
-		WekaSegmentation wekaSegmentation = new WekaSegmentation();
-		System.out.println(wekaSegmentation.getNumOfClasses());
+		Image image = new Image(TestUtility.IMAGE1);
+		WekaSegmentation wekaSegmentation = 
+			new WekaSegmentation(image.getImagePlus());
 		for(Classification classification : Classification.values()) {
+			wekaSegmentation.setClassLabel(classification.ordinal(), classification.name());
 			if(classification.ordinal() >= wekaSegmentation.getNumOfClasses())
 				wekaSegmentation.addClass();
-			wekaSegmentation.setClassLabel(classification.ordinal(), classification.name());
 			if(classification.isTrainable()) {
 				List<Image> trainingImages = classification.getTrainingImages();
-				for(int i = 0;  i < 4; i ++) {
+				for(int i = 0;  i < 10; i ++) {
 					Image trainingImage = trainingImages.get(i);
+//				for(Image trainingImage:trainingImages) {
 					ImagePlus imagePlus = trainingImage.getImagePlus();
-					wekaSegmentation.setTrainingImage(imagePlus);
-					FeatureStack featureStack = 
-						new FeatureStack(imagePlus);
-					wekaSegmentation.addBinaryData(
-						trainingImage.getImagePlus(), featureStack, 
-							classification.name());
+					Roi roi = new Roi(0, 0, imagePlus.getWidth(), imagePlus.getHeight());
+					roi.setImage(imagePlus);
+					int n = imagePlus.getCurrentSlice();
+					int classNum = classification.ordinal();
+					wekaSegmentation.addExample(classNum, roi, n);
 				}
 			}
 		}
-		System.out.println(wekaSegmentation.getNumOfClasses());
-		wekaSegmentation.saveData("tst/test.arff");
-			
-		for(String label: wekaSegmentation.getClassLabels()) 
-			System.out.println(label);;
+		wekaSegmentation.trainClassifier();
+		wekaSegmentation.saveClassifier(".classifiers/lcs.model");
+		wekaSegmentation.saveData("lcs.arff");
 	}
 }
