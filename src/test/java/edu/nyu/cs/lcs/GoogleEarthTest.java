@@ -18,7 +18,7 @@ import edu.nyu.cs.lcs.utility.google_earth.MacOsxGoogleEarth;
  */
 public class GoogleEarthTest {
 	
-	@Test
+//	@Test
 	public void testGoogleEarth() throws Exception {
 		GoogleEarth googleEarth = GoogleEarthFactory.getGoogleEarth();
 		assertTrue(googleEarth instanceof MacOsxGoogleEarth);
