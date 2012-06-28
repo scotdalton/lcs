@@ -3,10 +3,7 @@
  */
 package edu.nyu.cs.lcs;
 
-import java.util.List;
-
 import com.google.inject.Inject;
-
 import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
@@ -17,7 +14,6 @@ import edu.nyu.cs.lcs.model.TrainedModel;
  */
 public class UnknownImage extends Image {
 	@Inject private TrainedModel trainedModel;
-	private List<Image> choppedImages;
 	private Double arablePercentage;
 	private Double developedPercentage;
 	private Double desertPercentage;
@@ -73,7 +69,7 @@ public class UnknownImage extends Image {
 		int developedCount = 0;
 		int desertCount = 0;
 		int forestCount = 0;
-		for(double pixel : getPixels(new double[0]));
+//		for(double pixel : getPixels(new double[0]));
 //		for(Image choppedImage : ) {
 //			Classification classification = 
 //				choppedImage.getClassification();
