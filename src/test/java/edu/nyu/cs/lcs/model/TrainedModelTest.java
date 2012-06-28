@@ -58,7 +58,7 @@ public class TrainedModelTest {
 		assertSame(trainedModel1, trainedModel2);
 	}
 	
-	@Test
+//	@Test
 	public void testFeatureStack() {
 		Image image = new Image(TestUtility.IMAGE1);
 		WekaSegmentation wekaSegmentation = 
@@ -69,7 +69,7 @@ public class TrainedModelTest {
 				wekaSegmentation.addClass();
 			if(classification.isTrainable()) {
 				List<Image> trainingImages = classification.getTrainingImages();
-				for(int i = 0;  i < 100; i ++) {
+				for(int i = 0;  i < 10; i ++) {
 					Image trainingImage = trainingImages.get(i);
 //				for(Image trainingImage:trainingImages) {
 					ImagePlus imagePlus = trainingImage.getImagePlus();
