@@ -44,8 +44,8 @@ public class UnknownImageTest {
 	@Test
 	public void testNewImage_fromFileName() {
 		Image image = new UnknownImage(TestUtility.IMAGE1, trainedModel);
-		assertEquals(1500, image.getWidth());
-		assertEquals(1000, image.getHeight());
+		assertEquals(1544, image.getWidth());
+		assertEquals(1055, image.getHeight());
 	}
 	
 	@Test
