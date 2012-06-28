@@ -26,13 +26,6 @@ you must clone the fiji project and install it in you local maven repository.
     $ cd ../plugins
     $ $ mvn install:install-file -Dfile=Trainable_Segmentation.jar -DgroupId=sc.fiji -DartifactId=trainable_segmentation -Dversion=2.0.0 -Dpackaging=jar
 
-In order to compile the project, you'll need to download and install [boofcv](http://sourceforge.net/projects/boofcv/files/v0.2/boofcv-v0.2.jar)
-version 0.2 and [libpja](https://github.com/lessthanoptimal/BoofCV/blob/master/lib/libpja.jar?raw=true) into your local maven
-repository.
-
-    $ mvn install:install-file -Dfile=boofcv-0.2.jar -DgroupId=boofcv -DartifactId=boofcv -Dversion=0.2 -Dpackaging=jar
-    $ mvn install:install-file -Dfile=libpja.jar -DgroupId=libpja -DartifactId=libpja -Dversion=1.0 -Dpackaging=jar
-    
 To run all tests and build the package
 
     $ mvn package
