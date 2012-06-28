@@ -43,8 +43,8 @@ public class Region {
 		return image;
 	}
 	
-	public Image getClassificationHeatMap() throws Exception {
-		return getImage().getClassificationHeatMap();
+	public Image getClassificationImage() throws Exception {
+		return getImage().getClassificationImage();
 	}
 	
 	public Image getComparisonImage(Image fromImage) throws Exception {

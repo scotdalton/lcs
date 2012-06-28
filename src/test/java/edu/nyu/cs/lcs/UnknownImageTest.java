@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +14,9 @@ import org.junit.Test;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import edu.nyu.cs.lcs.model.TrainedModel;
+import edu.nyu.cs.lcs.model.TrainedModelModule;
 
 /**
  * @author Scot Dalton
@@ -52,16 +54,6 @@ public class UnknownImageTest {
 		image.persist(persistFile.getAbsolutePath());
 		assertTrue(persistFile.exists());
 		assertTrue(persistFile.isFile());
-	}
-	
-	@Test
-	public void testGetChoppedUnkownImages() {
-		Image image = new UnknownImage(TestUtility.IMAGE1, null);
-		List<Image> choppedImages = image.getChoppedImages();
-		for (Image choppedImage:choppedImages) {
-			assertEquals(100, choppedImage.getHeight());
-			assertEquals(100, choppedImage.getWidth());
-		}
 	}
 	
 	@Test

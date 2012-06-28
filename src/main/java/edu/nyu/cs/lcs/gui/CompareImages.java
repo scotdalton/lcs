@@ -15,8 +15,8 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.UnknownImage;
+import edu.nyu.cs.lcs.model.TrainedModel;
 
 
 /**
@@ -51,7 +51,7 @@ public class CompareImages extends LcsAction {
 		        String imageName = pair.getKey(); 
 		        oldestImage = new UnknownImage(pair.getValue(), trainedModel);
 		        unknownImages.put(imageName, oldestImage);
-		        unknownImages.put(imageName + " Classification Map", oldestImage.getClassificationHeatMap());
+		        unknownImages.put(imageName + " Classification Map", oldestImage.getClassificationImage());
 		    }
 		    // Get the rest of the images
 		    UnknownImage unkownImage = null; 
@@ -60,7 +60,7 @@ public class CompareImages extends LcsAction {
 		        String imageName = pair.getKey(); 
 		        unkownImage = new UnknownImage(pair.getValue(), trainedModel);
 		        unknownImages.put(imageName, unkownImage);
-		        unknownImages.put(imageName + " Classification Map", unkownImage.getClassificationHeatMap());
+		        unknownImages.put(imageName + " Classification Map", unkownImage.getClassificationImage());
 		    }
 		    // Newest image is the last one.
 		    UnknownImage newestImage = unkownImage; 

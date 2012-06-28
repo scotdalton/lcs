@@ -5,62 +5,23 @@ package edu.nyu.cs.lcs;
 
 import ij.ImagePlus;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.awt.image.renderable.ParameterBlock;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
-import javax.media.jai.ImageLayout;
-import javax.media.jai.ImagePyramid;
-import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
-import javax.media.jai.KernelJAI;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.RenderedOp;
-
-import boofcv.alg.feature.describe.DescribePointSurf;
-import boofcv.core.image.ConvertBufferedImage;
-import boofcv.struct.feature.SurfFeature;
-import boofcv.struct.image.ImageFloat32;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.primitives.Floats;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-
-import edu.nyu.cs.lcs.ImageModule.ChoppedHeight;
-import edu.nyu.cs.lcs.ImageModule.ChoppedWidth;
-import edu.nyu.cs.lcs.ImageModule.DownSampleSquareRoot;
-import edu.nyu.cs.lcs.classifications.Classification;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -71,69 +32,17 @@ import edu.nyu.cs.lcs.classifications.Classification;
  * @author Scot Dalton
  * 
  */
-@SuppressWarnings("restriction")
 public class Image {
-	@Inject private float choppedWidth;
-	@Inject private float choppedHeight;
-	@Inject private int downSampleSquareRoot;
+	private Image classificationImage;
 	private ImagePlus imagePlus;
 	private RenderedImage renderedImage;
-	private ImageFloat32 imageFloat32;
-	private Image discreteCosineTransform;
-	private Image classificationHeatMap;
-	private Image gradientMagnitude;
-	private Image downImage;
-	private List<float[]> surf;
-	private Image greyscaleImage;
 	private Histogram histogram;
 	private int width;
 	private int height;
 	private int minX;
 	private int minY;
-	private float downSampleSize;
-	private float croppedWidth;
-	private float croppedHeight;
-	private int choppedColumns;
-	private int choppedRows;
-	protected Classification classification;
 	private Date date;
 	private String name;
-	private static final float[] FREI_CHEN_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
-		1.414F, 0.0F, -1.414F, 1.0F, 0.0F, -1.0F };
-	private static final float[] FREI_CHEN_VERTICAL = { -1.0F, -1.414F, -1.0F,
-		0.0F, 0.0F, 0.0F, 1.0F, 1.414F, 1.0F };
-	private static final float[] PREWITT_HORIZONTAL = { 1.0F, 0.0F, -1.0F, 
-		1.0F, 0.0F, -1.0F, 1.0F, 0.0F, -1.0F };
-	private static final float[] PREWITT_VERTICAL = { -1.0F, -1.0F, -1.0F,
-		0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F };
-	private static final float[] ROBERTS_HORIZONTAL = { 0.0F, 0.0F, -1.0F, 0.0F,  
-		1.0F, 0.0F, 0.0F, 0.0F, 0.0F };
-	private static final float[] ROBERTS_VERTICAL = { -1.0F,  0.0F,  0.0F, 0.0F, 
-		1.0F, 0.0F, 0.0F, 0.0F, 0.0F };
-	private enum KernelDimension {HORIZONTAL, VERTICAL};
-	public enum GradientKernel{
-		FREI_CHEN(FREI_CHEN_HORIZONTAL, FREI_CHEN_VERTICAL),
-		PREWITT(PREWITT_HORIZONTAL, PREWITT_VERTICAL),
-		ROBERTS_CROSS(ROBERTS_HORIZONTAL, ROBERTS_VERTICAL),
-		SOBEL(KernelJAI.GRADIENT_MASK_SOBEL_HORIZONTAL, KernelJAI.GRADIENT_MASK_SOBEL_VERTICAL);
-
-		private EnumMap<KernelDimension, KernelJAI> kernelMap;
-		
-		private GradientKernel(float[] horizontalData, float[] verticalData) {
-			this(new KernelJAI(3, 3, horizontalData), new KernelJAI(3, 3, verticalData));
-		}
-		
-		private GradientKernel(KernelJAI horizontalKernel, KernelJAI verticalKernel) {
-			kernelMap = Maps.newEnumMap(KernelDimension.class);
-			kernelMap.put(KernelDimension.HORIZONTAL, horizontalKernel);
-			kernelMap.put(KernelDimension.VERTICAL, verticalKernel);
-		}
-		
-		private Map<KernelDimension, KernelJAI> getKernelMap() {
-			return Collections.unmodifiableMap(kernelMap);
-		}
-	};
-	private GradientKernel gradientKernel;
 
 	/**
 	 * Constructor for general use.
@@ -186,14 +95,11 @@ public class Image {
 	 * @param image
 	 */
 	public Image(Image image) {
-		setDefaults();
 		renderedImage = image.renderedImage;
 		setDimensions(this.renderedImage);
-		discreteCosineTransform = image.discreteCosineTransform;
-		downImage = image.downImage;
-		greyscaleImage = image.greyscaleImage;
 		histogram = image.histogram;
-		classification = image.classification;
+		classificationImage = image.classificationImage;
+		imagePlus = image.imagePlus;
 		date = image.date;
 	}
 
@@ -212,16 +118,7 @@ public class Image {
 	 * @param renderedImage
 	 */
 	public Image(RenderedImage renderedImage) {
-		setDefaults();
-		renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
-		if(skipChop(renderedImage)) {
-			this.renderedImage = renderedImage;
-		} else {
-			croppedWidth = getCroppedWidth(renderedImage);
-			croppedHeight = getCroppedHeight(renderedImage);
-			this.renderedImage = 
-				centeredCrop(renderedImage, croppedWidth, croppedHeight);
-		}
+		this.renderedImage = PlanarImage.wrapRenderedImage(renderedImage);
 		setDimensions(this.renderedImage);
 	}
 	
@@ -233,99 +130,44 @@ public class Image {
 		return imagePlus;
 	}
 	
-	/**
-	 * Persist the image to a file with the given filename.
-	 * @param filename
-	 */
-	public void persist(String filename) {
-		File file = new File(filename);
-		File parent = file.getParentFile();
-		if(!parent.exists()) parent.mkdirs();
-		ParameterBlock fileStoreParams = (new ParameterBlock()).
-			addSource(renderedImage).add(filename).add("PNG");
-		JAI.create("filestore", fileStoreParams);
-	}
-	
-	public Image getClassificationHeatMap() throws Exception {
-		if(classificationHeatMap == null) {
-			BufferedImage bufferedImage = getAsBufferedImage();
-			Graphics graphics = bufferedImage.getGraphics();
-			for(Image choppedImage: getChoppedImages()) {
-				int red = choppedImage.getClassification().getRed();
-				int green = choppedImage.getClassification().getGreen();
-				int blue = choppedImage.getClassification().getBlue();
-				int alpha = choppedImage.getClassification().getAlpha();
-				graphics.setColor(new Color(red, green, blue, alpha));
-				int rectX = choppedImage.getMinX()-minX;
-				int rectY = choppedImage.getMinY()-minY;
-				graphics.fillRect(rectX, rectY, choppedImage.getWidth(),
-					choppedImage.getHeight());
-				graphics.setColor(Color.black);
-				graphics.setFont(new Font("Serif", Font.BOLD, 10));
-				FontMetrics fontMetrics = graphics.getFontMetrics();
-				int stringWidth = 
-					fontMetrics.stringWidth(choppedImage.getClassification().toString());
-				int x = rectX + choppedImage.getWidth() - stringWidth;
-				int y = rectY + fontMetrics.getHeight();
-				graphics.drawString(choppedImage.getClassification().toString(), x, y);
-			}
-			graphics.dispose();
-			classificationHeatMap = new Image(bufferedImage);
-		}
-		return classificationHeatMap;
-	}
-	
 	public Image getComparisonImage(Image fromImage) throws Exception {
 		BufferedImage bufferedImage = getAsBufferedImage();
-		Graphics graphics = bufferedImage.getGraphics();
-		for(int index=0; index<getChoppedImages().size(); index++) {
-			Image toImage = getChoppedImages().get(index);
-			Classification toImageClassification = 
-				toImage.getClassification();
-			Classification fromImageClassification = 
-				fromImage.getChoppedImages().get(index).getClassification();
-			if(fromImageClassification.equals(Classification.CROPLAND) && 
-					!toImageClassification.equals(fromImageClassification)) {
-				graphics.setColor(new Color(255, 0, 0, 63));
-				int rectX = toImage.getMinX()-getMinX();
-				int rectY = toImage.getMinY()-getMinY();
-				graphics.fillRect(rectX, rectY, toImage.getWidth(), 
-					toImage.getHeight());
-				graphics.setColor(Color.black);
-				graphics.setFont(new Font("Serif", Font.BOLD, 10));
-				FontMetrics fontMetrics = graphics.getFontMetrics();
-				String fromToString = fromImageClassification.toString() + 
-					" to " + toImageClassification.toString();
-				int stringWidth = fontMetrics.stringWidth(fromToString);
-				int stringHeight = fontMetrics.getHeight();
-				int stringX = rectX + toImage.getWidth()/2 - stringWidth/2;
-				int stringY = rectY + toImage.getHeight()/2 - stringHeight/2;
-				graphics.drawString(fromToString, stringX, stringY);
-			}
-		}
+//		Graphics graphics = bufferedImage.getGraphics();
+//		for(int index=0; index<getChoppedImages().size(); index++) {
+//			Image toImage = getChoppedImages().get(index);
+//			Classification toImageClassification = 
+//				toImage.getClassification();
+//			Classification fromImageClassification = 
+//				fromImage.getChoppedImages().get(index).getClassification();
+//			if(fromImageClassification.equals(Classification.CROPLAND) && 
+//					!toImageClassification.equals(fromImageClassification)) {
+//				graphics.setColor(new Color(255, 0, 0, 63));
+//				int rectX = toImage.getMinX()-getMinX();
+//				int rectY = toImage.getMinY()-getMinY();
+//				graphics.fillRect(rectX, rectY, toImage.getWidth(), 
+//					toImage.getHeight());
+//				graphics.setColor(Color.black);
+//				graphics.setFont(new Font("Serif", Font.BOLD, 10));
+//				FontMetrics fontMetrics = graphics.getFontMetrics();
+//				String fromToString = fromImageClassification.toString() + 
+//					" to " + toImageClassification.toString();
+//				int stringWidth = fontMetrics.stringWidth(fromToString);
+//				int stringHeight = fontMetrics.getHeight();
+//				int stringX = rectX + toImage.getWidth()/2 - stringWidth/2;
+//				int stringY = rectY + toImage.getHeight()/2 - stringHeight/2;
+//				graphics.drawString(fromToString, stringX, stringY);
+//			}
+//		}
 		return new Image(bufferedImage);
 	}
 	
 	/**
-	 * Returns the classification of the image.
+	 * Returns the classification image of the image.
 	 * @return
 	 * @throws Exception
 	 */
-	public Classification getClassification() {
-		return classification;
-	}
-	
-	public Image getClassificationOverlay() throws Exception {
-		BufferedImage bufferedImage = getAsBufferedImage();
-		Graphics graphics = bufferedImage.getGraphics();
-		int red = getClassification().getRed();
-		int green = getClassification().getGreen();
-		int blue = getClassification().getBlue();
-		int alpha = getClassification().getAlpha();
-		graphics.setColor(new Color(red, green, blue, alpha));
-		graphics.fillRect(0, 0, width, height);
-		graphics.dispose();
-		return new Image(bufferedImage);
+	public Image getClassificationImage() throws Exception {
+		return classificationImage;
 	}
 	
 	/**
@@ -375,14 +217,6 @@ public class Image {
 		return name;
 	}
 
-	public GradientKernel getGradientKernel() {
-		return gradientKernel;
-	}
-
-	public void setGradientKernel(GradientKernel gradientKernel) {
-		this.gradientKernel = gradientKernel;
-	}
-	
 	public int getNumBands() {
 		return renderedImage.getData().getNumBands();
 	}
@@ -402,65 +236,10 @@ public class Image {
 			getPixels(minX, minY, width, height, data);
 	}
 	
-	public float getDownSample(int x, int y, int b) {
-		Image image = getDownImage();
-		x = image.getMinX() + x;
-		y = image.getMinY() + y;
-//		return image.getRenderedImage().getData().
-//			getPixels(x, y, 0, 0, (float[])null)[0];
-		return image.renderedImage.getData().getSampleFloat(x, y, b);
-	}
-	
 	public float getSample(int x, int y, int b) {
 		x = getMinX() + x;
 		y = getMinY() + y;
 		return renderedImage.getData().getSampleFloat(x, y, b);
-	}
-	
-	/**
-	 * Returns true if the the image has passed all the validity checks.
-	 * @return
-	 */
-	public boolean isValid() {
-		for(ValidityCheck valididityCheck: ValidityCheck.values())
-			if(!valididityCheck.isValid(this))
-				return false;
-		return true;
-	}
-	
-	/**
-	 * Return an unmodifiable list of chopped images.
-	 * @return
-	 */
-	public List<Image> getChoppedImages() {
-		choppedColumns = (int) (croppedWidth/choppedWidth);
-		choppedRows = (int) (croppedHeight/choppedHeight);
-		return Collections.unmodifiableList(
-			chop(this, choppedColumns, choppedRows));
-	}
-	
-	/**
-	 * Returns an Image that is the greyscale representation 
-	 * of the image.
-	 * @return
-	 */
-	public Image getGreyscaleImage() {
-		if(greyscaleImage == null) {
-			ColorModel cm = 
-				new ComponentColorModel(ColorSpace.getInstance(
-					ColorSpace.CS_GRAY), new int[] {8}, false, false, 
-						Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
-			ParameterBlock greyscalePB = 
-				(new ParameterBlock()).addSource(renderedImage).add(cm);
-			ImageLayout greyscaleLayout = 
-				(new ImageLayout()).setMinX(minX).
-					setMinY(minY).setColorModel(cm);
-			RenderingHints greyscaleRH = 
-				new RenderingHints(JAI.KEY_IMAGE_LAYOUT, greyscaleLayout);
-			greyscaleImage = 
-				new Image(JAI.create("ColorConvert", greyscalePB, greyscaleRH));
-		}
-		return greyscaleImage;
 	}
 	
 	/**
@@ -482,103 +261,6 @@ public class Image {
 		return Arrays.copyOf(standardDeviations, standardDeviations.length);
 	}
 
-	/**
-	 * Returns an Image that represents the Discrete Cosine Transform.
-	 * @return
-	 */
-	public Image getDiscreteCosineTransform() {
-		if (discreteCosineTransform == null) {
-			ParameterBlock dctPB = 
-				(new ParameterBlock()).addSource(getGreyscaleImage().renderedImage);
-			discreteCosineTransform = 
-				new Image(JAI.create("dct", dctPB, null));
-		}
-		return discreteCosineTransform;
-	}
-	
-	/**
-	 * Returns an Image that represents the Inverse 
-	 * Discrete Cosine Transform.
-	 * @return
-	 */
-	public Image getInverseDiscreteCosineTransform() {
-		ParameterBlock idctParams = (new ParameterBlock()).
-			addSource(getDiscreteCosineTransform().renderedImage);
-		return new Image(JAI.create("idct", idctParams, null));
-	}
-	
-	public Image getGradientMagnitude() {
-		if(gradientMagnitude == null)
-			gradientMagnitude = 
-				getGradientMagnitude(gradientKernel);
-		return gradientMagnitude;
-	}
-	
-	public List<float[]> getSURF() {
-		if(surf == null) {
-			surf = Lists.newArrayList();
-			ImageFloat32 imageFloat32 = getGreyscaleImage().getImageFloat32();
-			DescribePointSurf<ImageFloat32> describePointSurf = 
-				new DescribePointSurf<ImageFloat32>();
-			describePointSurf.setImage(imageFloat32);
-			for(int i = 0; i < 360; i+=360) {
-				double radians = (Math.PI/(double)180)*i;
-				SurfFeature surfFeature = 
-					describePointSurf.describe(width/2, height/2, width, radians, null);
-				surf.add(doubleArrayToFloatArray(surfFeature.getValue()));
-			}
-		}
-		return surf;
-	}
-	
-	/**
-	 * Returns an Image that represents a convolution along given data.
-	 * @param width
-	 * @param height
-	 * @param data
-	 * @return
-	 */
-	public Image convolve(int width, int height, float[] data) {
-		BorderExtender convolutionBorderExtender = 
-			BorderExtender.createInstance(BorderExtender.BORDER_ZERO);
-		RenderingHints convolutionRH = 
-			new RenderingHints(JAI.KEY_BORDER_EXTENDER, convolutionBorderExtender);
- 
-		return new Image((PlanarImage) JAI.create("convolve", renderedImage, 
-			new KernelJAI(width, height, data), convolutionRH));
-	}
-	
-	public Image overlay(Image image) {
-		ParameterBlock overlayParams = 
-			new ParameterBlock().addSource(renderedImage).
-				addSource(image.renderedImage);
-		return new Image(JAI.create("overlay", overlayParams));
-	}
-	
-	/**
-	 * Returns an image that represents an addition with the given image.
-	 * @param image
-	 * @return
-	 */
-	public Image add(Image image) {
-		ParameterBlock addParams = 
-			new ParameterBlock().addSource(renderedImage).
-				addSource(image.renderedImage);
-		return new Image(JAI.create("add", addParams));
-	}
-	
-	/**
-	 * Returns an image that represents an subtraction of the given image.
-	 * @param image
-	 * @return
-	 */
-	public Image subtract(Image image) {
-		ParameterBlock subtractParams = 
-			new ParameterBlock().addSource(renderedImage).
-				addSource(image.renderedImage);
-		return new Image(JAI.create("subtract", subtractParams));
-	}
-	
 	public InputStream getAsInputStream() throws Exception {
 		InputStream inputStream = new ByteArrayInputStream(getBytes());
 		return inputStream;
@@ -620,74 +302,35 @@ public class Image {
 		return PlanarImage.wrapRenderedImage(renderedImage);
 	}
 	
-	private ImageFloat32 getImageFloat32() {
-		if(imageFloat32 == null)
-			imageFloat32 = 
-				ConvertBufferedImage.convertFrom(getAsBufferedImage(), (ImageFloat32) null);
-		return imageFloat32;
-	}
-	
-	private float[] doubleArrayToFloatArray(double[] doubles) {
-		List<Float> floats = Lists.newArrayList();
-		for(Double dbl: doubles)
-			floats.add(dbl.floatValue());
-		return Floats.toArray(floats);
+	/**
+	 * Returns true if the the image has passed all the validity checks.
+	 * @return
+	 */
+	public boolean isValid() {
+		for(ValidityCheck valididityCheck: ValidityCheck.values())
+			if(!valididityCheck.isValid(this))
+				return false;
+		return true;
 	}
 	
 	/**
-	 * Returns an Image that represents Gradient Magnitude.
-	 * Protected for testing. Should
-	 * @return
+	 * Persist the image to a file with the given filename.
+	 * @param filename
 	 */
-	private Image getGradientMagnitude(GradientKernel gradientKernel) {
-		KernelJAI horizontalKernel = 
-			gradientKernel.getKernelMap().get(KernelDimension.HORIZONTAL);
-		KernelJAI verticalKernel = 
-			gradientKernel.getKernelMap().get(KernelDimension.VERTICAL);
-	     // Create the Gradient operation.
-		Image gradientMagnitude = 
-			new Image(JAI.create("gradientmagnitude", renderedImage,
-				horizontalKernel, verticalKernel));
-		return gradientMagnitude;
+	public void persist(String filename) {
+		File file = new File(filename);
+		File parent = file.getParentFile();
+		if(!parent.exists()) parent.mkdirs();
+		ParameterBlock fileStoreParams = (new ParameterBlock()).
+			addSource(renderedImage).add(filename).add("PNG");
+		JAI.create("filestore", fileStoreParams);
 	}
 	
-	/**
-	 * Returns the image scaled down based on the downSampleSize
-	 * @return
-	 */
-	private Image getDownImage() {
-		if(downImage == null) {
-			RenderedOp downSampler = 
-				createScaleOp(renderedImage, downSampleSize);
-			RenderedOp upSampler = 
-				createScaleOp(renderedImage, 1/downSampleSize);
-			RenderedOp differencer = 
-				(RenderedOp) subtract(this).renderedImage;
-			RenderedOp combiner = (RenderedOp) add(this).renderedImage;
-			ImagePyramid pyramid = 
-				new ImagePyramid(renderedImage, downSampler, upSampler, differencer, combiner);
-			downImage = new Image(pyramid.getDownImage());
-		}
-		return downImage;
-	}
-	
-	private float getCroppedWidth(RenderedImage renderedImage) {
-//		if (croppedWidth > renderedImage.getWidth())
-		croppedWidth = 
-			(float) (Math.floor(renderedImage.getWidth()/(double)choppedWidth)*choppedWidth);
-		return croppedWidth;
-	}
-	
-	private float getCroppedHeight(RenderedImage renderedImage) {
-//		if (croppedHeight > renderedImage.getHeight())
-		croppedHeight = 
-			(float) (Math.floor(renderedImage.getHeight()/(double)choppedHeight)*choppedHeight);
-		return croppedHeight;
-	}
-	
-	private boolean skipChop(RenderedImage renderedImage) {
-		return renderedImage.getWidth() <= choppedWidth && 
-			renderedImage.getHeight() <= choppedHeight;
+	public Image overlay(Image image) {
+		ParameterBlock overlayParams = 
+			new ParameterBlock().addSource(renderedImage).
+				addSource(image.renderedImage);
+		return new Image(JAI.create("overlay", overlayParams));
 	}
 	
 	/**
@@ -712,118 +355,10 @@ public class Image {
 		return histogram;
 	}
 
-	/**
-	 * Returns a column * rows list of chopped images for the given image
-	 * @param image
-	 * @param columns
-	 * @param rows
-	 * @return
-	 */
-	private List<Image> chop(Image image, int columns, int rows) {
-		List<Image> choppedImages = Lists.newArrayList();
-		float columnWidth = image.getWidth()/columns;
-		float rowHeight = image.getHeight()/rows;
-		for(int column = 0; column < columns; column++) {
-			for(int row = 0; row < rows; row++) {
-				float originX = 
-					column * columnWidth + image.getMinX();
-				float originY = 
-					row * rowHeight + image.getMinY();
-				choppedImages.add(crop(
-					image, originX, originY, columnWidth, rowHeight));
-			}
-		}
-		return choppedImages;
-	}
-	
-	/**
-	 * Returns a cropped RenderedImage centered on the input RenderedImage, 
-	 * with the given dimensions.
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	private RenderedImage centeredCrop(RenderedImage renderedImage,
-			float width, float height) {
-		float originX = 
-			renderedImage.getWidth()/2 - width/2 + renderedImage.getMinX();
-		float originY = 
-			renderedImage.getHeight()/2 - height/2 + renderedImage.getMinY();
-		return crop(renderedImage, originX, originY, width, height);
-	}
-	
-	/**
-	 * Returns a cropped Image based on the input specifications.
-	 * @param image
-	 * @param originX
-	 * @param originY
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	private Image crop(Image image, float originX, float originY, 
-			float width, float height) {
-		Image croppedImage = 
-			new Image(crop(image.renderedImage, 
-				originX, originY, width, height));
-		// If the (parent) image has a classification, 
-		// it's crop (child) has the same classification 
-		if(classification != null)
-			croppedImage.classification = image.classification;
-		return croppedImage;
-	}
-	
-	/**
-	 * Returns a cropped RenderedImage based on the input specifications.
-	 * @param renderedImage
-	 * @param originX
-	 * @param originY
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	private RenderedImage crop(RenderedImage renderedImage, float originX, 
-			float originY, float width, float height) {
-		// Don't crop if smaller than crop dimensions.
-		if (renderedImage.getWidth() < width || 
-				renderedImage.getHeight() < height)
-			return renderedImage;
-		ParameterBlock croppedImageParams = 
-			new ParameterBlock().addSource(renderedImage).
-				add(originX).add(originY).add(width).add(height);
-		return JAI.create("crop", croppedImageParams);
-	}
-
-	private RenderedOp createScaleOp(RenderedImage im, float scale) {
-		ParameterBlock pb = 
-			new ParameterBlock().addSource(im).add(scale).add(scale).
-				add(0.0F).add(0.0F).add(new InterpolationNearest());
-		return JAI.create("scale", pb, null);
-	}
-
 	private void setDimensions(RenderedImage renderedImage) {
 		width = renderedImage.getWidth();
 		height = renderedImage.getHeight();
 		minX = renderedImage.getMinX();
 		minY = renderedImage.getMinY();
-		downSampleSize = downSampleSquareRoot/(float)width;
-	}
-	
-	private void setDefaults() {
-		try {
-			Injector imageInjector;
-			imageInjector = Guice.createInjector(new ImageModule());
-			downSampleSquareRoot = imageInjector.getInstance(Key.
-				get(Integer.class, DownSampleSquareRoot.class));
-			choppedWidth = imageInjector.getInstance(Key.
-					get(Float.class, ChoppedWidth.class));
-			choppedHeight = imageInjector.getInstance(Key.
-					get(Float.class, ChoppedHeight.class));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		gradientKernel = GradientKernel.SOBEL;
 	}
 }

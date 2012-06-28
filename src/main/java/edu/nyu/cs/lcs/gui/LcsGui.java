@@ -31,8 +31,8 @@ import javax.swing.SwingUtilities;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import edu.nyu.cs.lcs.TrainedModel;
-import edu.nyu.cs.lcs.TrainedModelModule;
+import edu.nyu.cs.lcs.model.TrainedModel;
+import edu.nyu.cs.lcs.model.TrainedModelModule;
 
 /**
  * @author Scot Dalton

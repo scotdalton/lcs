@@ -15,6 +15,8 @@ import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import edu.nyu.cs.lcs.model.TrainedModel;
+import edu.nyu.cs.lcs.model.TrainedModelModule;
 import edu.nyu.cs.lcs.utility.ImageUtil;
 import edu.nyu.cs.lcs.utility.kml.Camera;
 import edu.nyu.cs.lcs.utility.kml.Document;

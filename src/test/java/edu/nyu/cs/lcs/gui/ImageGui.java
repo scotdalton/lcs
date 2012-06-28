@@ -17,9 +17,9 @@ import com.google.inject.Injector;
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.Region;
 import edu.nyu.cs.lcs.TestUtility;
-import edu.nyu.cs.lcs.TrainedModel;
-import edu.nyu.cs.lcs.TrainedModelModule;
 import edu.nyu.cs.lcs.UnknownImage;
+import edu.nyu.cs.lcs.model.TrainedModel;
+import edu.nyu.cs.lcs.model.TrainedModelModule;
 
 /**
  * @author Scot Dalton
@@ -58,43 +58,7 @@ public class ImageGui {
 		Region region = new Region(regionImages, 3, 2);
 		Image regionImage = region.getImage();
 		images.put("Region", regionImage);
-		images.put("Region Classification", region.getClassificationHeatMap());
-		Image choppedImage = 
-			(new Image(TestUtility.IMAGE1)).getChoppedImages().get(0);
-//		images.put("Tamale_Ghana_1_20041004.png", image1);
-//		images.put("Classification", image.getChoppedImages().get(0).getClassificationOverlay());
-//		images.put("Overlay", image.overlay(image.getChoppedImages().get(0).getClassificationOverlay()));
-//		images.put("Tamale_Ghana_1_20111004.png", image2);
-//		images.put("Classification Map 2011", image2.getClassificationHeatMap());
-//		images.put("Arable", Image.getArableClassificationKey());
-//		images.put("Developed", Image.getDevelopedClassificationKey());
-//		images.put("Desert", Image.getDesertClassificationKey());
-//		images.put("Forest", Image.getForestClassificationKey());
-//		images.put("Unknown", Image.getUnknownClassificationKey());
-//		for(Image choppedImage: image.getChoppedImages())
-//			images.put(choppedImage.getClassification().toString()+ "(" +
-//				choppedImage.getMinX()+", "+choppedImage.getMinY() + ")", 
-//					choppedImage.getClassificationOverlay());
-		images.put("Image", choppedImage);
-		Image greyScale = choppedImage.getGreyscaleImage(); 
-		images.put(choppedImage.getClassification() + " (" + choppedImage.getMinX() + ", " + choppedImage.getMinY() + ")", choppedImage.getClassificationOverlay());
-		images.put("Greyscale", greyScale);
-		images.put("Greyscale", choppedImage.convolve(100, 100, choppedImage.getDiscreteCosineTransform().getPixels((float[]) null)));
-		Image surfImage = choppedImage.getGreyscaleImage(); 
-		for(int i=0; i<choppedImage.getSURF().size(); i++) {
-			surfImage = choppedImage.convolve(8, 8, choppedImage.getSURF().get(i));
-			images.put("SURF"+i, surfImage);
-		}
-//		images.put("DCT", choppedImage.getDiscreteCosineTransform());
-		images.put("IDCT", choppedImage.getInverseDiscreteCosineTransform());
-		images.put("GradientMagnitude (Sobel)", choppedImage.getGradientMagnitude());
-//		images.put("Add to GM", choppedImage.add(choppedImage.getGradientMagnitude()));
-//		images.put("Subtract GM", choppedImage.subtract(choppedImage.getGradientMagnitude()));
-//		images.put("Subtract GM DCT", choppedImage.subtract(choppedImage.getGradientMagnitude()).getDiscreteCosineTransform());
-//		images.put("Subtract GM IDCT", choppedImage.subtract(choppedImage.getGradientMagnitude()).getInverseDiscreteCosineTransform());
-//		images.put("Subtract from GM", choppedImage.getGradientMagnitude().subtract(choppedImage));
-//		images.put("Subtract from GM DCT", choppedImage.getGradientMagnitude().subtract(choppedImage).getDiscreteCosineTransform());
-//		images.put("Subtract from GM IDCT", choppedImage.getGradientMagnitude().subtract(choppedImage).getInverseDiscreteCosineTransform());
+		images.put("Region Classification", region.getClassificationImage());
 		final Map<String, Image> finalImages = 
 			Collections.unmodifiableMap(images);
 		// Set up training data.

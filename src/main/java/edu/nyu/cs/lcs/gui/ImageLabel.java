@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TrainedModel;
+import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
  * @author Scot Dalton

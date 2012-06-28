@@ -5,7 +5,6 @@ package edu.nyu.cs.lcs;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,16 +56,6 @@ public class ImageTest {
 		image.persist(persistFile.getAbsolutePath());
 		assertTrue(persistFile.exists());
 		assertTrue(persistFile.isFile());
-	}
-	
-	@Test
-	public void testGetChoppedImages() {
-		Image image = new Image(TestUtility.IMAGE1);
-		List<Image> choppedImages = image.getChoppedImages();
-		for (Image choppedImage:choppedImages) {
-			assertEquals(100, choppedImage.getHeight());
-			assertEquals(100, choppedImage.getWidth());
-		}
 	}
 	
 	@Test

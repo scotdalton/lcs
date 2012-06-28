@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.TrainedModel;
 import edu.nyu.cs.lcs.UnknownImage;
+import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
  * @author Scot Dalton
@@ -47,7 +47,7 @@ public class CompareRegions extends CompareImages {
 				String imageName = pair.getKey(); 
 				oldestImage = new UnknownImage(pair.getValue(), trainedModel);
 				unknownRegionImages.put(imageName, oldestImage);
-				unknownRegionImages.put(imageName + " Classification Map", oldestImage.getClassificationHeatMap());
+				unknownRegionImages.put(imageName + " Classification Map", oldestImage.getClassificationImage());
 			}
 		    // Get the rest of the images
 			UnknownImage unknownImage = null; 
@@ -56,7 +56,7 @@ public class CompareRegions extends CompareImages {
 				String imageName = pair.getKey(); 
 				unknownImage = new UnknownImage(pair.getValue(), trainedModel);
 				unknownRegionImages.put(imageName, unknownImage);
-				unknownRegionImages.put(imageName + " Classification Map", unknownImage.getClassificationHeatMap());
+				unknownRegionImages.put(imageName + " Classification Map", unknownImage.getClassificationImage());
 			}
 		    // Newest image is the last one.
 			UnknownImage newestImage = unknownImage;

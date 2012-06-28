@@ -19,7 +19,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.KnownImage;
 import edu.nyu.cs.lcs.classifications.ClassificationModule.Alpha;
 import edu.nyu.cs.lcs.classifications.ClassificationModule.Blue;
 import edu.nyu.cs.lcs.classifications.ClassificationModule.Green;
@@ -104,13 +103,13 @@ public enum Classification {
 	public List<Image> getTrainingImages() {
 		if(!isTrainable())
 			throw new UnsupportedOperationException("Not trainable.");
-		return getKnownImages(trainingDirectory);
+		return getImages(trainingDirectory);
 	}
 	
 	public List<Image> getTestingImages() {
 		if(!isTrainable())
 			throw new UnsupportedOperationException("Not trainable.");
-		return getKnownImages(testingDirectory);
+		return getImages(testingDirectory);
 	}
 
 	@Override
@@ -118,15 +117,13 @@ public enum Classification {
 		return shortName;
 	}
 
-	private List<Image> getKnownImages(
-			String directoryName) {
-		List<Image> knownImages = Lists.newArrayList();
+	private List<Image> getImages(String directoryName) {
+		List<Image> images = Lists.newArrayList();
 		Collection<File> files = 
 			FileUtils.listFiles(new File(directoryName), 
 				new AndFileFilter(HiddenFileFilter.VISIBLE, 
 					FileFileFilter.FILE), null);
-		for (File file: files)
-			knownImages.add(new KnownImage(file, this));
-		return knownImages;
+		for (File file: files) images.add(new Image(file));
+		return images;
 	}
 }
