@@ -47,7 +47,7 @@ public class TrainedModelTest {
 				trainedModel.classifyImage(desertTestImage));
 	}
 
-//	@Test
+	@Test
 	public void testInjectedTrainedModel() throws Exception {
 		Injector injector = 
 			Guice.createInjector(new TrainedModelModule());
@@ -81,8 +81,8 @@ public class TrainedModelTest {
 				}
 			}
 		}
-//		wekaSegmentation.trainClassifier();
-//		wekaSegmentation.saveClassifier(".classifiers/lcs.model");
-//		wekaSegmentation.saveData("lcs.arff");
+		wekaSegmentation.trainClassifier();
+		wekaSegmentation.saveClassifier(".classifiers/lcs.model");
+		wekaSegmentation.saveData("lcs.arff");
 	}
 }
