@@ -31,23 +31,23 @@ public class ImageTest {
 	@Test
 	public void testNewImage_fromFileName() {
 		Image image = new Image(TestUtility.IMAGE1);
-		assertEquals(1500, image.getWidth());
-		assertEquals(1000, image.getHeight());
+		assertEquals(1544, image.getWidth());
+		assertEquals(1055, image.getHeight());
 	}
 	
 	@Test
 	public void testNewImage_fromFile() {
 		Image image = new Image(new File(TestUtility.IMAGE1));
-		assertEquals(1500, image.getWidth());
-		assertEquals(1000, image.getHeight());
+		assertEquals(1544, image.getWidth());
+		assertEquals(1055, image.getHeight());
 	}
 	
 	@Test
 	public void testNewImage_fromImage() {
 		Image image = 
 			new Image(new Image(new File(TestUtility.IMAGE1)));
-		assertEquals(1500, image.getWidth());
-		assertEquals(1000, image.getHeight());
+		assertEquals(1544, image.getWidth());
+		assertEquals(1055, image.getHeight());
 	}
 	
 	@Test
