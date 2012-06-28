@@ -81,8 +81,8 @@ public class TrainedModelTest {
 				}
 			}
 		}
-		wekaSegmentation.trainClassifier();
-		wekaSegmentation.saveClassifier(".classifiers/lcs.model");
-		wekaSegmentation.saveData("lcs.arff");
+//		wekaSegmentation.trainClassifier();
+//		wekaSegmentation.saveClassifier(".classifiers/lcs.model");
+//		wekaSegmentation.saveData("lcs.arff");
 	}
 }

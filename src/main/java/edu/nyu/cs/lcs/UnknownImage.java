@@ -73,8 +73,8 @@ public class UnknownImage extends Image {
 		int developedCount = 0;
 		int desertCount = 0;
 		int forestCount = 0;
-//		List<Image> choppedImages = getChoppedImages();
-//		for(Image choppedImage : choppedImages) {
+		for(double pixel : getPixels(new double[0]));
+//		for(Image choppedImage : ) {
 //			Classification classification = 
 //				choppedImage.getClassification();
 //			if(classification.equals(Classification.CROPLAND)) {
@@ -87,9 +87,9 @@ public class UnknownImage extends Image {
 //				forestCount++;
 //			}
 //		}
-		arablePercentage = 100*arableCount/(double)choppedImages.size();
-		developedPercentage = 100*developedCount/(double)choppedImages.size();
-		desertPercentage = 100*desertCount/(double)choppedImages.size();
-		forestPercentage = 100*forestCount/(double)choppedImages.size();
+		arablePercentage = (double)100*arableCount;
+		developedPercentage = (double)100*developedCount;
+		desertPercentage = (double)100*desertCount;
+		forestPercentage = (double)100*forestCount;
 	}
 }
