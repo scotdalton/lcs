@@ -52,7 +52,7 @@ public class TrainedModel {
 	 */
 	public Image classifyImage(Image image) throws Exception {
 		ImagePlus classifiedImagePlus = 
-			wekaSegmentation.applyClassifier(image.getImagePlus(), 10, false);
+			wekaSegmentation.applyClassifier(image.getImagePlus(), 10, true);
 		System.out.println(classifiedImagePlus.toString());
 		return new Image(classifiedImagePlus.getBufferedImage());
 //		// Get the likelihood of each classes 

@@ -41,7 +41,7 @@ public class UnknownImage extends Image {
 	
 	@Override
 	public Image getClassificationImage() throws Exception {
-		return overlay(trainedModel.classifyImage(this));
+		return trainedModel.classifyImage(this);
 	}
 	
 	public double getArablePercentage() {
