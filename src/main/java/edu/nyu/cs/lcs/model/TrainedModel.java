@@ -51,7 +51,10 @@ public class TrainedModel {
 	 * @throws Exception 
 	 */
 	public Image classifyImage(Image image) throws Exception {
-		return new Image(wekaSegmentation.applyClassifier(image.getImagePlus()).getBufferedImage());
+		ImagePlus classifiedImagePlus = 
+			wekaSegmentation.applyClassifier(image.getImagePlus(), 10, false);
+		System.out.println(classifiedImagePlus.toString());
+		return new Image(classifiedImagePlus.getBufferedImage());
 //		// Get the likelihood of each classes 
 //		// distribution[0] is the probability of being ARABLE
 //		// distribution[1] is the probability of being CITY 
