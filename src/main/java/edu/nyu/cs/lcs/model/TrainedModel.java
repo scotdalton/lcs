@@ -31,10 +31,34 @@ public class TrainedModel {
 		new Image("src/main/resources/META-INF/transparent.png");
 	private Classifier classifier;
 	private File classifierFile;
+	/** flags of filters to be used */
+	private boolean[] enabledFeatures = new boolean[]{
+		true, 	/* Gaussian_blur */
+		true, 	/* Sobel_filter */
+		true, 	/* Hessian */
+		true, 	/* Difference_of_gaussians */
+		true, 	/* Membrane_projections */
+		false, 	/* Variance */
+		false, 	/* Mean */
+		false, 	/* Minimum */
+		false, 	/* Maximum */
+		false, 	/* Median */
+		false,	/* Anisotropic_diffusion */
+		false, 	/* Bilateral */
+		false, 	/* Lipschitz */
+		false, 	/* Kuwahara */
+		false,	/* Gabor */
+		false, 	/* Derivatives */
+		false, 	/* Laplacian */
+		false,	/* Structure */
+		false,	/* Entropy */
+		false	/* Neighbors */
+	};
 
 	public TrainedModel(File serializationDirectory) throws Exception {
 		wekaSegmentation = 
 			new WekaSegmentation(transparentImage.getImagePlus());
+		wekaSegmentation.setEnabledFeatures(enabledFeatures);
 		classifierFile = 
 			new File(serializationDirectory.getAbsolutePath() + "/lcs.model");
 		if(classifierFile.exists()) {
@@ -52,7 +76,7 @@ public class TrainedModel {
 	 */
 	public Image classifyImage(Image image) throws Exception {
 		ImagePlus classifiedImagePlus = 
-			wekaSegmentation.applyClassifier(image.getImagePlus(), 10, true);
+			wekaSegmentation.applyClassifier(image.getImagePlus(), 10, false);
 		System.out.println(classifiedImagePlus.toString());
 		return new Image(classifiedImagePlus.getBufferedImage());
 //		// Get the likelihood of each classes 
@@ -82,10 +106,10 @@ public class TrainedModel {
 	
 	private Classifier trainClassifier() {
 		for(Classification classification : Classification.values()) {
-			wekaSegmentation.setClassLabel(classification.ordinal(), classification.name());
-			if(classification.ordinal() >= wekaSegmentation.getNumOfClasses())
-				wekaSegmentation.addClass();
 			if(classification.isTrainable()) {
+				wekaSegmentation.setClassLabel(classification.ordinal(), classification.name());
+				if(classification.ordinal() >= wekaSegmentation.getNumOfClasses())
+					wekaSegmentation.addClass();
 				List<Image> trainingImages = classification.getTrainingImages();
 				for(int i = 0;  i < 10; i ++) {
 					Image trainingImage = trainingImages.get(i);
