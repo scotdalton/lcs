@@ -127,7 +127,8 @@ public class TrainedModel {
 		WekaSegmentation testWekaSegmentation = new WekaSegmentation(
 				transparentImage.getImagePlus());
 		for (Classification classification : Classification.values()) {
-			initWekaSegmentation(testWekaSegmentation, classification, classification.getTestingImages());
+			if (classification.isTrainable())
+				initWekaSegmentation(testWekaSegmentation, classification, classification.getTestingImages());
 		}
 		Evaluation eTest;
 		eTest = new Evaluation(wekaSegmentation.getLoadedTrainingData());
@@ -150,7 +151,8 @@ public class TrainedModel {
 
 	private void trainClassifier() {
 		for (Classification classification : Classification.values()) {
-			initWekaSegmentation(wekaSegmentation, classification, classification.getTrainingImages());
+			if (classification.isTrainable())
+				initWekaSegmentation(wekaSegmentation, classification, classification.getTrainingImages());
 		}
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
