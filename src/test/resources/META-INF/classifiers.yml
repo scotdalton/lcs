@@ -1,4 +1,5 @@
 --- !!map
+default:
 weka.classifiers.rules.ConjunctiveRule: 
 weka.classifiers.trees.DecisionStump: 
 weka.classifiers.rules.DecisionTable: 
