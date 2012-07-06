@@ -16,9 +16,7 @@ import trainableSegmentation.WekaSegmentation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.core.Utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -40,7 +38,7 @@ public class TrainedModel {
 	private File serializationDirectory;
 	private File classifierFile;
 	/** flags of filters to be used */
-	private boolean[] enabledFeatures = new boolean[] { 
+	private static final boolean[] enabledFeatures = new boolean[] { 
 		true, /* Gaussian_blur */
 		true, /* Sobel_filter */
 		true, /* Hessian */
@@ -63,23 +61,46 @@ public class TrainedModel {
 		false /* Neighbors */
 	};
 	
+	/**
+	 * Public constructor which uses the default WekaSegmentation classifier,
+	 * RandomForest with 200 trees and 2 features used in random selection.
+	 * @param serializationDirectory
+	 * @throws Exception
+	 */
 	public TrainedModel(File serializationDirectory) throws Exception {
-		this(serializationDirectory, null, Lists.newArrayList(""));
+		this(serializationDirectory, null);
 	}
-
-	public TrainedModel(File serializationDirectory, String classifierName, List<String> classifierOptions) throws Exception {
+	
+	/**
+	 * Public constructor that takes a classifier to use.
+	 * @param serializationDirectory
+	 * @param classifier
+	 * @throws Exception
+	 */
+	public TrainedModel(File serializationDirectory, AbstractClassifier cls) throws Exception {
+		this(serializationDirectory, cls, enabledFeatures);
+	}
+	
+	
+	/**
+	 * Public constructor that takes a classifier to use.
+	 * @param serializationDirectory
+	 * @param classifier
+	 * @throws Exception
+	 */
+	public TrainedModel(File serializationDirectory, AbstractClassifier cls, boolean[] enabledFeatures) throws Exception {
 		this.serializationDirectory = serializationDirectory;
 		wekaSegmentation = new WekaSegmentation(transparentImage.getImagePlus());
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
-		if (null != classifierName) 
-			setClassifier(classifierName, classifierOptions);
+		if (null != cls) 
+			setClassifier(cls);
 		classifierFile = 
 			new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
 			trainClassifier();
-			serializeClassifier(classifierFile, classifier);
+			serializeClassifier(classifierFile, this.classifier);
 		}
 	}
 	
@@ -115,10 +136,7 @@ public class TrainedModel {
 		return eTest.toSummaryString();
 	}
 	
-	private void setClassifier(String classifierName, List<String> classifierOptions) throws Exception {
-		AbstractClassifier classifier = 
-			(AbstractClassifier) Utils.forName(
-				Classifier.class, classifierName, classifierOptions.toArray(new String[0]));		
+	private void setClassifier(AbstractClassifier classifier) throws Exception {
 		wekaSegmentation.setClassifier(classifier);
 	}
 

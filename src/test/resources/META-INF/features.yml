@@ -1,0 +1,21 @@
+--- !!seq
+- Gaussian blur
+- Sobel filter
+- Hessian
+- Difference of gaussians
+- Membrane projections
+- Variance
+- Mean
+- Minimum
+- Maximum
+- Median
+- Anisotropic diffusion
+- Bilateral
+- Lipschitz
+- Kuwahara
+- Gabor
+- Derivatives
+- Laplacian
+- Structure
+- Entropy
+- Neighbors

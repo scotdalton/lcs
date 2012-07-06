@@ -67,8 +67,6 @@
 			<artifactId>javacv</artifactId>
 			<version>0.1</version>
 		</dependency>
-		<!-- <dependency> <groupId>nz.ac.waikato.cms.weka</groupId> <artifactId>weka-stable</artifactId> 
-			<version>3.6.7</version> </dependency> -->
 		<dependency>
 			<groupId>nz.ac.waikato.cms.weka</groupId>
 			<artifactId>weka-dev</artifactId>
@@ -78,6 +76,11 @@
 			<groupId>gov.nih.imagej</groupId>
 			<artifactId>imagej</artifactId>
 			<version>1.45</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.yaml</groupId>
+		  <artifactId>snakeyaml</artifactId>
+		  <version>1.10</version>
 		</dependency>
     <!-- Must be available in a local repository. -->
     <dependency>
