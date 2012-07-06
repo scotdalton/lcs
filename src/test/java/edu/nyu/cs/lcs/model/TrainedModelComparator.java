@@ -28,7 +28,7 @@ public class TrainedModelComparator {
 		new File("src/test/resources/META-INF/classifiers.yml");
 	private static final File featuresFile = 
 		new File("src/test/resources/META-INF/features.yml");
-	private static final File persistDirectory = new File(".persist");
+	private static final File serializationDirectory = new File(".classifiers/default");
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -49,15 +49,19 @@ public class TrainedModelComparator {
 				AbstractClassifier classifier = 
 					(AbstractClassifier) Utils.forName(Classifier.class, classifierName, classifierOptions.toArray(new String[0]));
 				long startGet = Calendar.getInstance().getTimeInMillis();
-				TrainedModel trainedModel = 
-					new TrainedModel(persistDirectory, classifier);
-				long endGet = Calendar.getInstance().getTimeInMillis();
-				long startTest = Calendar.getInstance().getTimeInMillis();
-				System.out.println(trainedModel.test());
-				long endTest = Calendar.getInstance().getTimeInMillis();
-				System.out.println("Time to train: " + (endGet- startGet)/(double)1000);
-				System.out.println("Time to test: " + (endTest- startTest)/(double)1000);
-			} catch (Exception e) {
+				if (serializationDirectory.exists() || serializationDirectory.mkdirs()) {
+					TrainedModel trainedModel = 
+						new TrainedModel(serializationDirectory, classifier);
+					long endGet = Calendar.getInstance().getTimeInMillis();
+					long startTest = Calendar.getInstance().getTimeInMillis();
+					System.out.println(trainedModel.test());
+					long endTest = Calendar.getInstance().getTimeInMillis();
+					System.out.println("Time to train: " + (endGet- startGet)/(double)1000);
+					System.out.println("Time to test: " + (endTest- startTest)/(double)1000);
+				} else {
+					throw new Exception("Problems with the serialization directory");
+				}
+			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}
 			System.out.println();
