@@ -71,14 +71,10 @@ public class TrainedModel {
 		this.serializationDirectory = serializationDirectory;
 		wekaSegmentation = new WekaSegmentation(transparentImage.getImagePlus());
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
-		if (null != classifierName) {
-			classifierFile = 
-				new File(getClassifierFileName());
-			AbstractClassifier classifier = 
-				(AbstractClassifier) Utils.forName(
-					Classifier.class, classifierName, classifierOptions.toArray(new String[0]));		
-			wekaSegmentation.setClassifier(classifier);
-		}
+		if (null != classifierName) 
+			setClassifier(classifierName, classifierOptions);
+		classifierFile = 
+			new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
@@ -118,8 +114,20 @@ public class TrainedModel {
 		// Print the result à la Weka explorer:
 		return eTest.toSummaryString();
 	}
+	
+	private void setClassifier(String classifierName, List<String> classifierOptions) throws Exception {
+		AbstractClassifier classifier = 
+			(AbstractClassifier) Utils.forName(
+				Classifier.class, classifierName, classifierOptions.toArray(new String[0]));		
+		wekaSegmentation.setClassifier(classifier);
+	}
 
-	public void trainClassifier() {
+	private String getClassifierFileName() {
+		return serializationDirectory.getAbsolutePath() + "/" + 
+			wekaSegmentation.getClassifier().getClass().getName() + ".model";
+	}
+
+	private void trainClassifier() {
 		for (Classification classification : Classification.values()) {
 			if (classification.isTrainable()) {
 				wekaSegmentation.setClassLabel(classification.ordinal(),
@@ -145,11 +153,6 @@ public class TrainedModel {
 		classifier = wekaSegmentation.getClassifier();
 	}
 	
-	private String getClassifierFileName() {
-		return serializationDirectory.getAbsolutePath() + "/" + 
-			wekaSegmentation.getClassifier().getClass().getName() + ".model";
-	}
-
 	private void serializeClassifier(File classifierFile, Classifier classifier)
 			throws Exception {
 		File serializationDirectory = classifierFile.getParentFile();
