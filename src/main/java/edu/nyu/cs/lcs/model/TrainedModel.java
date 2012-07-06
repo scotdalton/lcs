@@ -126,6 +126,9 @@ public class TrainedModel {
 	public String test() throws Exception {
 		WekaSegmentation testWekaSegmentation = new WekaSegmentation(
 				transparentImage.getImagePlus());
+		for (Classification classification : Classification.values()) {
+			initWekaSegmentation(testWekaSegmentation, classification, classification.getTestingImages());
+		}
 		Evaluation eTest;
 		eTest = new Evaluation(wekaSegmentation.getLoadedTrainingData());
 		eTest.evaluateModel(classifier,
@@ -147,28 +150,34 @@ public class TrainedModel {
 
 	private void trainClassifier() {
 		for (Classification classification : Classification.values()) {
-			if (classification.isTrainable()) {
-				wekaSegmentation.setClassLabel(classification.ordinal(),
-						classification.name());
-				if (classification.ordinal() >= wekaSegmentation
-						.getNumOfClasses())
-					wekaSegmentation.addClass();
-				List<Image> trainingImages = classification.getTrainingImages();
-				for (int i = 0; i < 10; i++) {
-					Image trainingImage = trainingImages.get(i);
-					// for(Image trainingImage:trainingImages) {
-					ImagePlus imagePlus = trainingImage.getImagePlus();
-					Roi roi = new Roi(0, 0, imagePlus.getWidth(),
-							imagePlus.getHeight());
-					roi.setImage(imagePlus);
-					int n = imagePlus.getCurrentSlice();
-					int classNum = classification.ordinal();
-					wekaSegmentation.addExample(classNum, roi, n);
-				}
-			}
+			initWekaSegmentation(wekaSegmentation, classification, classification.getTrainingImages());
 		}
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
+	}
+	
+	private void initWekaSegmentation(WekaSegmentation wekaSegmentation, Classification classification, List<Image> exampleImages) {
+		if (classification.isTrainable()) {
+			addClass(wekaSegmentation, classification.ordinal(), classification.name());
+			for(Image exampleImage:exampleImages) {
+				addExample(wekaSegmentation, classification.ordinal(), exampleImage);
+			}
+		}
+	}
+	
+	private void addClass(WekaSegmentation wekaSegmentation, int classNum, String className) {
+		wekaSegmentation.setClassLabel(classNum, className);
+		if (classNum >= wekaSegmentation.getNumOfClasses())
+			wekaSegmentation.addClass();
+	}
+	
+	private void addExample(WekaSegmentation wekaSegmentation, int classNum, Image exampleImage) {
+		ImagePlus imagePlus = exampleImage.getImagePlus();
+		Roi roi = new Roi(0, 0, imagePlus.getWidth(),
+				imagePlus.getHeight());
+		roi.setImage(imagePlus);
+		int n = imagePlus.getCurrentSlice();
+		wekaSegmentation.addExample(classNum, roi, n);
 	}
 	
 	private void serializeClassifier(File classifierFile, Classifier classifier)
