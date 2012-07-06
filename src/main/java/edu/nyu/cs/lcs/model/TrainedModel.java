@@ -9,18 +9,15 @@ import ij.gui.Roi;
 
 import java.awt.Point;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import trainableSegmentation.FeatureStack;
 import trainableSegmentation.WekaSegmentation;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.core.Instance;
-import weka.core.Instances;
+import weka.core.Utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -38,45 +35,52 @@ public class TrainedModel {
 	private WekaSegmentation wekaSegmentation;
 	private static final Image transparentImage = new Image(
 			"src/main/resources/META-INF/transparent.png");
-	private static final String classificationFilename = "classification.png";
-	private File serializationDirectory;
 	private Classifier classifier;
+	private File serializationDirectory;
 	private File classifierFile;
 	/** flags of filters to be used */
-	private boolean[] enabledFeatures = new boolean[] { true, /* Gaussian_blur */
-	true, /* Sobel_filter */
-	true, /* Hessian */
-	true, /* Difference_of_gaussians */
-	true, /* Membrane_projections */
-	false, /* Variance */
-	false, /* Mean */
-	false, /* Minimum */
-	false, /* Maximum */
-	false, /* Median */
-	false, /* Anisotropic_diffusion */
-	false, /* Bilateral */
-	false, /* Lipschitz */
-	false, /* Kuwahara */
-	false, /* Gabor */
-	false, /* Derivatives */
-	false, /* Laplacian */
-	false, /* Structure */
-	false, /* Entropy */
-	false /* Neighbors */
+	private boolean[] enabledFeatures = new boolean[] { 
+		true, /* Gaussian_blur */
+		true, /* Sobel_filter */
+		true, /* Hessian */
+		true, /* Difference_of_gaussians */
+		true, /* Membrane_projections */
+		false, /* Variance */
+		false, /* Mean */
+		false, /* Minimum */
+		false, /* Maximum */
+		false, /* Median */
+		false, /* Anisotropic_diffusion */
+		false, /* Bilateral */
+		false, /* Lipschitz */
+		false, /* Kuwahara */
+		false, /* Gabor */
+		false, /* Derivatives */
+		false, /* Laplacian */
+		false, /* Structure */
+		false, /* Entropy */
+		false /* Neighbors */
 	};
 
 	public TrainedModel(File serializationDirectory) throws Exception {
 		this.serializationDirectory = serializationDirectory;
 		wekaSegmentation = new WekaSegmentation(transparentImage.getImagePlus());
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
-		classifierFile = new File(serializationDirectory.getAbsolutePath()
-				+ "/lcs.model");
+		classifierFile = 
+			new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
-			classifier = trainClassifier();
+			trainClassifier();
 			serializeClassifier(classifierFile, classifier);
 		}
+	}
+	
+	public void setClassifier(String classifierName, List<String> classifierOptions) throws Exception {
+		AbstractClassifier classifier = 
+			(AbstractClassifier) Utils.forName(
+				Classifier.class, classifierName, classifierOptions.toArray(new String[0]));		
+		wekaSegmentation.setClassifier(classifier);
 	}
 
 	/**
@@ -111,7 +115,7 @@ public class TrainedModel {
 		return eTest.toSummaryString();
 	}
 
-	private Classifier trainClassifier() {
+	public void trainClassifier() {
 		for (Classification classification : Classification.values()) {
 			if (classification.isTrainable()) {
 				wekaSegmentation.setClassLabel(classification.ordinal(),
@@ -134,7 +138,12 @@ public class TrainedModel {
 			}
 		}
 		wekaSegmentation.trainClassifier();
-		return wekaSegmentation.getClassifier();
+		classifier = wekaSegmentation.getClassifier();
+	}
+	
+	private String getClassifierFileName() {
+		return serializationDirectory.getAbsolutePath() + "/" + 
+			wekaSegmentation.getClassifier().getClass().getName() + ".model";
 	}
 
 	private void serializeClassifier(File classifierFile, Classifier classifier)
