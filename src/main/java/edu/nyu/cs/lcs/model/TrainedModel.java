@@ -45,7 +45,7 @@ public class TrainedModel {
 		true, /* Difference_of_gaussians */
 		true, /* Membrane_projections */
 		false, /* Variance */
-		true, /* Mean */
+		false, /* Mean */
 		false, /* Minimum */
 		false, /* Maximum */
 		false, /* Median */
@@ -58,7 +58,7 @@ public class TrainedModel {
 		false, /* Laplacian */
 		false, /* Structure */
 		false, /* Entropy */
-		true /* Neighbors */
+		false /* Neighbors */
 	};
 	
 	/**
