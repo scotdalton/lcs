@@ -5,6 +5,11 @@ package edu.nyu.cs.lcs;
 
 import ij.ImagePlus;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.RenderedImage;
@@ -17,11 +22,16 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.media.jai.Histogram;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
+
+import edu.nyu.cs.lcs.classifications.Classification;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -33,6 +43,7 @@ import javax.media.jai.PlanarImage;
  * 
  */
 public class Image {
+	private Map<Point, Classification> classificationMap;
 	private Image classificationImage;
 	private ImagePlus imagePlus;
 	private RenderedImage renderedImage;
@@ -130,6 +141,21 @@ public class Image {
 		return imagePlus;
 	}
 	
+	/**
+	 * @param classificationMap the classificationMap to set
+	 */
+	public void setClassificationMap(Map<Point, Classification> classificationMap) {
+		this.classificationMap = classificationMap;
+	}
+
+	/**
+	 * @return the classificationMap
+	 * @throws Exception 
+	 */
+	public Map<Point, Classification> getClassificationMap() throws Exception {
+		return classificationMap;
+	}
+
 	public Image getComparisonImage(Image fromImage) throws Exception {
 		BufferedImage bufferedImage = getAsBufferedImage();
 //		Graphics graphics = bufferedImage.getGraphics();
@@ -167,6 +193,27 @@ public class Image {
 	 * @throws Exception
 	 */
 	public Image getClassificationImage() throws Exception {
+		if(classificationImage == null) {
+			classificationMap = getClassificationMap();
+			if(classificationMap == null)
+				throw new Exception("Classification map was not set.");
+			BufferedImage bufferedImage = getAsBufferedImage();
+			Graphics graphics = bufferedImage.getGraphics();
+			for(Entry<Point, Classification> entry: classificationMap.entrySet()) {
+				Point point = entry.getKey();
+				int x = (int) point.getX();
+				int y = (int) point.getY();
+				Classification classification = entry.getValue();
+				int red = classification.getRed();
+				int green = classification.getGreen();
+				int blue = classification.getBlue();
+				int alpha = classification.getAlpha();
+				graphics.setColor(new Color(red, green, blue, alpha));
+				graphics.fillRect(x, y, 1, 1);
+			}
+			graphics.dispose();
+			classificationImage = new Image(bufferedImage);
+		}
 		return classificationImage;
 	}
 	

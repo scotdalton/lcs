@@ -3,7 +3,12 @@
  */
 package edu.nyu.cs.lcs;
 
+import java.awt.Point;
+import java.util.Map;
+
 import com.google.inject.Inject;
+
+import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
@@ -40,7 +45,7 @@ public class UnknownImage extends Image {
 	}
 	
 	@Override
-	public Image getClassificationImage() throws Exception {
+	public Map<Point, Classification> getClassificationMap() throws Exception {
 		return trainedModel.classifyImage(this);
 	}
 	

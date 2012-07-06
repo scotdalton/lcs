@@ -62,7 +62,7 @@ public class LcsGui {
 		TrainedModel trainedModel = 
 			injector.getInstance(TrainedModel.class);
 		Properties properties = new Properties();
-		properties.load(new FileReader("src/main/resources/META-INF//gui.properties"));
+		properties.load(new FileReader("src/main/resources/META-INF/gui.properties"));
 		File persistDirectory = 
 			new File(properties.getProperty("persistDirectory"));
 		//Create and set up the window.

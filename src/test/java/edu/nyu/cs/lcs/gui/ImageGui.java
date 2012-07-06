@@ -40,6 +40,7 @@ public class ImageGui {
 			images.put(arg, new UnknownImage(arg, trainedModel));
 		Image image1 = new UnknownImage(TestUtility.IMAGE1, trainedModel);
 		images.put("Johannesburg, South Africa 2003", image1);
+//		images.put("Classification 2003", image1.overlay(image1.getClassificationImage()));
 		images.put("Classification 2003", image1.getClassificationImage());
 //		Image image2 = new UnknownImage(TestUtility.IMAGE2, trainedModel);
 //		images.put("Johannesburg, South Africa 2005", image2);
