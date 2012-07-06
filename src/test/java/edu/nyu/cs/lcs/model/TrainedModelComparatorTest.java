@@ -25,12 +25,12 @@ import com.google.common.io.Files;
  * @author Scot Dalton
  * 
  * */
-public class TrainedModelComparator {
+public class TrainedModelComparatorTest {
 	private File classifiersFile = 
 		new File("src/test/resources/META-INF/classifiers.yml");
 	private File featuresFile = 
 		new File("src/test/resources/META-INF/features.yml");
-	private File serializationDirectory = new File(".classifiers/default_features");
+	private File serializationDirectory = new File(".classifiers/default_features_with_mean_and_neighbors");
 	private String encoding = "UTF-8";
 	private File comparisons = new File("comparisons");
 
