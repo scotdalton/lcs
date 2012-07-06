@@ -18,6 +18,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -61,13 +62,23 @@ public class TrainedModel {
 		false, /* Entropy */
 		false /* Neighbors */
 	};
-
+	
 	public TrainedModel(File serializationDirectory) throws Exception {
+		this(serializationDirectory, null, Lists.newArrayList(""));
+	}
+
+	public TrainedModel(File serializationDirectory, String classifierName, List<String> classifierOptions) throws Exception {
 		this.serializationDirectory = serializationDirectory;
 		wekaSegmentation = new WekaSegmentation(transparentImage.getImagePlus());
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
-		classifierFile = 
-			new File(getClassifierFileName());
+		if (null != classifierName) {
+			classifierFile = 
+				new File(getClassifierFileName());
+			AbstractClassifier classifier = 
+				(AbstractClassifier) Utils.forName(
+					Classifier.class, classifierName, classifierOptions.toArray(new String[0]));		
+			wekaSegmentation.setClassifier(classifier);
+		}
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(classifierFile);
 		} else {
@@ -76,13 +87,6 @@ public class TrainedModel {
 		}
 	}
 	
-	public void setClassifier(String classifierName, List<String> classifierOptions) throws Exception {
-		AbstractClassifier classifier = 
-			(AbstractClassifier) Utils.forName(
-				Classifier.class, classifierName, classifierOptions.toArray(new String[0]));		
-		wekaSegmentation.setClassifier(classifier);
-	}
-
 	/**
 	 * Returns the an Image with the classifications of the given Image.
 	 * 
