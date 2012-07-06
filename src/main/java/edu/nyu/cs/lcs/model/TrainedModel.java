@@ -9,14 +9,19 @@ import ij.gui.Roi;
 
 import java.awt.Point;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import trainableSegmentation.FeatureStack;
 import trainableSegmentation.WekaSegmentation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.core.Attribute;
+import weka.core.Instances;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -124,16 +129,18 @@ public class TrainedModel {
 	}
 
 	public String test() throws Exception {
-		WekaSegmentation testWekaSegmentation = new WekaSegmentation(
-				transparentImage.getImagePlus());
-		for (Classification classification : Classification.values()) {
-			if (classification.isTrainable())
-				initWekaSegmentation(testWekaSegmentation, classification, classification.getTestingImages());
+		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+		FeatureStack featureStack = wekaSegmentation.getFeatureStack(1);
+		for (int i=1; i<=featureStack.getSize(); i++){
+			String attString = featureStack.getSliceLabel(i);
+			attributes.add(new Attribute(attString));
 		}
+		attributes.add(new Attribute("class", Lists.newArrayList(wekaSegmentation.getClassLabels())));
+		Instances testingData = new Instances("segment", attributes, 1);
+
 		Evaluation eTest;
 		eTest = new Evaluation(wekaSegmentation.getLoadedTrainingData());
-		eTest.evaluateModel(classifier,
-				testWekaSegmentation.getLoadedTrainingData());
+		eTest.evaluateModel(classifier, testingData);
 		// Get the confusion matrix
 		// confusionMatrix = eTest.confusionMatrix();
 		// Print the result à la Weka explorer:
