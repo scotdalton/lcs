@@ -76,7 +76,9 @@ public class TrainedModelComparatorTest {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				lines.add(e.getMessage());
+				lines.add(e.getClass().getName());
+				for (StackTraceElement ste : e.getStackTrace())
+					lines.add("\tat " + ste.toString());
 			}
 			lines.add(null);
 			FileUtils.writeLines(comparisons, encoding, lines, true);
