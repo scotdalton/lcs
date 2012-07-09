@@ -78,17 +78,17 @@
 			<version>1.45</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.yaml</groupId>
-		  <artifactId>snakeyaml</artifactId>
-		  <version>1.10</version>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.10</version>
 		</dependency>
-    <!-- Must be available in a local repository. -->
-    <dependency>
-      <groupId>sc.fiji</groupId>
-      <artifactId>fiji-lib</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-    <!-- Must be available in a local repository. -->
+		<!-- Must be available in a local repository. -->
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>fiji-lib</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<!-- Must be available in a local repository. -->
 		<dependency>
 			<groupId>sc.fiji</groupId>
 			<artifactId>trainable_segmentation</artifactId>
@@ -243,6 +243,14 @@
 				<version>2.3.2</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>edu.nyu.cs.lcs.gui.ImageGui</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
