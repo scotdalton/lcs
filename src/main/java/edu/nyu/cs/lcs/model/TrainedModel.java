@@ -234,7 +234,7 @@ public class TrainedModel {
 		if (!serializationDirectory.exists())
 			serializationDirectory.mkdirs();
 		wekaSegmentation.loadTrainingData(dataFile.getAbsolutePath());
-		return wekaSegmentation.getTrainingInstances();
+		return wekaSegmentation.getLoadedTrainingData();
 	}
 	
 	private void serializeClassifier(WekaSegmentation wekaSegmentation, File classifierFile)
