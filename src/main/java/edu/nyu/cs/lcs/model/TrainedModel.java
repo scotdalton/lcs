@@ -42,7 +42,7 @@ public class TrainedModel {
 	private File serializationDirectory;
 	private File classifierFile;
 	private File trainingDataFile;
-	private File testingDataFile;
+//	private File testingDataFile;
 	private boolean[] enabledFeatures;
 	/** flags of filters to be used */
 	private static final boolean[] defaultEnabledFeatures = new boolean[] { 
@@ -142,7 +142,7 @@ public class TrainedModel {
 		WekaSegmentation testSegmentation = getNewWekaSegmentation(abstractClassifier, enabledFeatures);
 		addClasses(testSegmentation);
 		testSegmentation.getFeatureStackArray().updateFeaturesMT();
-		testingDataFile = new File(getTestingDataFileName());
+//		testingDataFile = new File(getTestingDataFileName());
 //		if(testingDataFile.exists()) {
 //			testingData = deserializeData(testSegmentation, testingDataFile);
 //		} else {
@@ -182,9 +182,9 @@ public class TrainedModel {
 		return serializationDirectory.getAbsolutePath() + "/" + "training.arff";
 	}
 	
-	private String getTestingDataFileName() {
-		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
-	}
+//	private String getTestingDataFileName() {
+//		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
+//	}
 	
 	private void trainClassifier() {
 		System.out.println("Training");

@@ -19,7 +19,7 @@ import edu.nyu.cs.lcs.model.TrainedModel;
  */
 public class UnknownImage extends Image {
 	@Inject private TrainedModel trainedModel;
-	private Double arablePercentage;
+	private Double croplandPercentage;
 	private Double developedPercentage;
 	private Double desertPercentage;
 	private Double forestPercentage;
@@ -49,46 +49,43 @@ public class UnknownImage extends Image {
 		return trainedModel.classifyImage(this);
 	}
 	
-	public double getArablePercentage() {
-		if(arablePercentage == null) classify();
-		return arablePercentage;
+	public double getCroplandPercentage() throws Exception {
+		if(croplandPercentage == null) classify();
+		return croplandPercentage;
 	}
 	
-	public double getDevelopedPercentage() {
+	public double getDevelopedPercentage() throws Exception {
 		if(developedPercentage == null) classify();
 		return developedPercentage;
 	}
 	
-	public double getDesertPercentage() {
+	public double getDesertPercentage() throws Exception {
 		if(desertPercentage == null) classify();
 		return desertPercentage;
 	}
 	
-	public double getForestPercentage() {
+	public double getForestPercentage() throws Exception {
 		if(forestPercentage == null) classify();
 		return forestPercentage;
 	}
 	
-	private void classify() {
+	private void classify() throws Exception {
 		int arableCount = 0;
 		int developedCount = 0;
 		int desertCount = 0;
 		int forestCount = 0;
-//		for(double pixel : getPixels(new double[0]));
-//		for(Image choppedImage : ) {
-//			Classification classification = 
-//				choppedImage.getClassification();
-//			if(classification.equals(Classification.CROPLAND)) {
-//				arableCount++;
-//			} else if (classification.equals(Classification.DEVELOPED)) {
-//				developedCount++;
-//			} else if (classification.equals(Classification.DESERT)) {
-//				desertCount++;
-//			} else if (classification.equals(Classification.FOREST)) {
-//				forestCount++;
-//			}
-//		}
-		arablePercentage = (double)100*arableCount;
+		for(Classification classification: getClassificationMap().values()) {
+			if(classification.equals(Classification.CROPLAND)) {
+				arableCount++;
+			} else if (classification.equals(Classification.DEVELOPED)) {
+				developedCount++;
+			} else if (classification.equals(Classification.DESERT)) {
+				desertCount++;
+			} else if (classification.equals(Classification.FOREST)) {
+				forestCount++;
+			}
+		}
+		croplandPercentage = (double)100*arableCount;
 		developedPercentage = (double)100*developedCount;
 		desertPercentage = (double)100*desertCount;
 		forestPercentage = (double)100*forestCount;
