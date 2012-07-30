@@ -108,7 +108,7 @@ public class TrainedModel {
 			trainingData = createTrainingData(wekaSegmentation);
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
-		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
+//		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
 		classifierFile = new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
@@ -138,7 +138,7 @@ public class TrainedModel {
 	}
 
 	public String test() throws Exception {
-		System.out.println("Testing");
+//		System.out.println("Testing");
 		WekaSegmentation testSegmentation = getNewWekaSegmentation(abstractClassifier, enabledFeatures);
 		addClasses(testSegmentation);
 		testSegmentation.getFeatureStackArray().updateFeaturesMT();
@@ -149,8 +149,8 @@ public class TrainedModel {
 			testingData = createTestingData(testSegmentation);
 //			serializeData(testSegmentation, testingDataFile);
 //		}
-		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
-		System.out.println("Testing data summary:\t" + testingData.toSummaryString());
+//		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
+//		System.out.println("Testing data summary:\t" + testingData.toSummaryString());
 		Evaluation eTest;
 		eTest = new Evaluation(trainingData);
 		eTest.evaluateModel(classifier, testingData);
@@ -187,7 +187,7 @@ public class TrainedModel {
 //	}
 	
 	private void trainClassifier() {
-		System.out.println("Training");
+//		System.out.println("Training");
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
 	}
