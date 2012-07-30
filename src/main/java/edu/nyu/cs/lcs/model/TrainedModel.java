@@ -108,7 +108,7 @@ public class TrainedModel {
 			trainingData = createTrainingData(wekaSegmentation);
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
-		System.out.println(testingData.toSummaryString());
+		System.out.println(trainingData.toSummaryString());
 		classifierFile = new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
