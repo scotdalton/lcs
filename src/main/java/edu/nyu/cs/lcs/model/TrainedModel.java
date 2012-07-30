@@ -196,6 +196,8 @@ public class TrainedModel {
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
 				addTrainingData(wekaSegmentation, classification, classification.getTrainingImages());
+		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
+		wekaSegmentation.filterFeatureStackByList();
 		return wekaSegmentation.createTrainingInstances();
 	}
 	
