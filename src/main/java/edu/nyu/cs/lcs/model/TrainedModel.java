@@ -97,10 +97,8 @@ public class TrainedModel {
 	public TrainedModel(File serializationDirectory, AbstractClassifier cls, boolean[] enabledFeatures) throws Exception {
 		this.serializationDirectory = serializationDirectory;
 		this.enabledFeatures = enabledFeatures;
-		wekaSegmentation = getWekaSegmentation(enabledFeatures);
+		wekaSegmentation = getNewWekaSegmentation(enabledFeatures);
 		addClasses(wekaSegmentation);
-		if (null != cls) 
-			setClassifier(cls);
 		trainingDataFile = new File(getTrainingDataFileName());
 		if(trainingDataFile.exists()) {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
@@ -108,6 +106,8 @@ public class TrainedModel {
 			trainingData = createTrainingData(wekaSegmentation);
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
+		if (null != cls) 
+			setClassifier(cls);
 		classifierFile = new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
@@ -138,7 +138,7 @@ public class TrainedModel {
 
 	public String test() throws Exception {
 		System.out.println("Testing");
-		WekaSegmentation testSegmentation = getWekaSegmentation(enabledFeatures);
+		WekaSegmentation testSegmentation = getNewWekaSegmentation(enabledFeatures);
 		addClasses(testSegmentation);
 		testingDataFile = new File(getTestingDataFileName());
 		if(testingDataFile.exists()) {
@@ -156,7 +156,7 @@ public class TrainedModel {
 		return eTest.toSummaryString();
 	}
 	
-	private WekaSegmentation getWekaSegmentation(boolean[] enabledFeatures) {
+	private WekaSegmentation getNewWekaSegmentation(boolean[] enabledFeatures) {
 		WekaSegmentation wekaSegmentation = 
 			new WekaSegmentation(transparentImage.getImagePlus());
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
