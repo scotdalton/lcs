@@ -105,14 +105,13 @@ public class TrainedModel {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
 		} else {
 			trainingData = createTrainingData(wekaSegmentation);
-			wekaSegmentation.setLoadedTrainingData(trainingData);
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
 		classifierFile = new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
 		} else {
-			trainClassifier(trainingData);
+			trainClassifier();
 			serializeClassifier(wekaSegmentation, classifierFile);
 		}
 	}
@@ -144,7 +143,6 @@ public class TrainedModel {
 			testingData = deserializeData(testSegmentation, testingDataFile);
 		} else {
 			testingData = createTestingData(testSegmentation);
-			testSegmentation.setLoadedTrainingData(testingData);
 			serializeData(testSegmentation, testingDataFile);
 		}
 		Evaluation eTest;
@@ -180,7 +178,7 @@ public class TrainedModel {
 		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
 	}
 	
-	private void trainClassifier(Instances trainingData) {
+	private void trainClassifier() {
 		System.out.println("Training");
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
