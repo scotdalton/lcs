@@ -36,8 +36,12 @@ public class TrainedModel {
 	private static final Image transparentImage = new Image(
 			"src/main/resources/META-INF/transparent.png");
 	private Classifier classifier;
+	private Instances trainingData;
+	private Instances testingData;
 	private File serializationDirectory;
 	private File classifierFile;
+	private File trainingDataFile;
+	private File testingDataFile;
 	private boolean[] enabledFeatures;
 	/** flags of filters to be used */
 	private static final boolean[] defaultEnabledFeatures = new boolean[] { 
@@ -96,13 +100,20 @@ public class TrainedModel {
 		wekaSegmentation = getWekaSegmentation(enabledFeatures);
 		if (null != cls) 
 			setClassifier(cls);
-		classifierFile = 
-			new File(getClassifierFileName());
-		if (classifierFile.exists()) {
-			classifier = deserializeClassifier(classifierFile);
+		trainingDataFile = new File(getTrainingDataFileName());
+		if(trainingDataFile.exists()) {
+			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
 		} else {
-			trainClassifier();
-			serializeClassifier(classifierFile, this.classifier);
+			trainingData = createTrainingData(wekaSegmentation);
+			wekaSegmentation.setLoadedTrainingData(trainingData);
+			serializeData(wekaSegmentation, trainingDataFile);
+		}
+		classifierFile = new File(getClassifierFileName());
+		if (classifierFile.exists()) {
+			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
+		} else {
+			trainClassifier(trainingData);
+			serializeClassifier(wekaSegmentation, classifierFile);
 		}
 	}
 	
@@ -127,10 +138,15 @@ public class TrainedModel {
 
 	public String test() throws Exception {
 		WekaSegmentation testSegmentation = getWekaSegmentation(enabledFeatures);
-		for (Classification classification : Classification.values())
-			if (classification.isTrainable())
-				initWekaSegmentation(testSegmentation, classification, classification.getTestingImages());
-		Instances testingData = testSegmentation.createTrainingInstances();
+		System.out.println("Testing");
+		testingDataFile = new File(getTestingDataFileName());
+		if(testingDataFile.exists()) {
+			testingData = deserializeData(testSegmentation, testingDataFile);
+		} else {
+			testingData = createTestingData(testSegmentation);
+			testSegmentation.setLoadedTrainingData(testingData);
+			serializeData(testSegmentation, testingDataFile);
+		}
 		Evaluation eTest;
 		eTest = new Evaluation(wekaSegmentation.createTrainingInstances());
 		eTest.evaluateModel(classifier, testingData);
@@ -156,16 +172,35 @@ public class TrainedModel {
 			wekaSegmentation.getClassifier().getClass().getName() + ".model";
 	}
 
-	private void trainClassifier() {
-		for (Classification classification : Classification.values()) {
-			if (classification.isTrainable())
-				initWekaSegmentation(wekaSegmentation, classification, classification.getTrainingImages());
-		}
+	private String getTrainingDataFileName() {
+		return serializationDirectory.getAbsolutePath() + "/" + "training.arff";
+	}
+	
+	private String getTestingDataFileName() {
+		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
+	}
+	
+	private void trainClassifier(Instances trainingData) {
+		System.out.println("Training");
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
 	}
 	
-	private void initWekaSegmentation(WekaSegmentation wekaSegmentation, Classification classification, List<Image> exampleImages) {
+	private Instances createTrainingData(WekaSegmentation wekaSegmentation) {
+		for (Classification classification : Classification.values())
+			if (classification.isTrainable())
+				addTrainingData(wekaSegmentation, classification, classification.getTrainingImages());
+		return wekaSegmentation.createTrainingInstances();
+	}
+	
+	private Instances createTestingData(WekaSegmentation wekaSegmentation) {
+		for (Classification classification : Classification.values())
+			if (classification.isTrainable())
+				addTrainingData(wekaSegmentation, classification, classification.getTestingImages());
+		return wekaSegmentation.createTrainingInstances();
+	}
+	
+	private void addTrainingData(WekaSegmentation wekaSegmentation, Classification classification, List<Image> exampleImages) {
 		if (classification.isTrainable()) {
 			addClass(wekaSegmentation, classification.ordinal(), classification.name());
 			for(Image exampleImage:exampleImages) {
@@ -188,16 +223,30 @@ public class TrainedModel {
 		wekaSegmentation.addExample(classNum, roi, n);
 	}
 	
-	private void serializeClassifier(File classifierFile, Classifier classifier)
+	private void serializeData(WekaSegmentation wekaSegmentation, File dataFile) {
+		File serializationDirectory = dataFile.getParentFile();
+		if (!serializationDirectory.exists())
+			serializationDirectory.mkdirs();
+		wekaSegmentation.saveData(dataFile.getAbsolutePath());
+	}
+	
+	private Instances deserializeData(WekaSegmentation wekaSegmentation, File dataFile) {
+		File serializationDirectory = dataFile.getParentFile();
+		if (!serializationDirectory.exists())
+			serializationDirectory.mkdirs();
+		wekaSegmentation.loadTrainingData(dataFile.getAbsolutePath());
+		return wekaSegmentation.getTrainingInstances();
+	}
+	
+	private void serializeClassifier(WekaSegmentation wekaSegmentation, File classifierFile)
 			throws Exception {
 		File serializationDirectory = classifierFile.getParentFile();
 		if (!serializationDirectory.exists())
 			serializationDirectory.mkdirs();
-		String classifierFileName = classifierFile.getAbsolutePath();
-		wekaSegmentation.saveClassifier(classifierFileName);
+		wekaSegmentation.saveClassifier(classifierFile.getAbsolutePath());
 	}
 
-	private Classifier deserializeClassifier(File classifierFile)
+	private Classifier deserializeClassifier(WekaSegmentation wekaSegmentation, File classifierFile)
 			throws Exception {
 		String classifierFileName = classifierFile.getAbsolutePath();
 		wekaSegmentation.loadClassifier(classifierFileName);
