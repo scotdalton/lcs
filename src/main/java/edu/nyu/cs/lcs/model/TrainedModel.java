@@ -130,9 +130,9 @@ public class TrainedModel {
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
 				initWekaSegmentation(testSegmentation, classification, classification.getTestingImages());
-		Instances testingData = testSegmentation.getLoadedTrainingData();
+		Instances testingData = testSegmentation.createTrainingInstances();
 		Evaluation eTest;
-		eTest = new Evaluation(wekaSegmentation.getLoadedTrainingData());
+		eTest = new Evaluation(wekaSegmentation.createTrainingInstances());
 		eTest.evaluateModel(classifier, testingData);
 		// Get the confusion matrix
 		// confusionMatrix = eTest.confusionMatrix();
