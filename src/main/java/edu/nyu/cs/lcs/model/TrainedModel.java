@@ -103,6 +103,7 @@ public class TrainedModel {
 		trainingDataFile = new File(getTrainingDataFileName());
 		if(trainingDataFile.exists()) {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
+			wekaSegmentation.setLoadedTrainingData(trainingData);
 		} else {
 			trainingData = createTrainingData(wekaSegmentation);
 			serializeData(wekaSegmentation, trainingDataFile);
@@ -143,10 +144,10 @@ public class TrainedModel {
 			testingData = deserializeData(testSegmentation, testingDataFile);
 		} else {
 			testingData = createTestingData(testSegmentation);
-			serializeData(testSegmentation, testingDataFile);
+//			serializeData(testSegmentation, testingDataFile);
 		}
 		Evaluation eTest;
-		eTest = new Evaluation(wekaSegmentation.createTrainingInstances());
+		eTest = new Evaluation(trainingData);
 		eTest.evaluateModel(classifier, testingData);
 		// Get the confusion matrix
 		// confusionMatrix = eTest.confusionMatrix();
