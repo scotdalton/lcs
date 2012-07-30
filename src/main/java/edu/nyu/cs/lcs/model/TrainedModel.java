@@ -108,7 +108,7 @@ public class TrainedModel {
 			trainingData = createTrainingData(wekaSegmentation);
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
-		System.out.println(trainingData.toSummaryString());
+		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
 		classifierFile = new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
@@ -148,7 +148,7 @@ public class TrainedModel {
 			testingData = createTestingData(testSegmentation);
 //			serializeData(testSegmentation, testingDataFile);
 		}
-		System.out.println(testingData.toSummaryString());
+		System.out.println("Testing data summary:\t" + testingData.toSummaryString());
 		Evaluation eTest;
 		eTest = new Evaluation(trainingData);
 		eTest.evaluateModel(classifier, testingData);
