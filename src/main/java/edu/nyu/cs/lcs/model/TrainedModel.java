@@ -9,19 +9,15 @@ import ij.gui.Roi;
 
 import java.awt.Point;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import trainableSegmentation.FeatureStack;
 import trainableSegmentation.WekaSegmentation;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.core.Attribute;
 import weka.core.Instances;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -42,8 +38,9 @@ public class TrainedModel {
 	private Classifier classifier;
 	private File serializationDirectory;
 	private File classifierFile;
+	private boolean[] enabledFeatures;
 	/** flags of filters to be used */
-	private static final boolean[] enabledFeatures = new boolean[] { 
+	private static final boolean[] defaultEnabledFeatures = new boolean[] { 
 		true, /* Gaussian_blur */
 		true, /* Sobel_filter */
 		true, /* Hessian */
@@ -83,7 +80,7 @@ public class TrainedModel {
 	 * @throws Exception
 	 */
 	public TrainedModel(File serializationDirectory, AbstractClassifier cls) throws Exception {
-		this(serializationDirectory, cls, enabledFeatures);
+		this(serializationDirectory, cls, defaultEnabledFeatures);
 	}
 	
 	
@@ -95,8 +92,8 @@ public class TrainedModel {
 	 */
 	public TrainedModel(File serializationDirectory, AbstractClassifier cls, boolean[] enabledFeatures) throws Exception {
 		this.serializationDirectory = serializationDirectory;
-		wekaSegmentation = new WekaSegmentation(transparentImage.getImagePlus());
-		wekaSegmentation.setEnabledFeatures(enabledFeatures);
+		this.enabledFeatures = enabledFeatures;
+		wekaSegmentation = getWekaSegmentation(enabledFeatures);
 		if (null != cls) 
 			setClassifier(cls);
 		classifierFile = 
@@ -129,15 +126,11 @@ public class TrainedModel {
 	}
 
 	public String test() throws Exception {
-		ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-		FeatureStack featureStack = wekaSegmentation.getFeatureStack(1);
-		for (int i=1; i<=featureStack.getSize(); i++){
-			String attString = featureStack.getSliceLabel(i);
-			attributes.add(new Attribute(attString));
-		}
-		attributes.add(new Attribute("class", Lists.newArrayList(wekaSegmentation.getClassLabels())));
-		Instances testingData = new Instances("segment", attributes, 1);
-
+		WekaSegmentation testSegmentation = getWekaSegmentation(enabledFeatures);
+		for (Classification classification : Classification.values())
+			if (classification.isTrainable())
+				initWekaSegmentation(testSegmentation, classification, classification.getTestingImages());
+		Instances testingData = testSegmentation.getLoadedTrainingData();
 		Evaluation eTest;
 		eTest = new Evaluation(wekaSegmentation.getLoadedTrainingData());
 		eTest.evaluateModel(classifier, testingData);
@@ -145,6 +138,13 @@ public class TrainedModel {
 		// confusionMatrix = eTest.confusionMatrix();
 		// Print the result à la Weka explorer:
 		return eTest.toSummaryString();
+	}
+	
+	private WekaSegmentation getWekaSegmentation(boolean[] enabledFeatures) {
+		WekaSegmentation wekaSegmentation = 
+			new WekaSegmentation(transparentImage.getImagePlus());
+		wekaSegmentation.setEnabledFeatures(enabledFeatures);
+		return wekaSegmentation;
 	}
 	
 	private void setClassifier(AbstractClassifier classifier) throws Exception {
@@ -182,8 +182,7 @@ public class TrainedModel {
 	
 	private void addExample(WekaSegmentation wekaSegmentation, int classNum, Image exampleImage) {
 		ImagePlus imagePlus = exampleImage.getImagePlus();
-		Roi roi = new Roi(0, 0, imagePlus.getWidth(),
-				imagePlus.getHeight());
+		Roi roi = new Roi(0, 0, imagePlus.getWidth(), imagePlus.getHeight());
 		roi.setImage(imagePlus);
 		int n = imagePlus.getCurrentSlice();
 		wekaSegmentation.addExample(classNum, roi, n);
