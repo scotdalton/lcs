@@ -149,6 +149,7 @@ public class TrainedModel {
 			testingData = createTestingData(testSegmentation);
 //			serializeData(testSegmentation, testingDataFile);
 //		}
+		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
 		System.out.println("Testing data summary:\t" + testingData.toSummaryString());
 		Evaluation eTest;
 		eTest = new Evaluation(trainingData);
