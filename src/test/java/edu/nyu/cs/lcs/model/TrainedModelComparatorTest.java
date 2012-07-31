@@ -82,6 +82,7 @@ public class TrainedModelComparatorTest {
 			}
 			lines.add(null);
 			FileUtils.writeLines(comparisons, encoding, lines, true);
+			lines = null;
 			if (quit) System.exit(1);
 		}
 	}

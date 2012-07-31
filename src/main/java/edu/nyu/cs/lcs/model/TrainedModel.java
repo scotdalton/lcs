@@ -23,6 +23,7 @@ import com.google.inject.Singleton;
 
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.classifications.Classification;
+import edu.nyu.cs.lcs.utility.ImageUtil;
 
 /**
  * Singleton representing the trained model.
@@ -33,8 +34,6 @@ import edu.nyu.cs.lcs.classifications.Classification;
 @Singleton
 public class TrainedModel {
 	private WekaSegmentation wekaSegmentation;
-	private static final Image transparentImage = new Image(
-			"src/main/resources/META-INF/transparent.png");
 	private AbstractClassifier abstractClassifier;
 	private Classifier classifier;
 	private Instances trainingData;
@@ -162,7 +161,7 @@ public class TrainedModel {
 	
 	private WekaSegmentation getNewWekaSegmentation(AbstractClassifier abstractClassifier, boolean[] enabledFeatures) throws Exception {
 		WekaSegmentation wekaSegmentation = 
-			new WekaSegmentation(transparentImage.getImagePlus());
+			new WekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus());
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
 		if (null != abstractClassifier) 
 			setClassifier(wekaSegmentation, abstractClassifier);

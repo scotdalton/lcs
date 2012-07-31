@@ -40,6 +40,13 @@ import edu.nyu.cs.lcs.utility.kml.Placemark;
 public class ImageUtil {
 	private static String kmlFilename;
 	
+	public static final Image TRANSPARENT_IMAGE = new Image(
+	"src/main/resources/META-INF/transparent.png");
+
+	public static final Image TOO_LARGE_IMAGE = new Image(
+	"src/main/resources/META-INF/transparent.png");
+
+	
 	public static Image takeScreenShot(int xCropFactor, int yCropFactor, Date date, int delay) throws AWTException {
 		int width = (int) (getScreenWidth() - xCropFactor);
 		int height = (int) (getScreenHeight() - yCropFactor);
@@ -89,7 +96,9 @@ public class ImageUtil {
 	
 	public static Image getImageForRegion(File imageDirectory, int columns, int rows) {
 		List<File> imageFiles = 
-			FileUtil.getFilesSortedByLastModified(imageDirectory);
+			FileUtil.getRegionSort(imageDirectory);
+		if (imageFiles.size() > 20)
+			return TOO_LARGE_IMAGE;
 		// Assume all images are the same size and date
 		Image firstImage = new Image(imageFiles.get(0));
 		Date regionImageDate = firstImage.getDate();
@@ -117,34 +126,6 @@ public class ImageUtil {
 		return new Image(bufferedImage, regionImageDate);
 	}
 
-	public static Image getImageForRegion(List<Image> images, int columns, int rows) {
-		// Assume all images are the same size and date
-		Image firstImage = images.get(0);
-		Date regionImageDate = firstImage.getDate();
-		int regionImageWidth = firstImage.getWidth() * columns;
-		int regionImageHeight = firstImage.getHeight() * rows;
-		BufferedImage bufferedImage = 
-			new BufferedImage(regionImageWidth, regionImageHeight, BufferedImage.TYPE_INT_RGB);
-		Graphics graphics = bufferedImage.getGraphics();
-		int column = 0;
-		int row = 0;
-		// Start at top right (NE) and move down, then left
-		// Last image is lower left (SW)
-		for(int index = 0; index < images.size(); index++) {
-			if(rows <= index && index % rows == 0) {
-				// Increment column (left) and reset row
-				column ++; 
-				row = 0;
-			}
-			Image image = images.get(index);
-			int x = firstImage.getWidth() * (columns - 1 - column);
-			int y = image.getHeight() * row;
-			graphics.drawImage(image.getAsBufferedImage(), x, y, null);
-			row++;
-		}
-		return new Image(bufferedImage, regionImageDate);
-	}
-	
 	public static Image getImage(Kml kml, int xCropFactor, int yCropFactor, 
 			int waitForKml) throws Exception {
 		return getImage(kml, xCropFactor, yCropFactor, waitForKml, null);

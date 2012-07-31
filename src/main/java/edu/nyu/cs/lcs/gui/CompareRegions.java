@@ -40,14 +40,14 @@ public class CompareRegions extends CompareImages {
 			Iterator<Map.Entry<String, String>> imageFileNameIterator = 
 			imageFileNames.entrySet().iterator();
 			Map<String, Image> unknownRegionImages = Maps.newLinkedHashMap();
-		    // Grab oldest and iterate one step
-			UnknownImage oldestImage = null; 
+		    // Grab first and iterate one step
+			UnknownImage firstImage = null; 
 			if(imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				oldestImage = new UnknownImage(pair.getValue(), trainedModel);
-				unknownRegionImages.put(imageName, oldestImage);
-				unknownRegionImages.put(imageName + " Classification Map", oldestImage.getClassificationImage());
+				firstImage = new UnknownImage(pair.getValue(), trainedModel);
+				unknownRegionImages.put(imageName, firstImage);
+				unknownRegionImages.put(imageName + " Classification Map", firstImage.getClassificationImage());
 			}
 		    // Get the rest of the images
 			UnknownImage unknownImage = null; 
@@ -59,9 +59,9 @@ public class CompareRegions extends CompareImages {
 				unknownRegionImages.put(imageName + " Classification Map", unknownImage.getClassificationImage());
 			}
 		    // Newest image is the last one.
-			UnknownImage newestImage = unknownImage;
-			if(newestImage != null)
-				unknownRegionImages.put(regionAddress + " Comparison", newestImage.getComparisonImage(oldestImage));
+			UnknownImage lastImage = unknownImage;
+			if(lastImage != null)
+				unknownRegionImages.put(regionAddress + " Comparison", lastImage.getComparisonImage(firstImage));
 			ImageTabbedPane imageTabbedPaneWithClassifications = 
 			new ImageTabbedPane(unknownRegionImages);
 			resultsPanel.removeAll();

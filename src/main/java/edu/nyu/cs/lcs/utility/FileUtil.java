@@ -14,7 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.apache.commons.io.comparator.RegionFileComparator;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
@@ -34,10 +34,9 @@ public class FileUtil {
 				FileFileFilter.FILE), null));
 	}
 	
-	public static List<File> getFilesSortedByLastModified(File directory) {
+	public static List<File> getRegionSort(File directory) {
 		List<File> files = getFiles(directory);
-		Collections.sort(files, 
-			LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+		Collections.sort(files, RegionFileComparator.REGION_COMPARATOR);
 		return files;
 	}
 	
