@@ -113,7 +113,7 @@ public class TrainedModel {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
 		} else {
 			trainClassifier();
-			serializeClassifier(wekaSegmentation, classifierFile);
+//			serializeClassifier(wekaSegmentation, classifierFile);
 		}
 	}
 	
