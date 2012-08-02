@@ -49,6 +49,7 @@ public class RegionImage extends UnknownImage {
 		return Lists.newArrayList(
 			getLatitude(),
 			getLongitude(),
+			getDateString(),
 			Double.toString(getCroplandPercentage()),
 			Double.toString(getDevelopedPercentage()),
 			Double.toString(getDesertPercentage()),
@@ -63,5 +64,9 @@ public class RegionImage extends UnknownImage {
 	
 	public String getLongitude() {
 		return FilenameUtils.getBaseName(getName()).split("-")[1];
+	}
+	
+	public String getDateString() {
+		return getFile().getParent();
 	}
 }

@@ -34,7 +34,7 @@ import edu.nyu.cs.lcs.model.TrainedModel;
  */
 public class FileUtil {
 	public static final List<String> csvHeaders = 
-		Lists.newArrayList("Latitude", "Longitude", "Year", "% Cropland", 
+		Lists.newArrayList("Latitude", "Longitude", "Date", "% Cropland", 
 			"% Developed", "% Desert", "% Forest", "File Name", "File Size");
 	
 	public static List<File> getFiles(File directory) {
