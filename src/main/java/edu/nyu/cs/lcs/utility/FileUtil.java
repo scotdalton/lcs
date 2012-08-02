@@ -7,6 +7,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +20,23 @@ import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import com.google.common.collect.Lists;
 
 import edu.nyu.cs.lcs.Image;
+import edu.nyu.cs.lcs.RegionImage;
+import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
  * @author Scot Dalton
  * Utility class for common file operations.
  */
 public class FileUtil {
+	public static final List<String> csvHeaders = 
+		Lists.newArrayList("Latitude", "Longitude", "Year", "% Cropland", 
+			"% Developed", "% Desert", "% Forest", "File Name", "File Size");
+	
 	public static List<File> getFiles(File directory) {
 		return Lists.newArrayList(FileUtils.listFiles(directory, 
 			new AndFileFilter(HiddenFileFilter.VISIBLE, 
@@ -58,5 +67,17 @@ public class FileUtil {
 			imageInputStream.close();
 		}
 		zipOutputStream.close();
+	}
+	
+	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel) throws Exception {
+		List<File> files =  getRegionSort(regionDirectory);
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
+		csvWriter.writeNext(csvHeaders.toArray(new String[0]));
+		for(File file:files) {
+			RegionImage regionImage = 
+				new RegionImage(file, trainedModel);
+			csvWriter.writeNext(regionImage.toCSV().toArray(new String[0]));
+		}
+		csvWriter.close();
 	}
 }

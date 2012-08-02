@@ -4,6 +4,7 @@
 package edu.nyu.cs.lcs;
 
 import java.awt.Point;
+import java.io.File;
 import java.util.Map;
 
 import com.google.inject.Inject;
@@ -24,6 +25,16 @@ public class UnknownImage extends Image {
 	private Double desertPercentage;
 	private Double forestPercentage;
 
+	/**
+	 * @param file
+	 * @throws Exception 
+	 */
+	@Inject
+	public UnknownImage(File file, TrainedModel trainedModel) {
+		super(file);
+		this.trainedModel = trainedModel;
+	}
+	
 	/**
 	 * @param filename
 	 * @throws Exception 

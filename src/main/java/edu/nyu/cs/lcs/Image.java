@@ -40,6 +40,7 @@ import edu.nyu.cs.lcs.classifications.Classification;
  * 
  */
 public class Image {
+	private File file;
 	private Map<Point, Classification> classificationMap;
 	private Image classificationImage;
 	private ImagePlus imagePlus;
@@ -75,6 +76,7 @@ public class Image {
 	 */
 	public Image(File file) {
 		this(JAI.create("fileload", file.getAbsolutePath()));
+		this.file = file;
 		this.name = file.getName();
 	}
 	
@@ -85,6 +87,7 @@ public class Image {
 	 */
 	public Image(File file, Date date) {
 		this(JAI.create("fileload", file.getAbsolutePath()));
+		this.file = file;
 		this.name = file.getName();
 		this.date = date;
 	}
@@ -109,6 +112,8 @@ public class Image {
 		classificationImage = image.classificationImage;
 		imagePlus = image.imagePlus;
 		date = image.date;
+		file = image.file;
+		name = image.name;
 	}
 
 	/**
@@ -259,6 +264,13 @@ public class Image {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return the file
+	 */
+	public File getFile() {
+		return file;
 	}
 
 	public int getNumBands() {

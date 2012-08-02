@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
-import edu.nyu.cs.lcs.UnknownImage;
+import edu.nyu.cs.lcs.RegionImage;
 import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
@@ -41,25 +41,25 @@ public class CompareRegions extends CompareImages {
 			imageFileNames.entrySet().iterator();
 			Map<String, Image> unknownRegionImages = Maps.newLinkedHashMap();
 		    // Grab first and iterate one step
-			UnknownImage firstImage = null; 
+			RegionImage firstImage = null; 
 			if(imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				firstImage = new UnknownImage(pair.getValue(), trainedModel);
+				firstImage = new RegionImage(pair.getValue(), trainedModel);
 				unknownRegionImages.put(imageName, firstImage);
 				unknownRegionImages.put(imageName + " Classification Map", firstImage.getClassificationImage());
 			}
 		    // Get the rest of the images
-			UnknownImage unknownImage = null; 
+			RegionImage regionImage = null; 
 			while (imageFileNameIterator.hasNext()) {
 				Map.Entry<String, String> pair = imageFileNameIterator.next();
 				String imageName = pair.getKey(); 
-				unknownImage = new UnknownImage(pair.getValue(), trainedModel);
-				unknownRegionImages.put(imageName, unknownImage);
-				unknownRegionImages.put(imageName + " Classification Map", unknownImage.getClassificationImage());
+				regionImage = new RegionImage(pair.getValue(), trainedModel);
+				unknownRegionImages.put(imageName, regionImage);
+				unknownRegionImages.put(imageName + " Classification Map", regionImage.getClassificationImage());
 			}
 		    // Newest image is the last one.
-			UnknownImage lastImage = unknownImage;
+			RegionImage lastImage = regionImage;
 			if(lastImage != null)
 				unknownRegionImages.put(regionAddress + " Comparison", lastImage.getComparisonImage(firstImage));
 			ImageTabbedPane imageTabbedPaneWithClassifications = 
