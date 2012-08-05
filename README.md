@@ -31,3 +31,53 @@ To run the application
 If you think you have outdated compiled classes, clean up the build directory and run package again.
 
     $ mvn clean && mvn package
+    
+Sample locations:
+
+<table>
+  <tr>
+    <th>Location</th>
+    <th>Latitude</th>
+    <th>Longitude</th>
+  </tr>
+  <tr>
+    <td>Antananarivo, Madagascar</td>
+    <td>-18.884964</td>
+    <td>47.549713</td>
+  </tr>
+  <tr>
+    <td>Mbabane, Swaziland</td>
+    <td>-26.315826</td>
+    <td>31.120203</td>
+  </tr>
+  <tr>
+    <td>Maseru, Lesotho</td>
+    <td>-29.343169</td>
+    <td>27.462407</td>
+  </tr>
+  <tr>
+    <td>Maseru, Lesotho</td>
+    <td>-29.335653</td>
+    <td>27.444118</td>
+  </tr>
+  <tr>
+    <td>Mbombela, South Africa</td>
+    <td>-25.461111</td>
+    <td>30.928889</td>
+  </tr>
+  <tr>
+    <td>Polokwane, South Africa</td>
+    <td>-23.92472</td>
+    <td>29.46889</td>
+  </tr>
+  <tr>
+    <td>Tamale, Ghana</td>
+    <td>9.40972</td>
+    <td>-0.86167</td>
+  </tr>
+  <tr>
+    <td>Lilongwe, Malawi</td>
+    <td>-13.930545</td>
+    <td>33.762609</td>
+  </tr>
+</table>
