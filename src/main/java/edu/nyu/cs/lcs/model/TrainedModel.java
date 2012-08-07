@@ -277,10 +277,12 @@ public class TrainedModel {
 				new File(serializationDirectory + "/" + classification.name());
 			File classificationSerializationFile = 
 				new File(serializationDirectory + "/" + classification.name() + ".arff");
-			for(Image exampleImage:exampleImages) {
-				addExampleImage(classification.ordinal(), exampleImage, classificationSerializationDirectory);
+			if(!classificationSerializationFile.exists()) {
+				for(Image exampleImage:exampleImages) {
+					addExampleImage(classification.ordinal(), exampleImage, classificationSerializationDirectory);
+				}
+				serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
 			}
-			serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
 		}
 	}
 	
