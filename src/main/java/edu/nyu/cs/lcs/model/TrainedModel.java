@@ -201,7 +201,7 @@ public class TrainedModel {
 	private Instances createTrainingData() throws Exception {
 		for (Classification classification : Classification.values()) {
 			if (classification.isTrainable()) {
-				addTrainingData(classification, classification.getTestingImages(), trainingDataDirectory);
+				addTrainingData(classification, classification.getTrainingImages(), trainingDataDirectory);
 			}
 		}
 		return deserializeInstances(trainingDataDirectory, trainingDataFile);
