@@ -249,16 +249,17 @@ public class TrainedModel {
 	}
 	
 	private void addExampleImage(int classNum, Image exampleImage, File serializationDirectory) throws Exception {
-		ImagePlus imagePlus = exampleImage.getImagePlus();
-		WekaSegmentation exampleWekaSegmentation = 
-			getNewWekaSegmentation(imagePlus, abstractClassifier, enabledFeatures);
-		Roi roi = new Roi(0, 0, imagePlus.getWidth(), imagePlus.getHeight());
-		addExample(exampleWekaSegmentation, classNum, roi, imagePlus.getCurrentSlice());
-		serializationDirectory.mkdirs();
 		File trainingDataFile = 
 			new File(serializationDirectory + "/" + exampleImage.getName() + ".arff");
-		if(!trainingDataFile.exists())
+		if(!trainingDataFile.exists()) {
+			ImagePlus imagePlus = exampleImage.getImagePlus();
+			WekaSegmentation exampleWekaSegmentation = 
+				getNewWekaSegmentation(imagePlus, abstractClassifier, enabledFeatures);
+			Roi roi = new Roi(0, 0, imagePlus.getWidth(), imagePlus.getHeight());
+			addExample(exampleWekaSegmentation, classNum, roi, imagePlus.getCurrentSlice());
+			serializationDirectory.mkdirs();
 			serializeData(exampleWekaSegmentation, trainingDataFile);
+		}
 	}
 	
 	private void addClasses(WekaSegmentation wekaSegmentation) {
