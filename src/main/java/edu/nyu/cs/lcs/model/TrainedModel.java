@@ -99,6 +99,7 @@ public class TrainedModel {
 		this.abstractClassifier = abstractClassifier;
 		this.enabledFeatures = enabledFeatures;
 		wekaSegmentation = getNewWekaSegmentation(abstractClassifier, enabledFeatures);
+		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 		addClasses(wekaSegmentation);
 		trainingDataFile = new File(getTrainingDataFileName());
 		if(trainingDataFile.exists()) {
