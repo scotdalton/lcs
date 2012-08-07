@@ -18,6 +18,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -41,6 +42,7 @@ public class TrainedModel {
 	private File serializationDirectory;
 	private File classifierFile;
 	private File trainingDataFile;
+	private int numberOfInstances;
 //	private File testingDataFile;
 	private boolean[] enabledFeatures;
 	/** flags of filters to be used */
@@ -98,14 +100,13 @@ public class TrainedModel {
 		this.serializationDirectory = serializationDirectory;
 		this.abstractClassifier = abstractClassifier;
 		this.enabledFeatures = enabledFeatures;
-		wekaSegmentation = getNewWekaSegmentation(abstractClassifier, enabledFeatures);
-		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
-		addClasses(wekaSegmentation);
+		this.numberOfInstances = 0;
+		wekaSegmentation = getNewWekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus(), abstractClassifier, enabledFeatures);
 		trainingDataFile = new File(getTrainingDataFileName());
 		if(trainingDataFile.exists()) {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
 		} else {
-			trainingData = createTrainingData(wekaSegmentation);
+			trainingData = createTrainingData();
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
@@ -139,14 +140,11 @@ public class TrainedModel {
 
 	public String test() throws Exception {
 //		System.out.println("Testing");
-		WekaSegmentation testSegmentation = getNewWekaSegmentation(abstractClassifier, enabledFeatures);
-		addClasses(testSegmentation);
-		testSegmentation.getFeatureStackArray().updateFeaturesMT();
 //		testingDataFile = new File(getTestingDataFileName());
 //		if(testingDataFile.exists()) {
 //			testingData = deserializeData(testSegmentation, testingDataFile);
 //		} else {
-			testingData = createTestingData(testSegmentation);
+			testingData = createTestingData();
 //			serializeData(testSegmentation, testingDataFile);
 //		}
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
@@ -160,12 +158,13 @@ public class TrainedModel {
 		return eTest.toSummaryString();
 	}
 	
-	private WekaSegmentation getNewWekaSegmentation(AbstractClassifier abstractClassifier, boolean[] enabledFeatures) throws Exception {
-		WekaSegmentation wekaSegmentation = 
-			new WekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus());
+	private WekaSegmentation getNewWekaSegmentation(ImagePlus imagePlus, AbstractClassifier abstractClassifier, boolean[] enabledFeatures) throws Exception {
+		WekaSegmentation wekaSegmentation = new WekaSegmentation(imagePlus);
 		wekaSegmentation.setEnabledFeatures(enabledFeatures);
 		if (null != abstractClassifier) 
 			setClassifier(wekaSegmentation, abstractClassifier);
+		addClasses(wekaSegmentation);
+		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 		return wekaSegmentation;
 	}
 	
@@ -188,32 +187,41 @@ public class TrainedModel {
 	
 	private void trainClassifier() {
 //		System.out.println("Training");
+		wekaSegmentation.setLoadedTrainingData(trainingData);
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
 	}
 	
-	private Instances createTrainingData(WekaSegmentation wekaSegmentation) {
+	private Instances createTrainingData() throws Exception {
+		List<Instances> classificationInstancesList = Lists.newArrayList();
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
-				addTrainingData(wekaSegmentation, classification, classification.getTrainingImages());
-		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
-		wekaSegmentation.filterFeatureStackByList();
-		return wekaSegmentation.createTrainingInstances();
+				classificationInstancesList.addAll(addTrainingData(classification, classification.getTrainingImages()));
+		Instances trainingInstances = classificationInstancesList.remove(0);
+		for(Instances classificationInstances: classificationInstancesList)
+			trainingInstances.addAll(classificationInstances);
+		return trainingInstances;
 	}
 	
-	private Instances createTestingData(WekaSegmentation wekaSegmentation) {
+	private Instances createTestingData() throws Exception {
+		List<Instances> classificationInstancesList = Lists.newArrayList();
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
-				addTrainingData(wekaSegmentation, classification, classification.getTestingImages());
-		return wekaSegmentation.createTrainingInstances();
+				classificationInstancesList.addAll(addTrainingData(classification, classification.getTestingImages()));
+		Instances testingInstances = classificationInstancesList.remove(0);
+		for(Instances classificationInstances: classificationInstancesList)
+			testingInstances.addAll(classificationInstances);
+		return testingInstances;
 	}
 	
-	private void addTrainingData(WekaSegmentation wekaSegmentation, Classification classification, List<Image> exampleImages) {
+	private List<Instances> addTrainingData(Classification classification, List<Image> exampleImages) throws Exception {
+		List<Instances> examplesImagesInstancesList = Lists.newArrayList();
 		if (classification.isTrainable()) {
 			for(Image exampleImage:exampleImages) {
-				addExample(wekaSegmentation, classification.ordinal(), exampleImage);
+				examplesImagesInstancesList.add(addExample(classification.ordinal(), exampleImage));
 			}
 		}
+		return examplesImagesInstancesList;
 	}
 	
 	private void addClasses(WekaSegmentation wekaSegmentation) {
@@ -228,12 +236,17 @@ public class TrainedModel {
 			wekaSegmentation.addClass();
 	}
 	
-	private void addExample(WekaSegmentation wekaSegmentation, int classNum, Image exampleImage) {
+	private Instances addExample(int classNum, Image exampleImage) throws Exception {
 		ImagePlus imagePlus = exampleImage.getImagePlus();
+		WekaSegmentation exampleWekaSegmentation = 
+			getNewWekaSegmentation(imagePlus, abstractClassifier, enabledFeatures);
 		Roi roi = new Roi(0, 0, imagePlus.getWidth(), imagePlus.getHeight());
 		roi.setImage(imagePlus);
 		int n = imagePlus.getCurrentSlice();
-		wekaSegmentation.addExample(classNum, roi, n);
+		exampleWekaSegmentation.addExample(classNum, roi, n);
+		Instances exampleInstances = exampleWekaSegmentation.createTrainingInstances();
+		numberOfInstances += exampleInstances.numInstances();
+		return exampleInstances;
 	}
 	
 	private void serializeData(WekaSegmentation wekaSegmentation, File dataFile) {
