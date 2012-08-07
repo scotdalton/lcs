@@ -64,7 +64,7 @@ public class TrainedModel {
 		false, /* Gabor */
 		false, /* Derivatives */
 		false, /* Laplacian */
-		true, /* Structure */
+		false, /* Structure */
 		false, /* Entropy */
 		true /* Neighbors */
 	};
