@@ -227,7 +227,7 @@ public class TrainedModel {
 		List<File> files = FileUtil.getFiles(serializationDirectory);
 		IOUtils.writeLines(IOUtils.readLines(new FileReader(files.remove(0))), IOUtils.LINE_SEPARATOR, writer);
 		for(File file: files)
-			IOUtils.writeLines(IOUtils.readLines(new FileReader(file)), IOUtils.LINE_SEPARATOR, writer);
+			IOUtils.writeLines(getDataFromFile(file), IOUtils.LINE_SEPARATOR, writer);
 	}
 	
 	private List<String> getDataFromFile(File file) throws FileNotFoundException, IOException {
