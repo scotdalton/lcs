@@ -164,26 +164,9 @@ public class TrainedModel {
 		if (null != abstractClassifier) 
 			setClassifier(wekaSegmentation, abstractClassifier);
 		addClasses(wekaSegmentation);
-		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
+//		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 		return wekaSegmentation;
 	}
-	
-	private void setClassifier(WekaSegmentation wekaSegmentation, AbstractClassifier classifier) throws Exception {
-		wekaSegmentation.setClassifier(classifier);
-	}
-
-	private String getClassifierFileName() {
-		return serializationDirectory.getAbsolutePath() + "/" + 
-			wekaSegmentation.getClassifier().getClass().getName() + ".model";
-	}
-
-	private String getTrainingDataFileName() {
-		return serializationDirectory.getAbsolutePath() + "/" + "training.arff";
-	}
-	
-//	private String getTestingDataFileName() {
-//		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
-//	}
 	
 	private void trainClassifier() {
 //		System.out.println("Training");
@@ -224,18 +207,6 @@ public class TrainedModel {
 		return examplesImagesInstancesList;
 	}
 	
-	private void addClasses(WekaSegmentation wekaSegmentation) {
-		for (Classification classification : Classification.values())
-			if (classification.isTrainable())
-				addClass(wekaSegmentation, classification.ordinal(), classification.name());
-	}
-	
-	private void addClass(WekaSegmentation wekaSegmentation, int classNum, String className) {
-		wekaSegmentation.setClassLabel(classNum, className);
-		if (classNum >= wekaSegmentation.getNumOfClasses())
-			wekaSegmentation.addClass();
-	}
-	
 	private Instances addExample(int classNum, Image exampleImage) throws Exception {
 		ImagePlus imagePlus = exampleImage.getImagePlus();
 		WekaSegmentation exampleWekaSegmentation = 
@@ -248,6 +219,35 @@ public class TrainedModel {
 		numberOfInstances += exampleInstances.numInstances();
 		return exampleInstances;
 	}
+	
+	private void addClasses(WekaSegmentation wekaSegmentation) {
+		for (Classification classification : Classification.values())
+			if (classification.isTrainable())
+				addClass(wekaSegmentation, classification.ordinal(), classification.name());
+	}
+	
+	private void addClass(WekaSegmentation wekaSegmentation, int classNum, String className) {
+		wekaSegmentation.setClassLabel(classNum, className);
+		if (classNum >= wekaSegmentation.getNumOfClasses())
+			wekaSegmentation.addClass();
+	}
+	
+	private void setClassifier(WekaSegmentation wekaSegmentation, AbstractClassifier classifier) throws Exception {
+		wekaSegmentation.setClassifier(classifier);
+	}
+
+	private String getClassifierFileName() {
+		return serializationDirectory.getAbsolutePath() + "/" + 
+			wekaSegmentation.getClassifier().getClass().getName() + ".model";
+	}
+
+	private String getTrainingDataFileName() {
+		return serializationDirectory.getAbsolutePath() + "/" + "training.arff";
+	}
+	
+//	private String getTestingDataFileName() {
+//		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
+//	}
 	
 	private void serializeData(WekaSegmentation wekaSegmentation, File dataFile) {
 		File serializationDirectory = dataFile.getParentFile();
