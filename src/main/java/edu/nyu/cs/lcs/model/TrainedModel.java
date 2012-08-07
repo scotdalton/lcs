@@ -216,6 +216,7 @@ public class TrainedModel {
 		roi.setImage(imagePlus);
 		int n = imagePlus.getCurrentSlice();
 		exampleWekaSegmentation.addExample(classNum, roi, n);
+		exampleWekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 		Instances exampleInstances = exampleWekaSegmentation.createTrainingInstances();
 		numberOfInstances += exampleInstances.numInstances();
 		return exampleInstances;
