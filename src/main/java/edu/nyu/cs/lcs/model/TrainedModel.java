@@ -257,7 +257,8 @@ public class TrainedModel {
 		serializationDirectory.mkdirs();
 		File trainingDataFile = 
 			new File(serializationDirectory + "/" + exampleImage.getName() + ".arff");
-		serializeData(exampleWekaSegmentation, trainingDataFile);
+		if(!trainingDataFile.exists())
+			serializeData(exampleWekaSegmentation, trainingDataFile);
 	}
 	
 	private void addClasses(WekaSegmentation wekaSegmentation) {
