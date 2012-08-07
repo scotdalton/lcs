@@ -105,8 +105,10 @@ public class TrainedModel {
 		trainingDataFile = new File(getTrainingDataFileName());
 		if(trainingDataFile.exists()) {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
+			wekaSegmentation.setLoadedTrainingData(trainingData);
 		} else {
 			trainingData = createTrainingData();
+			wekaSegmentation.setLoadedTrainingData(trainingData);
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
@@ -170,7 +172,6 @@ public class TrainedModel {
 	
 	private void trainClassifier() {
 //		System.out.println("Training");
-		wekaSegmentation.setLoadedTrainingData(trainingData);
 		wekaSegmentation.trainClassifier();
 		classifier = wekaSegmentation.getClassifier();
 	}
