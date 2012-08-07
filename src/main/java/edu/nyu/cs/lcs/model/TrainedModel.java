@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import trainableSegmentation.WekaSegmentation;
@@ -53,8 +54,10 @@ public class TrainedModel {
 	private Instances testingData;
 	private File serializationDirectory;
 	private File classifierFile;
+	private File trainingDataDirectory;
 	private File trainingDataFile;
-//	private File testingDataFile;
+	private File testingDataDirectory;
+	private File testingDataFile;
 	private boolean[] enabledFeatures;
 	/** flags of filters to be used */
 	private static final boolean[] defaultEnabledFeatures = new boolean[] { 
@@ -112,7 +115,10 @@ public class TrainedModel {
 		this.abstractClassifier = abstractClassifier;
 		this.enabledFeatures = enabledFeatures;
 		wekaSegmentation = getNewWekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus(), abstractClassifier, enabledFeatures);
-		trainingDataFile = new File(getTrainingDataFileName());
+		trainingDataDirectory = getTrainingDataDirectory();
+		trainingDataFile = getTrainingDataFile();
+		testingDataDirectory = getTestingDataDirectory();
+		testingDataFile = getTestingDataFile();
 		if(trainingDataFile.exists()) {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
 			wekaSegmentation.setLoadedTrainingData(trainingData);
@@ -188,25 +194,31 @@ public class TrainedModel {
 	}
 	
 	private Instances createTrainingData() throws Exception {
-		File serializationDirectory = 
-			new File(this.serializationDirectory + "/trainingData/");
-		File serializationFile = 
-			new File(this.serializationDirectory + "/training.arff");
-		for (Classification classification : Classification.values())
-			if (classification.isTrainable())
+		for (Classification classification : Classification.values()) {
+			if (classification.isTrainable()) {
 				addTrainingData(classification, classification.getTrainingImages(), serializationDirectory);
-		return deserializeInstances(serializationDirectory, serializationFile);
+				File classificationSerializationDirectory = 
+					new File(trainingDataDirectory + "/" + classification.name());
+				File classificationSerializationFile = 
+					new File(getTrainingDataDirectory() + "/" + classification.name() + ".arff");
+				serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
+			}
+		}
+		return deserializeInstances(trainingDataDirectory, trainingDataFile);
 	}
 	
 	private Instances createTestingData() throws Exception {
-		File serializationDirectory = 
-			new File(this.serializationDirectory + "/testingData/");
-		File serializationFile = 
-			new File(this.serializationDirectory + "/testing.arff");
-		for (Classification classification : Classification.values())
-			if (classification.isTrainable())
+		for (Classification classification : Classification.values()) {
+			if (classification.isTrainable()) {
 				addTrainingData(classification, classification.getTestingImages(), serializationDirectory);
-		return deserializeInstances(serializationDirectory, serializationFile);
+				File classificationSerializationDirectory = 
+					new File(testingDataFile + "/" + classification.name());
+				File classificationSerializationFile = 
+					new File(testingDataFile + "/" + classification.name() + ".arff");
+				serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
+			}
+		}
+		return deserializeInstances(testingDataDirectory, testingDataFile);
 	}
 	
 	private Instances deserializeInstances(File serializationDirectory, File serializationFile) throws Exception {
@@ -222,19 +234,43 @@ public class TrainedModel {
 		return source.getDataSet();
 	}
 	
-	private void serializeFromDirectory(File serializationDirectory, File serializationFile) throws IOException {
+	private void serializeFromDirectory(File serializationDirectory, File serializationFile, Classification classification) throws IOException {
 		Writer writer = new FileWriter(serializationFile);
 		List<File> files = FileUtil.getFiles(serializationDirectory);
-		IOUtils.writeLines(IOUtils.readLines(new FileReader(files.remove(0))), IOUtils.LINE_SEPARATOR, writer);
+		IOUtils.writeLines(getAttributesFromFile(files.get(0)), IOUtils.LINE_SEPARATOR, writer);
 		for(File file: files)
-			IOUtils.writeLines(getDataFromFile(file), IOUtils.LINE_SEPARATOR, writer);
+			IOUtils.writeLines(getDataFromFile(file, classification), IOUtils.LINE_SEPARATOR, writer);
+		writer.close();
 	}
 	
-	private List<String> getDataFromFile(File file) throws FileNotFoundException, IOException {
+	private void serializeFromDirectory(File serializationDirectory, File serializationFile) throws IOException {
+		serializeFromDirectory(serializationDirectory, serializationFile, null);
+	}
+	
+	private List<String> getAttributesFromFile(File file) throws FileNotFoundException, IOException {
+		List<String> attributeLines = Lists.newArrayList();
+		Reader reader = new FileReader(file);
+		for(String fileLine:IOUtils.readLines(reader)) {
+			attributeLines.add(fileLine);
+			if(fileLine.equals("@data")) break;
+		}
+		reader.close();
+		return attributeLines;
+	}
+	
+	private List<String> getDataFromFile(File file, Classification classification) throws FileNotFoundException, IOException {
 		List<String> dataLines = Lists.newArrayList();
 		boolean processingData = false;
 		for(String fileLine:IOUtils.readLines(new FileReader(file))) {
-			if(processingData) dataLines.add(fileLine);
+			// Parse out dummy classification lines if we have them.
+			if(classification != null) {
+				if(processingData)
+					if(fileLine.contains(classification.name()))
+						dataLines.add(fileLine);
+			} else {
+				if(processingData)
+					dataLines.add(fileLine);
+			}
 			if(fileLine.equals("@data")) processingData = true;
 		}
 		return dataLines;
@@ -243,14 +279,14 @@ public class TrainedModel {
 	private void addTrainingData(Classification classification, List<Image> exampleImages, File serializationDirectory) throws Exception {
 		if (classification.isTrainable()) {
 			for(Image exampleImage:exampleImages) {
-				addExampleImage(classification.ordinal(), exampleImage, serializationDirectory);
+				addExampleImage(classification.ordinal(), exampleImage, serializationDirectory, classification);
 			}
 		}
 	}
 	
-	private void addExampleImage(int classNum, Image exampleImage, File serializationDirectory) throws Exception {
+	private void addExampleImage(int classNum, Image exampleImage, File serializationDirectory, Classification classification) throws Exception {
 		File trainingDataFile = 
-			new File(serializationDirectory + "/" + exampleImage.getName() + ".arff");
+			new File(serializationDirectory + "/" + classification.name() + "/" + exampleImage.getName() + ".arff");
 		if(!trainingDataFile.exists()) {
 			ImagePlus imagePlus = exampleImage.getImagePlus();
 			WekaSegmentation exampleWekaSegmentation = 
@@ -291,13 +327,21 @@ public class TrainedModel {
 			wekaSegmentation.getClassifier().getClass().getName() + ".model";
 	}
 
-	private String getTrainingDataFileName() {
-		return serializationDirectory.getAbsolutePath() + "/" + "training.arff";
+	private File getTrainingDataFile() {
+		return new File(serializationDirectory.getAbsolutePath() + "/" + "training.arff");
 	}
 	
-//	private String getTestingDataFileName() {
-//		return serializationDirectory.getAbsolutePath() + "/" + "testing.arff";
-//	}
+	private File getTrainingDataDirectory() {
+		return new File(serializationDirectory.getAbsolutePath() + "/" + "testing");
+	}
+	
+	private File getTestingDataFile() {
+		return new File(serializationDirectory.getAbsolutePath() + "/" + "testing.arff");
+	}
+	
+	private File getTestingDataDirectory() {
+		return new File(serializationDirectory.getAbsolutePath() + "/" + "testing");
+	}
 	
 	private void serializeData(WekaSegmentation wekaSegmentation, File dataFile) {
 		File serializationDirectory = dataFile.getParentFile();
