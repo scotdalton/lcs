@@ -17,13 +17,14 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.classifications.Classification;
+import edu.nyu.cs.lcs.utility.FileUtil;
 import edu.nyu.cs.lcs.utility.ImageUtil;
 
 /**
@@ -42,7 +43,6 @@ public class TrainedModel {
 	private File serializationDirectory;
 	private File classifierFile;
 	private File trainingDataFile;
-	private int numberOfInstances;
 //	private File testingDataFile;
 	private boolean[] enabledFeatures;
 	/** flags of filters to be used */
@@ -100,7 +100,6 @@ public class TrainedModel {
 		this.serializationDirectory = serializationDirectory;
 		this.abstractClassifier = abstractClassifier;
 		this.enabledFeatures = enabledFeatures;
-		this.numberOfInstances = 0;
 		wekaSegmentation = getNewWekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus(), abstractClassifier, enabledFeatures);
 		trainingDataFile = new File(getTrainingDataFileName());
 		if(trainingDataFile.exists()) {
@@ -177,55 +176,70 @@ public class TrainedModel {
 	}
 	
 	private Instances createTrainingData() throws Exception {
-		List<Instances> classificationInstancesList = Lists.newArrayList();
+		File serializationDirectory = 
+			new File(this.serializationDirectory + "/trainingData/");
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
-				classificationInstancesList.addAll(addTrainingData(classification, classification.getTrainingImages()));
-		Instances trainingInstances = classificationInstancesList.remove(0);
-		for(Instances classificationInstances: classificationInstancesList)
-			trainingInstances.addAll(classificationInstances);
-		return trainingInstances;
+				addTrainingData(classification, classification.getTrainingImages(), serializationDirectory);
+		return deserializeInstances(serializationDirectory);
 	}
 	
 	private Instances createTestingData() throws Exception {
-		List<Instances> classificationInstancesList = Lists.newArrayList();
+		File serializationDirectory = 
+			new File(this.serializationDirectory + "/testingData/");
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
-				classificationInstancesList.addAll(addTrainingData(classification, classification.getTestingImages()));
-		Instances testingInstances = classificationInstancesList.remove(0);
-		for(Instances classificationInstances: classificationInstancesList)
-			testingInstances.addAll(classificationInstances);
-		return testingInstances;
+				addTrainingData(classification, classification.getTestingImages(), serializationDirectory);
+		return deserializeInstances(serializationDirectory);
 	}
 	
-	private List<Instances> addTrainingData(Classification classification, List<Image> exampleImages) throws Exception {
-		List<Instances> examplesImagesInstancesList = Lists.newArrayList();
+	private Instances deserializeInstances(File serializationDirectory) throws Exception {
+		List<File> files = FileUtil.getFiles(serializationDirectory);
+		Instances deserializedInstances = 
+			deserializeInstancesFromFile(files.remove(0));
+		deserializedInstances.setClassIndex(deserializedInstances.numAttributes() - 1);
+		for(File file: files)
+			deserializedInstances.addAll(deserializeInstancesFromFile(file));
+		return deserializedInstances;
+	}
+	
+	private Instances deserializeInstancesFromFile(File file) throws Exception {
+		DataSource source = new DataSource(file.getAbsolutePath());
+		return source.getDataSet();
+	}
+	
+	private void addTrainingData(Classification classification, List<Image> exampleImages, File serializationDirectory) throws Exception {
 		if (classification.isTrainable()) {
 			for(Image exampleImage:exampleImages) {
-				examplesImagesInstancesList.add(addExample(classification.ordinal(), exampleImage));
+				addExampleImage(classification.ordinal(), exampleImage, serializationDirectory);
 			}
 		}
-		return examplesImagesInstancesList;
 	}
 	
-	private Instances addExample(int classNum, Image exampleImage) throws Exception {
+	private void addExampleImage(int classNum, Image exampleImage, File serializationDirectory) throws Exception {
 		ImagePlus imagePlus = exampleImage.getImagePlus();
 		WekaSegmentation exampleWekaSegmentation = 
 			getNewWekaSegmentation(imagePlus, abstractClassifier, enabledFeatures);
 		Roi roi = new Roi(0, 0, imagePlus.getWidth(), imagePlus.getHeight());
-		roi.setImage(imagePlus);
-		int n = imagePlus.getCurrentSlice();
-		exampleWekaSegmentation.addExample(classNum, roi, n);
-		exampleWekaSegmentation.getFeatureStackArray().updateFeaturesMT();
-		Instances exampleInstances = exampleWekaSegmentation.createTrainingInstances();
-		numberOfInstances += exampleInstances.numInstances();
-		return exampleInstances;
+		addExample(exampleWekaSegmentation, classNum, roi, imagePlus.getCurrentSlice());
+		serializationDirectory.mkdirs();
+		File trainingDataFile = 
+			new File(serializationDirectory + "/" + exampleImage.getName() + ".arff");
+		serializeData(exampleWekaSegmentation, trainingDataFile);
 	}
 	
 	private void addClasses(WekaSegmentation wekaSegmentation) {
 		for (Classification classification : Classification.values())
-			if (classification.isTrainable())
+			if (classification.isTrainable()) {
 				addClass(wekaSegmentation, classification.ordinal(), classification.name());
+				addExample(wekaSegmentation, classification.ordinal(), new Roi(0, 0, 1, 1), 1);
+			}
+	}
+	
+	private void addExample(WekaSegmentation wekaSegmentation, int classNum, Roi roi, int sliceNum) {
+		wekaSegmentation.addExample(classNum, roi, sliceNum);
+		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
+		wekaSegmentation.createTrainingInstances();
 	}
 	
 	private void addClass(WekaSegmentation wekaSegmentation, int classNum, String className) {

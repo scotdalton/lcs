@@ -28,6 +28,8 @@ import javax.media.jai.Histogram;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 
+import org.apache.commons.io.FilenameUtils;
+
 import edu.nyu.cs.lcs.classifications.Classification;
 
 /**
@@ -77,7 +79,7 @@ public class Image {
 	public Image(File file) {
 		this(JAI.create("fileload", file.getAbsolutePath()));
 		this.file = file;
-		this.name = file.getName();
+		this.name = FilenameUtils.getBaseName(file.getName());
 	}
 	
 	/**
@@ -88,7 +90,7 @@ public class Image {
 	public Image(File file, Date date) {
 		this(JAI.create("fileload", file.getAbsolutePath()));
 		this.file = file;
-		this.name = file.getName();
+		this.name = FilenameUtils.getBaseName(file.getName());
 		this.date = date;
 	}
 	
