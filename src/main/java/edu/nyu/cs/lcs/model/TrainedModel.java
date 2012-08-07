@@ -8,9 +8,19 @@ import ij.ImageStack;
 import ij.gui.Roi;
 
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
 
 import trainableSegmentation.WekaSegmentation;
 import weka.classifiers.AbstractClassifier;
@@ -19,6 +29,7 @@ import weka.classifiers.Evaluation;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
 
@@ -108,6 +119,7 @@ public class TrainedModel {
 		} else {
 			trainingData = createTrainingData();
 			wekaSegmentation.setLoadedTrainingData(trainingData);
+			wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 			serializeData(wekaSegmentation, trainingDataFile);
 		}
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
@@ -178,34 +190,54 @@ public class TrainedModel {
 	private Instances createTrainingData() throws Exception {
 		File serializationDirectory = 
 			new File(this.serializationDirectory + "/trainingData/");
+		File serializationFile = 
+			new File(this.serializationDirectory + "/training.arff");
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
 				addTrainingData(classification, classification.getTrainingImages(), serializationDirectory);
-		return deserializeInstances(serializationDirectory);
+		return deserializeInstances(serializationDirectory, serializationFile);
 	}
 	
 	private Instances createTestingData() throws Exception {
 		File serializationDirectory = 
 			new File(this.serializationDirectory + "/testingData/");
+		File serializationFile = 
+			new File(this.serializationDirectory + "/testing.arff");
 		for (Classification classification : Classification.values())
 			if (classification.isTrainable())
 				addTrainingData(classification, classification.getTestingImages(), serializationDirectory);
-		return deserializeInstances(serializationDirectory);
+		return deserializeInstances(serializationDirectory, serializationFile);
 	}
 	
-	private Instances deserializeInstances(File serializationDirectory) throws Exception {
-		List<File> files = FileUtil.getFiles(serializationDirectory);
+	private Instances deserializeInstances(File serializationDirectory, File serializationFile) throws Exception {
+		serializeFromDirectory(serializationDirectory, serializationFile);
 		Instances deserializedInstances = 
-			deserializeInstancesFromFile(files.remove(0));
+			deserializeInstancesFromFile(serializationFile);
 		deserializedInstances.setClassIndex(deserializedInstances.numAttributes() - 1);
-		for(File file: files)
-			deserializedInstances.addAll(deserializeInstancesFromFile(file));
 		return deserializedInstances;
 	}
 	
 	private Instances deserializeInstancesFromFile(File file) throws Exception {
 		DataSource source = new DataSource(file.getAbsolutePath());
 		return source.getDataSet();
+	}
+	
+	private void serializeFromDirectory(File serializationDirectory, File serializationFile) throws IOException {
+		Writer writer = new FileWriter(serializationFile);
+		List<File> files = FileUtil.getFiles(serializationDirectory);
+		IOUtils.writeLines(IOUtils.readLines(new FileReader(files.remove(0))), IOUtils.LINE_SEPARATOR, writer);
+		for(File file: files)
+			IOUtils.writeLines(IOUtils.readLines(new FileReader(file)), IOUtils.LINE_SEPARATOR, writer);
+	}
+	
+	private List<String> getDataFromFile(File file) throws FileNotFoundException, IOException {
+		List<String> dataLines = Lists.newArrayList();
+		boolean processingData = false;
+		for(String fileLine:IOUtils.readLines(new FileReader(file))) {
+			if(processingData) dataLines.add(fileLine);
+			if(fileLine.equals("@data")) processingData = true;
+		}
+		return dataLines;
 	}
 	
 	private void addTrainingData(Classification classification, List<Image> exampleImages, File serializationDirectory) throws Exception {
