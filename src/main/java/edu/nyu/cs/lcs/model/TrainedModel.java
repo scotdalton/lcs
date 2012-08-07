@@ -114,11 +114,16 @@ public class TrainedModel {
 		this.serializationDirectory = serializationDirectory;
 		this.abstractClassifier = abstractClassifier;
 		this.enabledFeatures = enabledFeatures;
-		wekaSegmentation = getNewWekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus(), abstractClassifier, enabledFeatures);
-		trainingDataDirectory = getTrainingDataDirectory();
-		trainingDataFile = getTrainingDataFile();
-		testingDataDirectory = getTestingDataDirectory();
-		testingDataFile = getTestingDataFile();
+		wekaSegmentation = 
+			getNewWekaSegmentation(ImageUtil.TRANSPARENT_IMAGE.getImagePlus(), abstractClassifier, enabledFeatures);
+		trainingDataDirectory = 
+			new File(serializationDirectory.getAbsolutePath() + "/" + "training");
+		trainingDataFile = 
+			new File(serializationDirectory.getAbsolutePath() + "/" + "training.arff");
+		testingDataDirectory = 
+			new File(serializationDirectory.getAbsolutePath() + "/" + "testing");
+		testingDataFile = 
+			new File(serializationDirectory.getAbsolutePath() + "/" + "testing.arff");
 		if(trainingDataFile.exists()) {
 			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
 			wekaSegmentation.setLoadedTrainingData(trainingData);
@@ -196,12 +201,7 @@ public class TrainedModel {
 	private Instances createTrainingData() throws Exception {
 		for (Classification classification : Classification.values()) {
 			if (classification.isTrainable()) {
-				addTrainingData(classification, classification.getTrainingImages(), serializationDirectory);
-				File classificationSerializationDirectory = 
-					new File(trainingDataDirectory + "/" + classification.name());
-				File classificationSerializationFile = 
-					new File(getTrainingDataDirectory() + "/" + classification.name() + ".arff");
-				serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
+				addTrainingData(classification, classification.getTestingImages(), trainingDataDirectory);
 			}
 		}
 		return deserializeInstances(trainingDataDirectory, trainingDataFile);
@@ -210,12 +210,7 @@ public class TrainedModel {
 	private Instances createTestingData() throws Exception {
 		for (Classification classification : Classification.values()) {
 			if (classification.isTrainable()) {
-				addTrainingData(classification, classification.getTestingImages(), serializationDirectory);
-				File classificationSerializationDirectory = 
-					new File(testingDataFile + "/" + classification.name());
-				File classificationSerializationFile = 
-					new File(testingDataFile + "/" + classification.name() + ".arff");
-				serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
+				addTrainingData(classification, classification.getTestingImages(), testingDataDirectory);
 			}
 		}
 		return deserializeInstances(testingDataDirectory, testingDataFile);
@@ -278,15 +273,20 @@ public class TrainedModel {
 	
 	private void addTrainingData(Classification classification, List<Image> exampleImages, File serializationDirectory) throws Exception {
 		if (classification.isTrainable()) {
+			File classificationSerializationDirectory = 
+				new File(serializationDirectory + "/" + classification.name());
+			File classificationSerializationFile = 
+				new File(serializationDirectory + "/" + classification.name() + ".arff");
 			for(Image exampleImage:exampleImages) {
-				addExampleImage(classification.ordinal(), exampleImage, serializationDirectory, classification);
+				addExampleImage(classification.ordinal(), exampleImage, classificationSerializationDirectory);
 			}
+			serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
 		}
 	}
 	
-	private void addExampleImage(int classNum, Image exampleImage, File serializationDirectory, Classification classification) throws Exception {
+	private void addExampleImage(int classNum, Image exampleImage, File serializationDirectory) throws Exception {
 		File trainingDataFile = 
-			new File(serializationDirectory + "/" + classification.name() + "/" + exampleImage.getName() + ".arff");
+			new File(serializationDirectory + "/" + exampleImage.getName() + ".arff");
 		if(!trainingDataFile.exists()) {
 			ImagePlus imagePlus = exampleImage.getImagePlus();
 			WekaSegmentation exampleWekaSegmentation = 
@@ -327,22 +327,6 @@ public class TrainedModel {
 			wekaSegmentation.getClassifier().getClass().getName() + ".model";
 	}
 
-	private File getTrainingDataFile() {
-		return new File(serializationDirectory.getAbsolutePath() + "/" + "training.arff");
-	}
-	
-	private File getTrainingDataDirectory() {
-		return new File(serializationDirectory.getAbsolutePath() + "/" + "testing");
-	}
-	
-	private File getTestingDataFile() {
-		return new File(serializationDirectory.getAbsolutePath() + "/" + "testing.arff");
-	}
-	
-	private File getTestingDataDirectory() {
-		return new File(serializationDirectory.getAbsolutePath() + "/" + "testing");
-	}
-	
 	private void serializeData(WekaSegmentation wekaSegmentation, File dataFile) {
 		File serializationDirectory = dataFile.getParentFile();
 		if (!serializationDirectory.exists())
