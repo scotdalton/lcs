@@ -8,8 +8,6 @@ import ij.ImageStack;
 import ij.gui.Roi;
 
 import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -20,7 +18,6 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 import trainableSegmentation.WekaSegmentation;
@@ -124,22 +121,17 @@ public class TrainedModel {
 			new File(serializationDirectory.getAbsolutePath() + "/" + "testing");
 		testingDataFile = 
 			new File(serializationDirectory.getAbsolutePath() + "/" + "testing.arff");
-		if(trainingDataFile.exists()) {
-			trainingData = deserializeData(wekaSegmentation, trainingDataFile);
-			wekaSegmentation.setLoadedTrainingData(trainingData);
-		} else {
-			trainingData = createTrainingData();
-			wekaSegmentation.setLoadedTrainingData(trainingData);
-			wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
-			serializeData(wekaSegmentation, trainingDataFile);
-		}
+		if(!trainingDataFile.exists()) createTrainingData();
+		trainingData = deserializeInstances(trainingDataFile);
+		wekaSegmentation.setLoadedTrainingData(trainingData);
+		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
 		classifierFile = new File(getClassifierFileName());
 		if (classifierFile.exists()) {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
 		} else {
 			trainClassifier();
-//			serializeClassifier(wekaSegmentation, classifierFile);
+			serializeClassifier(wekaSegmentation, classifierFile);
 		}
 	}
 	
@@ -164,13 +156,8 @@ public class TrainedModel {
 
 	public String test() throws Exception {
 //		System.out.println("Testing");
-//		testingDataFile = new File(getTestingDataFileName());
-//		if(testingDataFile.exists()) {
-//			testingData = deserializeData(testSegmentation, testingDataFile);
-//		} else {
-			testingData = createTestingData();
-//			serializeData(testSegmentation, testingDataFile);
-//		}
+		if(!testingDataFile.exists())createTestingData();
+		testingData = deserializeInstances(testingDataFile);
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
 //		System.out.println("Testing data summary:\t" + testingData.toSummaryString());
 		Evaluation eTest;
@@ -188,7 +175,6 @@ public class TrainedModel {
 		if (null != abstractClassifier) 
 			setClassifier(wekaSegmentation, abstractClassifier);
 		addClasses(wekaSegmentation);
-//		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 		return wekaSegmentation;
 	}
 	
@@ -198,35 +184,25 @@ public class TrainedModel {
 		classifier = wekaSegmentation.getClassifier();
 	}
 	
-	private Instances createTrainingData() throws Exception {
-		for (Classification classification : Classification.values()) {
-			if (classification.isTrainable()) {
+	private void createTrainingData() throws Exception {
+		for (Classification classification : Classification.values())
+			if (classification.isTrainable())
 				addTrainingData(classification, classification.getTrainingImages(), trainingDataDirectory);
-			}
-		}
-		return deserializeInstances(trainingDataDirectory, trainingDataFile);
+		serializeFromDirectory(trainingDataDirectory, trainingDataFile);
 	}
 	
-	private Instances createTestingData() throws Exception {
-		for (Classification classification : Classification.values()) {
-			if (classification.isTrainable()) {
+	private void createTestingData() throws Exception {
+		for (Classification classification : Classification.values())
+			if (classification.isTrainable())
 				addTrainingData(classification, classification.getTestingImages(), testingDataDirectory);
-			}
-		}
-		return deserializeInstances(testingDataDirectory, testingDataFile);
+		serializeFromDirectory(testingDataDirectory, testingDataFile);
 	}
 	
-	private Instances deserializeInstances(File serializationDirectory, File serializationFile) throws Exception {
-		serializeFromDirectory(serializationDirectory, serializationFile);
-		Instances deserializedInstances = 
-			deserializeInstancesFromFile(serializationFile);
+	private Instances deserializeInstances(File serializationFile) throws Exception {
+		DataSource source = new DataSource(serializationFile.getAbsolutePath());
+		Instances deserializedInstances = source.getDataSet();
 		deserializedInstances.setClassIndex(deserializedInstances.numAttributes() - 1);
 		return deserializedInstances;
-	}
-	
-	private Instances deserializeInstancesFromFile(File file) throws Exception {
-		DataSource source = new DataSource(file.getAbsolutePath());
-		return source.getDataSet();
 	}
 	
 	private void serializeFromDirectory(File serializationDirectory, File serializationFile, Classification classification) throws IOException {
@@ -258,6 +234,7 @@ public class TrainedModel {
 		boolean processingData = false;
 		for(String fileLine:IOUtils.readLines(new FileReader(file))) {
 			// Parse out dummy classification lines if we have them.
+			// There will be one duplicate instance.
 			if(classification != null) {
 				if(processingData)
 					if(fileLine.contains(classification.name()))
@@ -278,9 +255,8 @@ public class TrainedModel {
 			File classificationSerializationFile = 
 				new File(serializationDirectory + "/" + classification.name() + ".arff");
 			if(!classificationSerializationFile.exists()) {
-				for(Image exampleImage:exampleImages) {
+				for(Image exampleImage:exampleImages)
 					addExampleImage(classification.ordinal(), exampleImage, classificationSerializationDirectory);
-				}
 				serializeFromDirectory(classificationSerializationDirectory, classificationSerializationFile, classification);
 			}
 		}
@@ -334,14 +310,6 @@ public class TrainedModel {
 		if (!serializationDirectory.exists())
 			serializationDirectory.mkdirs();
 		wekaSegmentation.saveData(dataFile.getAbsolutePath());
-	}
-	
-	private Instances deserializeData(WekaSegmentation wekaSegmentation, File dataFile) {
-		File serializationDirectory = dataFile.getParentFile();
-		if (!serializationDirectory.exists())
-			serializationDirectory.mkdirs();
-		wekaSegmentation.loadTrainingData(dataFile.getAbsolutePath());
-		return wekaSegmentation.getLoadedTrainingData();
 	}
 	
 	private void serializeClassifier(WekaSegmentation wekaSegmentation, File classifierFile)

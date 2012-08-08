@@ -123,7 +123,14 @@ public enum Classification {
 			FileUtils.listFiles(new File(directoryName), 
 				new AndFileFilter(HiddenFileFilter.VISIBLE, 
 					FileFileFilter.FILE), null);
-		for (File file: files) images.add(new Image(file));
+//		for (File file: files) images.add(new Image(file));
+		// Don't add more than 50 images
+		int breakPoint = 0;
+		for (File file: files) {
+			if (breakPoint > 50) break;
+			images.add(new Image(file));
+			breakPoint++;
+		}
 		return images;
 	}
 }
