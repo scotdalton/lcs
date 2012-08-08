@@ -77,7 +77,7 @@ public class TrainedModel {
 		false, /* Laplacian */
 		false, /* Structure */
 		false, /* Entropy */
-		false /* Neighbors */
+		true /* Neighbors */
 	};
 	
 	/**
@@ -122,8 +122,7 @@ public class TrainedModel {
 		testingDataFile = 
 			new File(serializationDirectory.getAbsolutePath() + "/" + "testing.arff");
 		if(!trainingDataFile.exists()) createTrainingData();
-		trainingData = deserializeInstances(trainingDataFile);
-		wekaSegmentation.setLoadedTrainingData(trainingData);
+		wekaSegmentation.loadTrainingData(trainingDataFile.getAbsolutePath());
 		wekaSegmentation.getFeatureStackArray().updateFeaturesMT();
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
 		classifierFile = new File(getClassifierFileName());
@@ -156,6 +155,7 @@ public class TrainedModel {
 
 	public String test() throws Exception {
 //		System.out.println("Testing");
+		trainingData = wekaSegmentation.getLoadedTrainingData();
 		if(!testingDataFile.exists())createTestingData();
 		testingData = deserializeInstances(testingDataFile);
 //		System.out.println("Training data summary:\t" + trainingData.toSummaryString());
