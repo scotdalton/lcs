@@ -32,7 +32,7 @@ public class TrainedModelComparatorTest {
 		new File("src/test/resources/META-INF/features.yml");
 	private File serializationDirectory = new File(".classifiers/default_features");
 	private String encoding = "UTF-8";
-	private File comparisons = new File("comparisons");
+	private File comparisons = new File(serializationDirectory + "/comparisons");
 
 	@Test
 	@SuppressWarnings("unchecked")
