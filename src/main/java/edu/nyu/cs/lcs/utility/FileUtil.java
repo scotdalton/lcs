@@ -6,8 +6,12 @@ package edu.nyu.cs.lcs.utility;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.comparator.RegionFileComparator;
 import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
@@ -26,6 +31,7 @@ import com.google.common.collect.Lists;
 
 import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.RegionImage;
+import edu.nyu.cs.lcs.classifications.Classification;
 import edu.nyu.cs.lcs.model.TrainedModel;
 
 /**
@@ -47,6 +53,36 @@ public class FileUtil {
 		List<File> files = getFiles(directory);
 		Collections.sort(files, RegionFileComparator.REGION_COMPARATOR);
 		return files;
+	}
+	
+	public static List<String> getAttributesFromFile(File file) throws FileNotFoundException, IOException {
+		List<String> attributeLines = Lists.newArrayList();
+		Reader reader = new FileReader(file);
+		for(String fileLine:IOUtils.readLines(reader)) {
+			attributeLines.add(fileLine);
+			if(fileLine.equals("@data")) break;
+		}
+		reader.close();
+		return attributeLines;
+	}
+	
+	public static List<String> getDataFromFile(File file, Classification classification) throws FileNotFoundException, IOException {
+		List<String> dataLines = Lists.newArrayList();
+		boolean processingData = false;
+		for(String fileLine:IOUtils.readLines(new FileReader(file))) {
+			// Parse out dummy classification lines if we have them.
+			// There will be one duplicate instance.
+			if(classification != null) {
+				if(processingData)
+					if(fileLine.contains(classification.name()))
+						dataLines.add(fileLine);
+			} else {
+				if(processingData)
+					dataLines.add(fileLine);
+			}
+			if(fileLine.equals("@data")) processingData = true;
+		}
+		return dataLines;
 	}
 	
 	public static void zipImages(String zipFileName, Map<String, Image> images) throws Exception {

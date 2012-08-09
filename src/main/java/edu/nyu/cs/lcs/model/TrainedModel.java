@@ -208,44 +208,14 @@ public class TrainedModel {
 	private void serializeFromDirectory(File serializationDirectory, File serializationFile, Classification classification) throws IOException {
 		Writer writer = new FileWriter(serializationFile);
 		List<File> files = FileUtil.getFiles(serializationDirectory);
-		IOUtils.writeLines(getAttributesFromFile(files.get(0)), IOUtils.LINE_SEPARATOR, writer);
+		IOUtils.writeLines(FileUtil.getAttributesFromFile(files.get(0)), IOUtils.LINE_SEPARATOR, writer);
 		for(File file: files)
-			IOUtils.writeLines(getDataFromFile(file, classification), IOUtils.LINE_SEPARATOR, writer);
+			IOUtils.writeLines(FileUtil.getDataFromFile(file, classification), IOUtils.LINE_SEPARATOR, writer);
 		writer.close();
 	}
 	
 	private void serializeFromDirectory(File serializationDirectory, File serializationFile) throws IOException {
 		serializeFromDirectory(serializationDirectory, serializationFile, null);
-	}
-	
-	private List<String> getAttributesFromFile(File file) throws FileNotFoundException, IOException {
-		List<String> attributeLines = Lists.newArrayList();
-		Reader reader = new FileReader(file);
-		for(String fileLine:IOUtils.readLines(reader)) {
-			attributeLines.add(fileLine);
-			if(fileLine.equals("@data")) break;
-		}
-		reader.close();
-		return attributeLines;
-	}
-	
-	private List<String> getDataFromFile(File file, Classification classification) throws FileNotFoundException, IOException {
-		List<String> dataLines = Lists.newArrayList();
-		boolean processingData = false;
-		for(String fileLine:IOUtils.readLines(new FileReader(file))) {
-			// Parse out dummy classification lines if we have them.
-			// There will be one duplicate instance.
-			if(classification != null) {
-				if(processingData)
-					if(fileLine.contains(classification.name()))
-						dataLines.add(fileLine);
-			} else {
-				if(processingData)
-					dataLines.add(fileLine);
-			}
-			if(fileLine.equals("@data")) processingData = true;
-		}
-		return dataLines;
 	}
 	
 	private void addTrainingData(Classification classification, List<Image> exampleImages, File serializationDirectory) throws Exception {
