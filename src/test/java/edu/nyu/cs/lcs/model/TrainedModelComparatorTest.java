@@ -44,8 +44,8 @@ public class TrainedModelComparatorTest {
 		Map<String, List<String>> classifiers = 
 			(Map<String, List<String>>) yaml.load(new FileReader(classifiersFile));
 		Files.write("".getBytes(), comparisons);
+		List<String> lines = Lists.newArrayList();
 		for (Entry<String, List<String>> entry: classifiers.entrySet()) {
-			List<String> lines = Lists.newArrayList();
 			String classifierName = entry.getKey();
 			List<String> classifierOptions = Lists.newArrayList();
 			if (entry.getValue() != null) 
@@ -81,9 +81,8 @@ public class TrainedModelComparatorTest {
 					lines.add("\tat " + ste.toString());
 			}
 			lines.add(null);
-			FileUtils.writeLines(comparisons, encoding, lines, true);
-			lines = null;
 			if (quit) System.exit(1);
 		}
+		FileUtils.writeLines(comparisons, encoding, lines);
 	}
 }

@@ -102,7 +102,8 @@ public class TrainedModel {
 	
 	
 	/**
-	 * Public constructor that takes a classifier to use.
+	 * Public constructor that takes a classifier to use and an array of 
+	 * booleans that indicate the enabled features.
 	 * @param serializationDirectory
 	 * @param classifier
 	 * @throws Exception
@@ -130,7 +131,7 @@ public class TrainedModel {
 			classifier = deserializeClassifier(wekaSegmentation, classifierFile);
 		} else {
 			trainClassifier();
-			serializeClassifier(wekaSegmentation, classifierFile);
+//			serializeClassifier(wekaSegmentation, classifierFile);
 		}
 	}
 	
