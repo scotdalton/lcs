@@ -42,7 +42,6 @@ public class TrainedModelComparatorTest {
 			(List<String>) yaml.load(new FileReader(featuresFile));
 		Map<String, List<String>> classifiers = 
 			(Map<String, List<String>>) yaml.load(new FileReader(classifiersFile));
-		List<String> lines = Lists.newArrayList();
 		for (Entry<String, List<String>> entry: classifiers.entrySet()) {
 			List<String> lines = Lists.newArrayList();
 			String classifierName = entry.getKey();
