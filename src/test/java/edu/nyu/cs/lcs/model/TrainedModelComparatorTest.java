@@ -32,7 +32,6 @@ public class TrainedModelComparatorTest {
 		new File("src/test/resources/META-INF/features.yml");
 	private File serializationDirectory = new File(".classifiers/default_features");
 	private String encoding = "UTF-8";
-	private File comparisons = new File(serializationDirectory + "/comparisons");
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -43,10 +42,11 @@ public class TrainedModelComparatorTest {
 			(List<String>) yaml.load(new FileReader(featuresFile));
 		Map<String, List<String>> classifiers = 
 			(Map<String, List<String>>) yaml.load(new FileReader(classifiersFile));
-		Files.write("".getBytes(), comparisons);
 		List<String> lines = Lists.newArrayList();
 		for (Entry<String, List<String>> entry: classifiers.entrySet()) {
 			String classifierName = entry.getKey();
+			File comparisons = new File(serializationDirectory + classifierName + ".comparisons");
+			Files.write("".getBytes(), comparisons);
 			List<String> classifierOptions = Lists.newArrayList();
 			if (entry.getValue() != null) 
 				classifierOptions = entry.getValue();
@@ -81,8 +81,9 @@ public class TrainedModelComparatorTest {
 					lines.add("\tat " + ste.toString());
 			}
 			lines.add(null);
+			FileUtils.writeLines(comparisons, encoding, lines);
+			lines = null;
 			if (quit) System.exit(1);
 		}
-		FileUtils.writeLines(comparisons, encoding, lines);
 	}
 }
