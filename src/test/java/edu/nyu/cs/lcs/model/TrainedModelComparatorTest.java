@@ -44,6 +44,7 @@ public class TrainedModelComparatorTest {
 			(Map<String, List<String>>) yaml.load(new FileReader(classifiersFile));
 		List<String> lines = Lists.newArrayList();
 		for (Entry<String, List<String>> entry: classifiers.entrySet()) {
+			List<String> lines = Lists.newArrayList();
 			String classifierName = entry.getKey();
 			File comparisons = new File(serializationDirectory + "/" + classifierName + ".comparisons");
 			if(comparisons.exists()) continue;
