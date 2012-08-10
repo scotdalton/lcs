@@ -45,7 +45,7 @@ public class TrainedModelComparatorTest {
 		List<String> lines = Lists.newArrayList();
 		for (Entry<String, List<String>> entry: classifiers.entrySet()) {
 			String classifierName = entry.getKey();
-			File comparisons = new File(serializationDirectory + classifierName + ".comparisons");
+			File comparisons = new File(serializationDirectory + "/" + classifierName + ".comparisons");
 			Files.write("".getBytes(), comparisons);
 			List<String> classifierOptions = Lists.newArrayList();
 			if (entry.getValue() != null) 
