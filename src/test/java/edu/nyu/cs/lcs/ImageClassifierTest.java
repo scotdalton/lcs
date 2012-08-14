@@ -23,7 +23,7 @@ import edu.nyu.cs.lcs.utility.FileUtil;
 public class ImageClassifierTest {
 	private TrainedModel trainedModel;
 	private final File testDir = new File("src/test/resources/META-INF");
-	private final File wbBase = new File(testDir + "/wb");
+	private final File wbBase = new File("../wb");
 	
 	@Ignore
 	@Test
