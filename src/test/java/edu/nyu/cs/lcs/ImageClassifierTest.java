@@ -49,12 +49,12 @@ public class ImageClassifierTest {
 	
 	@Test
 	public void classifyWestBengal2000() throws Exception {
-		File wb = new File(wbBase + "/2012");
+		File wb = new File(wbBase + "/2000");
 		List<File> files = 
 			FileUtil.getRegionSort(wb);
 		String wbClassifications = wb + "/classifications/"; 
 		for(int i = 0; i<10; i++) {
-			Image image = 
+			UnknownImage image = 
 				new UnknownImage(files.get(i), getTrainedModel());
 			image.getClassificationImage().persist(wbClassifications + image.getName() + ".png");
 		}
@@ -75,7 +75,7 @@ public class ImageClassifierTest {
 			FileUtil.getRegionSort(wb);
 		String wbClassifications = wb + "/classifications/"; 
 		for(int i = 0; i<10; i++) {
-			Image image = 
+			UnknownImage image = 
 				new UnknownImage(files.get(i), getTrainedModel());
 			image.getClassificationImage().persist(wbClassifications + image.getName() + ".png");
 		}
