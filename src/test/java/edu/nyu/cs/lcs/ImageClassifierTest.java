@@ -47,7 +47,6 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
-	@Ignore
 	@Test
 	public void classifyWestBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2012");
@@ -61,6 +60,7 @@ public class ImageClassifierTest {
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void westBengal2012() throws Exception {
 		File wb = new File(wbBase + "/2012");
@@ -68,7 +68,6 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
-	@Ignore
 	@Test
 	public void classifyWestBengal2012() throws Exception {
 		File wb = new File(wbBase + "/2012");
