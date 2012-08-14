@@ -4,6 +4,7 @@
 package edu.nyu.cs.lcs;
 
 import java.io.File;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,11 +39,47 @@ public class ImageClassifierTest {
 		image2.getClassificationImage().persist("src/test/resources/META-INF/MR3, Mbabane, Swaziland circa 2012.classification.png");
 	}
 	
+	@Ignore
 	@Test
 	public void westBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000");
 		File wbCsv = new File(wbBase + "/2000.csv");
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
+	}
+	
+	@Ignore
+	@Test
+	public void classifyWestBengal2000() throws Exception {
+		File wb = new File(wbBase + "/2012");
+		List<File> files = 
+			FileUtil.getRegionSort(wb);
+		String wbClassifications = wb + "/classifications/"; 
+		for(int i = 0; i<10; i++) {
+			Image image = 
+				new UnknownImage(files.get(i), getTrainedModel());
+			image.getClassificationImage().persist(wbClassifications + image.getName() + ".png");
+		}
+	}
+	
+	@Test
+	public void westBengal2012() throws Exception {
+		File wb = new File(wbBase + "/2012");
+		File wbCsv = new File(wbBase + "/2012.csv");
+		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
+	}
+	
+	@Ignore
+	@Test
+	public void classifyWestBengal2012() throws Exception {
+		File wb = new File(wbBase + "/2012");
+		List<File> files = 
+			FileUtil.getRegionSort(wb);
+		String wbClassifications = wb + "/classifications/"; 
+		for(int i = 0; i<10; i++) {
+			Image image = 
+				new UnknownImage(files.get(i), getTrainedModel());
+			image.getClassificationImage().persist(wbClassifications + image.getName() + ".png");
+		}
 	}
 	
 	private TrainedModel getTrainedModel() {
