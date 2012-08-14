@@ -5,13 +5,13 @@ package edu.nyu.cs.lcs.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-
 import ij.ImagePlus;
 import ij.gui.Roi;
 
 import java.io.File;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import trainableSegmentation.WekaSegmentation;
@@ -23,15 +23,14 @@ import edu.nyu.cs.lcs.Image;
 import edu.nyu.cs.lcs.TestUtility;
 import edu.nyu.cs.lcs.UnknownImage;
 import edu.nyu.cs.lcs.classifications.Classification;
-import edu.nyu.cs.lcs.model.TrainedModel;
-import edu.nyu.cs.lcs.model.TrainedModelModule;
 
 /**
  * @author Scot Dalton
  *
  */
+@Ignore
 public class TrainedModelTest {
-//	@Test
+	@Test
 	public void testNewTrainedModel() throws Exception {
 		File serializationDirectory = new File("./.classifiers");
 		TrainedModel trainedModel = 
@@ -58,7 +57,7 @@ public class TrainedModelTest {
 		assertSame(trainedModel1, trainedModel2);
 	}
 	
-//	@Test
+	@Test
 	public void testFeatureStack() {
 		Image image = new Image(TestUtility.IMAGE1);
 		WekaSegmentation wekaSegmentation = 

@@ -46,6 +46,9 @@ public class ImageUtil {
 	public static final Image TOO_LARGE_IMAGE = new Image(
 	"src/main/resources/META-INF/transparent.png");
 
+	public static final Image INVALID_IMAGE = new Image(
+	"src/main/resources/META-INF/transparent.png");
+
 	
 	public static Image takeScreenShot(int xCropFactor, int yCropFactor, Date date, int delay) throws AWTException {
 		int width = (int) (getScreenWidth() - xCropFactor);

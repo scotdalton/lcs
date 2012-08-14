@@ -31,6 +31,7 @@ import javax.media.jai.PlanarImage;
 import org.apache.commons.io.FilenameUtils;
 
 import edu.nyu.cs.lcs.classifications.Classification;
+import edu.nyu.cs.lcs.utility.ImageUtil;
 
 /**
  * Image is the core class of the project.  It represents a Google Earth
@@ -197,6 +198,7 @@ public class Image {
 	 * @throws Exception
 	 */
 	public Image getClassificationImage() throws Exception {
+		if(!isValid()) return ImageUtil.INVALID_IMAGE;
 		if(classificationImage == null) {
 			classificationMap = getClassificationMap();
 			if(classificationMap == null)

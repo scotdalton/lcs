@@ -3,8 +3,10 @@
  */
 package edu.nyu.cs.lcs;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.nyu.cs.lcs.utility.Geocoder;
@@ -28,6 +30,7 @@ public class GeocoderTest {
 		assertEquals("N4, South Africa", geocoder.getAddress());
 	}
 
+	@Ignore
 	@Test
 	public void testGeocoder_corners() throws Exception {
 		Geocoder geocoder = new Geocoder("Ghana");

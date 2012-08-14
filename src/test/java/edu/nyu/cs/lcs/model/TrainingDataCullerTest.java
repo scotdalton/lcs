@@ -23,6 +23,7 @@ import com.google.common.collect.Lists;
  * @author Scot Dalton
  *
  */
+@Ignore
 public class TrainingDataCullerTest {
 	private File serializationDirectory = new File(".classifiers");
 

@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.lcs;
 
+import java.io.File;
+
 /**
  * Some images are invalid, so we have some checks validity.
  * 
@@ -36,6 +38,14 @@ public enum ValidityCheck {
 			for (double mean: means)
 				if (mean > BRIGHT_MEAN_THRESHOLD) 
 					return false;
+			return true;
+		}
+	},
+	SMALL {
+		boolean isValid(Image image) {
+			File file = image.getFile();
+			// if file is smaller than 2MB, don't process it.
+			if(file.length() < 2097152) return false;
 			return true;
 		}
 	};

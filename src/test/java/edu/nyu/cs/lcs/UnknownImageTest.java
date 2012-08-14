@@ -10,6 +10,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.inject.Guice;
@@ -22,6 +23,7 @@ import edu.nyu.cs.lcs.model.TrainedModelModule;
  * @author Scot Dalton
  *
  */
+@Ignore
 public class UnknownImageTest {
 	private TrainedModel trainedModel;
 	private File persistFile;

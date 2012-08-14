@@ -39,9 +39,14 @@ public class ImageGui {
 		for(String arg: args)
 			images.put(arg, new UnknownImage(arg, trainedModel));
 		Image image1 = new UnknownImage(TestUtility.IMAGE1, trainedModel);
-		images.put("Johannesburg, South Africa 2003", image1);
-//		images.put("Classification 2003", image1.overlay(image1.getClassificationImage()));
-		images.put("Classification 2003", image1.getClassificationImage());
+//		Image image1 = new UnknownImage(".persist/MR3, Mbabane, Swaziland circa 2000.png", trainedModel);
+		images.put("MR3, Mbabane, Swaziland circa 2000", image1);
+		images.put("Classification 2012", image1.getClassificationImage());
+		image1.getClassificationImage().persist(".persist/MR3, Mbabane, Swaziland circa 2000.classification.png");
+//		Image image2 = new UnknownImage(".persist/MR3, Mbabane, Swaziland circa 2012.png", trainedModel);
+//		images.put("MR3, Mbabane, Swaziland circa 2012", image2);
+//		images.put("Classification 2012", image2.getClassificationImage());
+//		image2.getClassificationImage().persist(".persist/MR3, Mbabane, Swaziland circa 2012.classification.png");
 //		Image image2 = new UnknownImage(TestUtility.IMAGE2, trainedModel);
 //		images.put("Johannesburg, South Africa 2005", image2);
 //		images.put("Classification 2005", image2.getClassificationImage());

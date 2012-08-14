@@ -12,6 +12,8 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import org.apache.commons.io.FileUtils;
+
 import com.google.common.collect.Maps;
 
 import edu.nyu.cs.lcs.Image;
@@ -54,16 +56,21 @@ public class CompareImages extends LcsAction {
 		        unknownImages.put(imageName + " Classification Map", oldestImage.getClassificationImage());
 		    }
 		    // Get the rest of the images
-		    UnknownImage unkownImage = null; 
+		    UnknownImage unknownImage = null;
+		    UnknownImage previousImage = oldestImage;
 		    while (imageFileNameIterator.hasNext()) {
 		        Map.Entry<String, String> pair = imageFileNameIterator.next();
-		        String imageName = pair.getKey(); 
-		        unkownImage = new UnknownImage(pair.getValue(), trainedModel);
-		        unknownImages.put(imageName, unkownImage);
-		        unknownImages.put(imageName + " Classification Map", unkownImage.getClassificationImage());
+		        String imageName = pair.getKey();
+		        unknownImage = new UnknownImage(pair.getValue(), trainedModel);
+		        Image classificationImage = 
+		        		(FileUtils.contentEquals(previousImage.getFile(), unknownImage.getFile())) ? 
+		        			previousImage.getClassificationImage() : unknownImage.getClassificationImage();
+		        unknownImages.put(imageName, unknownImage);
+		        unknownImages.put(imageName + " Classification Map", classificationImage);
+		        previousImage = unknownImage;
 		    }
 		    // Newest image is the last one.
-		    UnknownImage newestImage = unkownImage; 
+		    UnknownImage newestImage = unknownImage; 
 		    unknownImages.put(address + " Comparison", newestImage.getComparisonImage(oldestImage));
 			ImageTabbedPane imageTabbedPaneWithClassifications = 
 				new ImageTabbedPane(unknownImages);

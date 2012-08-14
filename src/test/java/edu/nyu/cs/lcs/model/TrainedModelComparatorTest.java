@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -25,6 +26,7 @@ import com.google.common.io.Files;
  * @author Scot Dalton
  * 
  * */
+@Ignore
 public class TrainedModelComparatorTest {
 	private File classifiersFile = 
 		new File("src/test/resources/META-INF/classifiers.yml");
