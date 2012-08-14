@@ -24,6 +24,7 @@ public class UnknownImage extends Image {
 	private Double developedPercentage;
 	private Double desertPercentage;
 	private Double forestPercentage;
+	private Map<Point, Classification> classificationMap;
 
 	/**
 	 * @param file
@@ -57,7 +58,9 @@ public class UnknownImage extends Image {
 	
 	@Override
 	public Map<Point, Classification> getClassificationMap() throws Exception {
-		return trainedModel.classifyImage(this);
+		if(classificationMap == null)
+			classificationMap = trainedModel.classifyImage(this);
+		return classificationMap;
 	}
 	
 	public double getCroplandPercentage() throws Exception {
@@ -85,7 +88,9 @@ public class UnknownImage extends Image {
 		int developedCount = 0;
 		int desertCount = 0;
 		int forestCount = 0;
+		int totalCount = 0;
 		for(Classification classification: getClassificationMap().values()) {
+			totalCount++;
 			if(classification.equals(Classification.CROPLAND)) {
 				arableCount++;
 			} else if (classification.equals(Classification.DEVELOPED)) {
@@ -96,9 +101,9 @@ public class UnknownImage extends Image {
 				forestCount++;
 			}
 		}
-		croplandPercentage = (double)100*arableCount;
-		developedPercentage = (double)100*developedCount;
-		desertPercentage = (double)100*desertCount;
-		forestPercentage = (double)100*forestCount;
+		croplandPercentage = ((double)100*arableCount)/totalCount;
+		developedPercentage = ((double)100*developedCount)/totalCount;
+		desertPercentage = ((double)100*desertCount)/totalCount;
+		forestPercentage = ((double)100*forestCount)/totalCount;
 	}
 }
