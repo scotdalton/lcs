@@ -37,7 +37,7 @@ public class TrainedModelModule extends AbstractModule {
 					"src/main/resources/META-INF/trainedmodel.properties"));
 				File serializationDirectory = 
 					new File(properties.getProperty("serializationDirectory"));
-				String classifierName = "weka.classifiers.bayes.NaiveBayes";
+				String classifierName = "weka.classifiers.trees.REPTree";
 				List<String> classifierOptions = Lists.newArrayList();
 				AbstractClassifier classifier = 
 					(AbstractClassifier) Utils.forName(Classifier.class, classifierName, classifierOptions.toArray(new String[0]));
