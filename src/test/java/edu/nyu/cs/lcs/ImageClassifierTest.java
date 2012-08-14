@@ -53,9 +53,13 @@ public class ImageClassifierTest {
 		List<File> files = 
 			FileUtil.getRegionSort(wb);
 		String wbClassifications = wb + "/classifications/"; 
-		for(int i = 0; i<10; i++) {
+		int i = 0;
+		for(File file: files) {
+			if(file.length() < 2097152) continue;
+			if(i >= 10) break;
+			i++;
 			UnknownImage image = 
-				new UnknownImage(files.get(i), getTrainedModel());
+				new UnknownImage(file, getTrainedModel());
 			image.getClassificationImage().persist(wbClassifications + image.getName() + ".png");
 		}
 	}
