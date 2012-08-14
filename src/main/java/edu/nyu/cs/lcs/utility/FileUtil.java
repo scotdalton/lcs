@@ -113,6 +113,7 @@ public class FileUtil {
 			RegionImage regionImage = 
 				new RegionImage(file, trainedModel);
 			csvWriter.writeNext(regionImage.toCSV().toArray(new String[0]));
+			csvWriter.flush();
 		}
 		csvWriter.close();
 	}
