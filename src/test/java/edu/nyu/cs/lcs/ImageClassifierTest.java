@@ -39,7 +39,6 @@ public class ImageClassifierTest {
 		image2.getClassificationImage().persist("src/test/resources/META-INF/MR3, Mbabane, Swaziland circa 2012.classification.png");
 	}
 	
-	@Ignore
 	@Test
 	public void westBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000");
@@ -61,6 +60,7 @@ public class ImageClassifierTest {
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void westBengal2012() throws Exception {
 		File wb = new File(wbBase + "/2012");
