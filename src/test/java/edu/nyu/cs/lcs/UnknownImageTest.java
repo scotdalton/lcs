@@ -57,22 +57,4 @@ public class UnknownImageTest {
 		assertTrue(persistFile.exists());
 		assertTrue(persistFile.isFile());
 	}
-	
-	@Test
-	public void testChoppedUnknownImage() {
-		Image image = new UnknownImage(TestUtility.CHOPPED, null);
-		assertEquals(100, image.getHeight());
-		assertEquals(100, image.getWidth());
-	}
-	
-	@Test
-	public void unknownImageTest() throws Exception {
-		UnknownImage unknownImage1 = new UnknownImage(TestUtility.IMAGE1, 
-			trainedModel);
-		UnknownImage unknownImage2 = new UnknownImage(TestUtility.IMAGE2, 
-			trainedModel);
-//		assertTrue(
-//			unknownImage1.getArablePercentage() > 
-//				unknownImage2.getArablePercentage());
-	}
 }

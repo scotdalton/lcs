@@ -30,8 +30,6 @@ import com.google.common.io.Files;
 public class TrainedModelComparatorTest {
 	private File classifiersFile = 
 		new File("src/test/resources/META-INF/classifiers.yml");
-	private File featuresFile = 
-		new File("src/test/resources/META-INF/features.yml");
 	private File serializationDirectory = new File(".classifiers/default_features_with_neighbors");
 	private String encoding = "UTF-8";
 
@@ -40,8 +38,6 @@ public class TrainedModelComparatorTest {
 	public void comparator() throws Exception {
 		boolean quit = false;
 		Yaml yaml = new Yaml();
-		List<String> features = 
-			(List<String>) yaml.load(new FileReader(featuresFile));
 		Map<String, List<String>> classifiers = 
 			(Map<String, List<String>>) yaml.load(new FileReader(classifiersFile));
 		for (Entry<String, List<String>> entry: classifiers.entrySet()) {

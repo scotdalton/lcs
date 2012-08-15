@@ -57,11 +57,4 @@ public class ImageTest {
 		assertTrue(persistFile.exists());
 		assertTrue(persistFile.isFile());
 	}
-	
-	@Test
-	public void testChoppedImage() {
-		Image image = new Image(TestUtility.CHOPPED);
-		assertEquals(100, image.getHeight());
-		assertEquals(100, image.getWidth());
-	}
 }
