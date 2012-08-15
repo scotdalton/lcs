@@ -29,11 +29,11 @@ public class ImageClassifierTest {
 	@Test
 	public void persistClassificationImages() throws Exception {
 		UnknownImage image1 = 
-			new UnknownImage(dataDir + "/Saranda-Singhbhum Range, National Highway 75, Jharkhand, India circa 2000.png", getTrainedModel());
+			new UnknownImage(dataDir + "/MR3, Mbabane, Swaziland circa 2000.png", getTrainedModel());
 		printPercentages(image1);
 		image1.getClassificationImage().persist(dataDir + "/" + image1.getName() + ".classification.png");
 		UnknownImage image2 = 
-			new UnknownImage(dataDir + "/Saranda-Singhbhum Range, National Highway 75, Jharkhand, India circa 2012.png", getTrainedModel());
+			new UnknownImage(dataDir + "/MR3, Mbabane, Swaziland circa 2000.png", getTrainedModel());
 		printPercentages(image2);
 		image2.getClassificationImage().persist(dataDir + "/" + image2.getName() + ".classification.png");
 		image2.getComparisonImage(image1).persist(dataDir + "/" + image2.getName() + ".comparedto." + image1.getName() + ".png");
