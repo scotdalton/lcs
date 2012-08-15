@@ -163,32 +163,24 @@ public class Image {
 
 	public Image getComparisonImage(Image fromImage) throws Exception {
 		BufferedImage bufferedImage = getAsBufferedImage();
-//		Graphics graphics = bufferedImage.getGraphics();
-//		for(int index=0; index<getChoppedImages().size(); index++) {
-//			Image toImage = getChoppedImages().get(index);
-//			Classification toImageClassification = 
-//				toImage.getClassification();
-//			Classification fromImageClassification = 
-//				fromImage.getChoppedImages().get(index).getClassification();
-//			if(fromImageClassification.equals(Classification.CROPLAND) && 
-//					!toImageClassification.equals(fromImageClassification)) {
-//				graphics.setColor(new Color(255, 0, 0, 63));
-//				int rectX = toImage.getMinX()-getMinX();
-//				int rectY = toImage.getMinY()-getMinY();
-//				graphics.fillRect(rectX, rectY, toImage.getWidth(), 
-//					toImage.getHeight());
-//				graphics.setColor(Color.black);
-//				graphics.setFont(new Font("Serif", Font.BOLD, 10));
-//				FontMetrics fontMetrics = graphics.getFontMetrics();
-//				String fromToString = fromImageClassification.toString() + 
-//					" to " + toImageClassification.toString();
-//				int stringWidth = fontMetrics.stringWidth(fromToString);
-//				int stringHeight = fontMetrics.getHeight();
-//				int stringX = rectX + toImage.getWidth()/2 - stringWidth/2;
-//				int stringY = rectY + toImage.getHeight()/2 - stringHeight/2;
-//				graphics.drawString(fromToString, stringX, stringY);
-//			}
-//		}
+		classificationMap = getClassificationMap();
+		Map<Point, Classification> fromClassificationMap = 
+			fromImage.getClassificationMap();
+		if(classificationMap == null)
+			throw new Exception("Classification map was not set.");
+		Graphics graphics = bufferedImage.getGraphics();
+		for(Entry<Point, Classification> entry: classificationMap.entrySet()) {
+			Point point = entry.getKey();
+			int x = (int) point.getX();
+			int y = (int) point.getY();
+			Classification classification = entry.getValue();
+			Classification fromClassification = fromClassificationMap.get(point);
+			if(fromClassification.equals(Classification.CROPLAND) && !classification.equals(fromClassification)) {
+				graphics.setColor(new Color(255, 0, 0, 63));
+				graphics.fillRect(x, y, 1, 1);
+			}
+		}
+		graphics.dispose();
 		return new Image(bufferedImage);
 	}
 	
