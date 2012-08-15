@@ -36,6 +36,7 @@ public class ImageClassifierTest {
 			new UnknownImage(dataDir + "/Saranda-Singhbhum Range, National Highway 75, Jharkhand, India circa 2012.png", getTrainedModel());
 		printPercentages(image2);
 		image2.getClassificationImage().persist(dataDir + "/" + image2.getName() + ".classification.png");
+		image2.getComparisonImage(image1).persist(dataDir + "/" + image2.getName() + ".comparedto." + image1.getName() + ".png");
 	}
 	
 	@Ignore
