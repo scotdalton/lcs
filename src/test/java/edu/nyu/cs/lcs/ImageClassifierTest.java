@@ -21,23 +21,21 @@ import edu.nyu.cs.lcs.utility.FileUtil;
  * @author Scot Dalton
  *
  */
-@Ignore
 public class ImageClassifierTest {
 	private TrainedModel trainedModel;
-	private final File testDir = new File("src/test/resources/META-INF");
+	private final File dataDir = new File("../data/lcs");
 	private final File wbBase = new File("../wb");
 	
-	@Ignore
 	@Test
 	public void persistClassificationImages() throws Exception {
 		UnknownImage image1 = 
-			new UnknownImage(testDir + "/MR3, Mbabane, Swaziland circa 2000.png", getTrainedModel());
+			new UnknownImage(dataDir + "/Saranda-Singhbhum Range, National Highway 75, Jharkhand, India circa 2000.png", getTrainedModel());
 		printPercentages(image1);
-		image1.getClassificationImage().persist("src/test/resources/META-INF/MR3, Mbabane, Swaziland circa 2000.classification.png");
+		image1.getClassificationImage().persist(dataDir + "/" + image1.getName() + ".classification.png");
 		UnknownImage image2 = 
-			new UnknownImage(testDir + "/MR3, Mbabane, Swaziland circa 2012.png", getTrainedModel());
+			new UnknownImage(dataDir + "/Saranda-Singhbhum Range, National Highway 75, Jharkhand, India circa 2012.png", getTrainedModel());
 		printPercentages(image2);
-		image2.getClassificationImage().persist("src/test/resources/META-INF/MR3, Mbabane, Swaziland circa 2012.classification.png");
+		image2.getClassificationImage().persist(dataDir + "/" + image2.getName() + ".classification.png");
 	}
 	
 	@Ignore
@@ -48,6 +46,7 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
+	@Ignore
 	@Test
 	public void classifyWestBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000");
@@ -73,6 +72,7 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
+	@Ignore
 	@Test
 	public void classifyWestBengal2012() throws Exception {
 		File wb = new File(wbBase + "/2012");
