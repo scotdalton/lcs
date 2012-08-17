@@ -24,7 +24,7 @@ import edu.nyu.cs.lcs.utility.FileUtil;
 public class ImageClassifierTest {
 	private TrainedModel trainedModel;
 	private final File dataDir = new File("../data/lcs");
-	private final File wbBase = new File("../wb");
+	private final File wbBase = new File("/data/std5/West Bengal, India");
 	
 	@Ignore
 	@Test
@@ -43,15 +43,15 @@ public class ImageClassifierTest {
 	@Ignore
 	@Test
 	public void westBengal2000() throws Exception {
-		File wb = new File(wbBase + "/2000");
-		File wbCsv = new File(wbBase + "/2000.csv");
+		File wb = new File(wbBase + "/2000-05-21");
+		File wbCsv = new File(wbBase + "/2000-05-21.csv");
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
 	@Ignore
 	@Test
 	public void classifyWestBengal2000() throws Exception {
-		File wb = new File(wbBase + "/2000");
+		File wb = new File(wbBase + "/2000-05-21");
 		List<File> files = 
 			FileUtil.getRegionSort(wb);
 		String wbClassifications = wb + "/classifications/"; 
@@ -68,15 +68,15 @@ public class ImageClassifierTest {
 	
 	@Test
 	public void westBengal2012() throws Exception {
-		File wb = new File(wbBase + "/2012");
-		File wbCsv = new File(wbBase + "/2012.csv");
+		File wb = new File(wbBase + "/2012-05-21");
+		File wbCsv = new File(wbBase + "/2012-05-21.csv");
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
 	@Ignore
 	@Test
 	public void classifyWestBengal2012() throws Exception {
-		File wb = new File(wbBase + "/2012");
+		File wb = new File(wbBase + "/2012-05-21");
 		List<File> files = 
 			FileUtil.getRegionSort(wb);
 		String wbClassifications = wb + "/classifications/";

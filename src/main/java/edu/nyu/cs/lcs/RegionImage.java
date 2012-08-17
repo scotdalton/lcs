@@ -6,6 +6,8 @@ package edu.nyu.cs.lcs;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -65,6 +67,6 @@ public class RegionImage extends UnknownImage {
 	}
 	
 	public String getDateString() {
-		return getFile().getParent();
+		return FilenameUtils.getBaseName(getFile().getParent());
 	}
 }
