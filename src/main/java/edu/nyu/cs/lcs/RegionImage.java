@@ -6,8 +6,6 @@ package edu.nyu.cs.lcs;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -59,11 +57,11 @@ public class RegionImage extends UnknownImage {
 	}
 	
 	public String getLatitude() {
-		return FilenameUtils.getBaseName(getName()).split("-")[0];
+		return getName().split("-")[0];
 	}
 	
 	public String getLongitude() {
-		return FilenameUtils.getBaseName(getName()).split("-")[1];
+		return getName().split("-")[1];
 	}
 	
 	public String getDateString() {
