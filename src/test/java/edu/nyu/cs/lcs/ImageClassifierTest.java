@@ -21,6 +21,7 @@ import edu.nyu.cs.lcs.utility.FileUtil;
  * @author Scot Dalton
  *
  */
+@Ignore
 public class ImageClassifierTest {
 	private TrainedModel trainedModel;
 	private final File dataDir = new File("../data/lcs");
