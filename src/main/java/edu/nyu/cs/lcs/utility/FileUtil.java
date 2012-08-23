@@ -104,12 +104,17 @@ public class FileUtil {
 		}
 		zipOutputStream.close();
 	}
-	
+
 	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel) throws Exception {
+		regionCSV(regionDirectory, csvFile, trainedModel, 0);
+	}
+	
+	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex) throws Exception {
 		List<File> files =  getRegionSort(regionDirectory);
 		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
 		csvWriter.writeNext(csvHeaders.toArray(new String[0]));
-		for(File file:files) {
+		for(int i = startIndex; i < files.size(); i++) {
+			File file = files.get(i);
 			RegionImage regionImage = 
 				new RegionImage(file, trainedModel);
 			csvWriter.writeNext(regionImage.toCSV().toArray(new String[0]));
