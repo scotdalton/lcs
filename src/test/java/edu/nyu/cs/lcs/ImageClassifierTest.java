@@ -46,7 +46,7 @@ public class ImageClassifierTest {
 		UnknownImage image1 = 
 			new UnknownImage(dir + "/2006/22.573446407895652-88.45686452574266.png", getTrainedModel());
 		printPercentages(image1);
-		image1.getClassificationImage().persist(dataDir + "/2006-" + image1.getName() + ".classification.png");
+		image1.getClassificationImage().persist(dir + "/2006-" + image1.getName() + ".classification.png");
 		UnknownImage image2 = 
 			new UnknownImage(dir + "/2010/22.573446407895652-88.45686452574266.png", getTrainedModel());
 		printPercentages(image2);
