@@ -44,11 +44,11 @@ public class ImageClassifierTest {
 	public void persistClassificationImagesWB() throws Exception {
 		File dir = new File("src/test/resources/WB");
 		UnknownImage image1 = 
-			new UnknownImage(dir + "/2006/", getTrainedModel());
+			new UnknownImage(dir + "/2006/22.573446407895652-88.45686452574266.png", getTrainedModel());
 		printPercentages(image1);
 		image1.getClassificationImage().persist(dataDir + "/2006-" + image1.getName() + ".classification.png");
 		UnknownImage image2 = 
-			new UnknownImage(dir + "/2010/", getTrainedModel());
+			new UnknownImage(dir + "/2010/22.573446407895652-88.45686452574266.png", getTrainedModel());
 		printPercentages(image2);
 		image2.getClassificationImage().persist(dir + "/2010-" + image2.getName() + ".classification.png");
 		image2.getComparisonImage(image1).persist(dir + "/2010-" + image2.getName() + ".comparedto.2006-" + image1.getName() + ".png");
