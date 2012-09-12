@@ -41,6 +41,21 @@ public class ImageClassifierTest {
 	}
 	
 	@Test
+	public void persistClassificationImagesWB() throws Exception {
+		File dir = new File("test/resources/WB");
+		UnknownImage image1 = 
+			new UnknownImage(dir + "/2006/", getTrainedModel());
+		printPercentages(image1);
+		image1.getClassificationImage().persist(dataDir + "/2006-" + image1.getName() + ".classification.png");
+		UnknownImage image2 = 
+			new UnknownImage(dir + "/2010/", getTrainedModel());
+		printPercentages(image2);
+		image2.getClassificationImage().persist(dir + "/2010-" + image2.getName() + ".classification.png");
+		image2.getComparisonImage(image1).persist(dir + "/2010-" + image2.getName() + ".comparedto.2006-" + image1.getName() + ".png");
+	}
+	
+	@Ignore
+	@Test
 	public void westBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000-05-21");
 		File wbCsv = new File(wbBase + "/2000-05-21-12.csv");
