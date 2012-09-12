@@ -42,7 +42,7 @@ public class ImageClassifierTest {
 	
 	@Test
 	public void persistClassificationImagesWB() throws Exception {
-		File dir = new File("test/resources/WB");
+		File dir = new File("src/test/resources/WB");
 		UnknownImage image1 = 
 			new UnknownImage(dir + "/2006/", getTrainedModel());
 		printPercentages(image1);
