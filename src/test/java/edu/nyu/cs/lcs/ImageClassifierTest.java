@@ -40,6 +40,7 @@ public class ImageClassifierTest {
 		image2.getComparisonImage(image1).persist(dataDir + "/" + image2.getName() + ".comparedto." + image1.getName() + ".png");
 	}
 	
+	@Ignore
 	@Test
 	public void persistClassificationImagesWB() throws Exception {
 		File dir = new File("src/test/resources/WB");
@@ -54,7 +55,6 @@ public class ImageClassifierTest {
 		image2.getComparisonImage(image1).persist(dir + "/2010-" + image2.getName() + ".comparedto.2006-" + image1.getName() + ".png");
 	}
 	
-	@Ignore
 	@Test
 	public void westBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000-05-21");
