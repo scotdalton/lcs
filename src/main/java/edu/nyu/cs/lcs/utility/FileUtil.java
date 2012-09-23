@@ -115,15 +115,15 @@ public class FileUtil {
 	
 	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex, int filesToProcess) throws Exception {
 		List<File> files =  getRegionSort(regionDirectory);
-		int end;
-		if(filesToProcess == 0)
-			end = files.size();
-		else
-			end = startIndex + filesToProcess;
+		int endIndex;
+		endIndex = (filesToProcess == 0) ? 
+			files.size() : (startIndex + filesToProcess);
+		System.out.println(endIndex);
 		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
 		csvWriter.writeNext(csvHeaders.toArray(new String[0]));
-		for(int i = startIndex; i < end; i++) {
+		for(int i = startIndex; i < endIndex; i++) {
 			File file = files.get(i);
+			System.out.println(file.getName());
 			RegionImage regionImage = 
 				new RegionImage(file, trainedModel);
 			csvWriter.writeNext(regionImage.toCSV().toArray(new String[0]));
