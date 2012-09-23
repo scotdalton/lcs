@@ -110,10 +110,19 @@ public class FileUtil {
 	}
 	
 	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex) throws Exception {
+		regionCSV(regionDirectory, csvFile, trainedModel, 0, 0);
+	}
+	
+	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex, int filesToProcess) throws Exception {
 		List<File> files =  getRegionSort(regionDirectory);
+		int end;
+		if(filesToProcess == 0)
+			end = files.size();
+		else
+			end = startIndex + filesToProcess;
 		CSVWriter csvWriter = new CSVWriter(new FileWriter(csvFile));
 		csvWriter.writeNext(csvHeaders.toArray(new String[0]));
-		for(int i = startIndex; i < files.size(); i++) {
+		for(int i = startIndex; i < end; i++) {
 			File file = files.get(i);
 			RegionImage regionImage = 
 				new RegionImage(file, trainedModel);
