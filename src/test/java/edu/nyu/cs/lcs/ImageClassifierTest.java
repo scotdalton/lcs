@@ -58,8 +58,8 @@ public class ImageClassifierTest {
 	@Test
 	public void westBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000-05-21");
-		File wbCsv = new File(wbBase + "/2000-05-21-9b.csv");
-		FileUtil.regionCSV(wb, wbCsv, getTrainedModel(), 4520, 481);
+		File wbCsv = new File(wbBase + "/2000-05-21-9c.csv");
+		FileUtil.regionCSV(wb, wbCsv, getTrainedModel(), 4594, 481);
 	}
 	
 	@Ignore
