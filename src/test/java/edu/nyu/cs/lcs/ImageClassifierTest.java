@@ -72,11 +72,12 @@ public class ImageClassifierTest {
 			FileUtil.getDirectories(cd);
 		assertEquals(315, candidateDirs.size());
 		for(File candidateDir: candidateDirs) {
+			if(cd.equals(candidateDir)) continue;
+			System.out.println(candidateDir.getName());
 			List<File> files = 
 				FileUtil.getFiles(candidateDir);
-			System.out.println(candidateDir.getName());
-			if(cd.equals(candidateDir)) continue;
-//			assertEquals(1, files.size());
+			System.out.println(files.size());
+			assertEquals(1, files.size());
 			File file2000 = null;
 			File file2012 = null;
 			for(File file: files) {
