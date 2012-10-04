@@ -70,7 +70,7 @@ public class ImageClassifierTest {
 		File cd = new File("/data/std5/candidates/");
 		List<File> candidateDirs = 
 			FileUtil.getDirectories(cd);
-		assertEquals(315, candidateDirs.size());
+		assertEquals(314, candidateDirs.size());
 		for(File candidateDir: candidateDirs) {
 			if(cd.equals(candidateDir)) continue;
 			System.out.println(candidateDir.getName());
