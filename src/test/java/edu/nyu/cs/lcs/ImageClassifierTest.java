@@ -75,6 +75,7 @@ public class ImageClassifierTest {
 			List<File> files = 
 				FileUtil.getFiles(candidateDir);
 			System.out.println(candidateDir.getName());
+			if(cd.equals(candidateDir)) continue;
 			assertEquals(1, files.size());
 			File file2000 = null;
 			File file2012 = null;
