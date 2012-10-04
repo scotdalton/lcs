@@ -67,9 +67,10 @@ public class ImageClassifierTest {
 	
 	@Test
 	public void processCandidates() throws Exception {
-		File cd = new File("/data/std5/candidates");
+		File cd = new File("/data/std5/candidates/");
 		List<File> candidateDirs = 
 			FileUtil.getDirectories(cd);
+		assertEquals(315, candidateDirs.size());
 		for(File candidateDir: candidateDirs) {
 			List<File> files = 
 				FileUtil.getFiles(candidateDir);
