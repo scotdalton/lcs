@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -79,8 +80,8 @@ public class ImageClassifierTest {
 			System.out.println(files.size());
 			System.out.println(files.get(0).getName());
 			assertEquals(1, files.size());
-			File file2000 = null;
-			File file2012 = null;
+			File file2000 = null; File file2012 = null;
+			UnknownImage image2000 = null; UnknownImage image2012 = null;
 			for(File file: files) {
 				if(file.getName().equals("2000-05-21.png")) {
 					file2000 = file;
@@ -89,12 +90,24 @@ public class ImageClassifierTest {
 				}
 			}
 			if(file2000 != null) {
-				UnknownImage image2000 = new UnknownImage(file2000, getTrainedModel());
-				image2000.getClassificationImage().persist(candidateDir + "/" +  image2000.getName() + "_classified.png");
+				File image2000Classified = 
+					new File(candidateDir + "/" +  FilenameUtils.getBaseName(file2000.getName()) + "_classified.png");
+				if(!image2000Classified.exists()) {
+					image2000 = new UnknownImage(file2000, getTrainedModel());
+					image2000.getClassificationImage().persist(image2000Classified.getAbsolutePath());
+				}
 			}
-//			UnknownImage image2012 = new UnknownImage(file2012, getTrainedModel());
-//			image2012.getClassificationImage().persist(candidateDir + "/"  + image2012.getName() + "_classified.png");
-//			image2012.getComparisonImage(image2000).persist(candidateDir + "/"  + "comparison.png");
+			if(file2012 != null) {
+				File image2012Classified = 
+					new File(candidateDir + "/" +  FilenameUtils.getBaseName(file2012.getName()) + "_classified.png");
+				if(!image2012Classified.exists()) {
+					image2012 = new UnknownImage(file2012, getTrainedModel());
+					image2012.getClassificationImage().persist(image2012Classified.getAbsolutePath());
+				}
+			}
+			if(image2000 != null && image2012 != null) {
+				image2012.getComparisonImage(image2000).persist(candidateDir + "/"  + "comparison.png");
+			}
 		}
 	}
 	
