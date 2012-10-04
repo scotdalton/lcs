@@ -52,8 +52,9 @@ public class FileUtil {
 	}
 	
 	public static List<File> getDirectories(File directory) {
-		return Lists.newArrayList(FileUtils.listFiles(directory, 
-			null, TrueFileFilter.TRUE));
+		return Lists.newArrayList(FileUtils.listFilesAndDirs(directory, 
+			new AndFileFilter(HiddenFileFilter.VISIBLE, 
+				DirectoryFileFilter.DIRECTORY), TrueFileFilter.TRUE));
 	}
 	
 	public static List<File> getRegionSort(File directory) {
