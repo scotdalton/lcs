@@ -25,6 +25,7 @@ import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -53,7 +54,7 @@ public class FileUtil {
 	public static List<File> getDirectories(File directory) {
 		return Lists.newArrayList(FileUtils.listFiles(directory, 
 			new AndFileFilter(HiddenFileFilter.VISIBLE, 
-				DirectoryFileFilter.DIRECTORY), null));
+				DirectoryFileFilter.DIRECTORY), TrueFileFilter.TRUE));
 	}
 	
 	public static List<File> getRegionSort(File directory) {
