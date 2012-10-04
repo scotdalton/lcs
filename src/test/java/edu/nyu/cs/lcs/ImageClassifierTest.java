@@ -74,6 +74,7 @@ public class ImageClassifierTest {
 		for(File candidateDir: candidateDirs) {
 			List<File> files = 
 				FileUtil.getFiles(candidateDir);
+			System.out.println(candidateDir.getName());
 			assertEquals(1, files.size());
 			File file2000 = null;
 			File file2012 = null;
