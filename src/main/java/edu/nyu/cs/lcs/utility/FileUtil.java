@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.comparator.RegionFileComparator;
 import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 
@@ -47,6 +48,12 @@ public class FileUtil {
 		return Lists.newArrayList(FileUtils.listFiles(directory, 
 			new AndFileFilter(HiddenFileFilter.VISIBLE, 
 				FileFileFilter.FILE), null));
+	}
+	
+	public static List<File> getDirectories(File directory) {
+		return Lists.newArrayList(FileUtils.listFiles(directory, 
+			new AndFileFilter(HiddenFileFilter.VISIBLE, 
+				DirectoryFileFilter.DIRECTORY), null));
 	}
 	
 	public static List<File> getRegionSort(File directory) {

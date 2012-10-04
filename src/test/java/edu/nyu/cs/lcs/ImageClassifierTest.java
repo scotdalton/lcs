@@ -3,6 +3,8 @@
  */
 package edu.nyu.cs.lcs;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.util.List;
 
@@ -55,11 +57,38 @@ public class ImageClassifierTest {
 		image2.getComparisonImage(image1).persist(dir + "/2010-" + image2.getName() + ".comparedto.2006-" + image1.getName() + ".png");
 	}
 	
+	@Ignore
 	@Test
 	public void westBengal2000() throws Exception {
 		File wb = new File(wbBase + "/2000-05-21");
 		File wbCsv = new File(wbBase + "/2000-05-21-8b.csv");
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel(), 4119, 381);
+	}
+	
+	@Test
+	public void processCandidates() throws Exception {
+		File cd = new File("/data/std5/candidates");
+		List<File> candidateDirs = 
+			FileUtil.getDirectories(cd);
+		for(File candidateDir: candidateDirs) {
+			List<File> files = 
+				FileUtil.getFiles(candidateDir);
+			assertEquals(1, files.size());
+			File file2000 = null;
+			File file2012 = null;
+			for(File file: files) {
+				if(file.getName().equals("2000-05-12.png")) {
+					file2000 = file;
+				} else if(file.getName().equals("2023-05-12.png")) {
+					file2012 = file;
+				}
+			}
+			UnknownImage image2000 = new UnknownImage(file2000, getTrainedModel());
+			image2000.getClassificationImage().persist(candidateDir + "/" +  image2000.getName() + "_classified.png");
+//			UnknownImage image2012 = new UnknownImage(file2012, getTrainedModel());
+//			image2012.getClassificationImage().persist(candidateDir + "/"  + image2012.getName() + "_classified.png");
+//			image2012.getComparisonImage(image2000).persist(candidateDir + "/"  + "comparison.png");
+		}
 	}
 	
 	@Ignore
