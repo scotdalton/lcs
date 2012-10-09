@@ -85,7 +85,7 @@ public class ImageClassifierTest {
 			for(File file: files) {
 				if(file.getName().equals("2000-05-21.png")) {
 					file2000 = file;
-				} else if(file.getName().equals("2023-05-21.png")) {
+				} else if(file.getName().equals("2012-05-21.png")) {
 					file2012 = file;
 				}
 			}
