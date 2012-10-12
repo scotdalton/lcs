@@ -61,7 +61,7 @@ public class FileUtil {
 	public static List<File> getRegionSort(File directory) {
 		System.out.println(directory);
 		List<File> files = getFiles(directory);
-		Collections.sort(files, RegionFileComparator.REGION_COMPARATOR);
+//		Collections.sort(files, RegionFileComparator.REGION_COMPARATOR);
 		return files;
 	}
 	
