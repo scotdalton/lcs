@@ -52,6 +52,7 @@ public class FileUtil {
 	}
 	
 	public static List<File> getDirectories(File directory) {
+		System.out.println(directory);
 		return Lists.newArrayList(FileUtils.listFilesAndDirs(directory, 
 			new AndFileFilter(HiddenFileFilter.VISIBLE, 
 				DirectoryFileFilter.DIRECTORY), TrueFileFilter.TRUE));
@@ -136,6 +137,7 @@ public class FileUtil {
 				new RegionImage(file, trainedModel);
 			csvWriter.writeNext(regionImage.toCSV().toArray(new String[0]));
 			csvWriter.flush();
+			regionImage.getClassificationImage().persist(regionDirectory + "/" + regionImage.getName() + "_classified.png");
 		}
 		csvWriter.close();
 	}
