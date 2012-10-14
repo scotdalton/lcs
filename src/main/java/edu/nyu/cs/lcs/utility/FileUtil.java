@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.comparator.RegionFileComparator;
 import org.apache.commons.io.filefilter.AndFileFilter;
@@ -133,12 +134,15 @@ public class FileUtil {
 		csvWriter.writeNext(csvHeaders.toArray(new String[0]));
 		for(int i = startIndex; i < endIndex; i++) {
 			File file = files.get(i);
+			String baseName = FilenameUtils.getBaseName(file.getName());
+			File classificationFile = new File(regionDirectory + "/" + baseName + "_classified.png");
+			if(classificationFile.exists()) continue;
 			System.out.println(file.getName());
 			RegionImage regionImage = 
 				new RegionImage(file, trainedModel);
 			csvWriter.writeNext(regionImage.toCSV().toArray(new String[0]));
 			csvWriter.flush();
-			regionImage.getClassificationImage().persist(regionDirectory + "/" + regionImage.getName() + "_classified.png");
+			regionImage.getClassificationImage().persist(classificationFile.getAbsolutePath());
 		}
 		csvWriter.close();
 	}
