@@ -76,7 +76,7 @@ public class ImageClassifierTest {
 	@Test
 	public void ghana2000() throws Exception {
 		File wb = new File(ghanaBase + "/2000-09-17");
-		File wbCsv = new File(ghanaBase + "/2000-09-17-a.csv");
+		File wbCsv = new File(ghanaBase + "/2000-09-17-b.csv");
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
