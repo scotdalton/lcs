@@ -73,6 +73,7 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel(), 4119, 381);
 	}
 	
+	@Ignore
 	@Test
 	public void ghana2000() throws Exception {
 		File wb = new File(ghanaBase + "/2000-09-17");
@@ -80,11 +81,10 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
-	@Ignore
 	@Test
 	public void ghana2012() throws Exception {
 		File wb = new File(ghanaBase + "/2012-09-17");
-		File wbCsv = new File(ghanaBase + "/2012-09-17.csv");
+		File wbCsv = new File(ghanaBase + "/2012-09-17-a.csv");
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
 	}
 	
