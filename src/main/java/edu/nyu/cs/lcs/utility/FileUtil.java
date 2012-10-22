@@ -121,11 +121,23 @@ public class FileUtil {
 	}
 	
 	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex) throws Exception {
-		regionCSV(regionDirectory, csvFile, trainedModel, 0, 0);
+		regionCSV(regionDirectory, csvFile, trainedModel, startIndex, 0);
 	}
 	
 	public static void regionCSV(File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex, int filesToProcess) throws Exception {
-		List<File> files =  getRegionSort(regionDirectory);
+		regionCSV(getRegionSort(regionDirectory), regionDirectory, 
+			csvFile, trainedModel, startIndex, filesToProcess);
+	}
+
+	public static void regionCSV(List<File> files, File regionDirectory, File csvFile, TrainedModel trainedModel) throws Exception {
+		regionCSV(files, regionDirectory, csvFile, trainedModel, 0);
+	}
+	
+	public static void regionCSV(List<File> files, File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex) throws Exception {
+		regionCSV(files, regionDirectory, csvFile, trainedModel, startIndex, 0);
+	}
+	
+	public static void regionCSV(List<File> files, File regionDirectory, File csvFile, TrainedModel trainedModel, int startIndex, int filesToProcess) throws Exception {
 		int endIndex;
 		endIndex = (filesToProcess == 0) ? 
 			files.size() : (startIndex + filesToProcess);

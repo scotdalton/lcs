@@ -73,14 +73,23 @@ public class ImageClassifierTest {
 		FileUtil.regionCSV(wb, wbCsv, getTrainedModel(), 4119, 381);
 	}
 	
+	@Test
+	public void missing2012WestBengal() throws Exception {
+		File wb = new File(wbBase + "/2012-05-21");
+		File wbCsv = new File(wbBase + "/2012-05-21-8b.csv");
+		
+	}
+	
 	@Ignore
 	@Test
 	public void ghana2000() throws Exception {
 		File wb = new File(ghanaBase + "/2000-09-17");
 		File wbCsv = new File(ghanaBase + "/2000-09-17-b.csv");
-		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
+		List<File> missingFiles = MissingFiles.missingFiles(wb);
+		FileUtil.regionCSV(missingFiles, wb, wbCsv, getTrainedModel());
 	}
 	
+	@Ignore
 	@Test
 	public void ghana2012() throws Exception {
 		File wb = new File(ghanaBase + "/2012-09-17");
