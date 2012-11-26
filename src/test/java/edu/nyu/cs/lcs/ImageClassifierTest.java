@@ -74,6 +74,15 @@ public class ImageClassifierTest {
 	}
 	
 	@Test
+	public void missing2000WestBengal() throws Exception {
+		File wb = new File(wbBase + "/2000-05-21");
+		File wbCsv = new File(wbBase + "/2000-05-21-missing.csv");
+		List<File> missingFiles = MissingFiles.missingFiles(wb);
+		FileUtil.regionCSV(missingFiles, wb, wbCsv, getTrainedModel());
+	}
+	
+	@Ignore
+	@Test
 	public void missing2012WestBengal() throws Exception {
 		File wb = new File(wbBase + "/2012-05-21");
 		File wbCsv = new File(wbBase + "/2012-05-21-missing.csv");
@@ -146,7 +155,7 @@ public class ImageClassifierTest {
 	@Ignore
 	@Test
 	public void createCompositeImages() {
-		File cd = new File("/Users/dalton/Desktop/candidates");
+		File cd = new File("/Users/dalton/Desktop/Hohoe and Kumawu, Ghana/candidates");
 		List<File> candidateDirs = 
 			FileUtil.getDirectories(cd);
 		for(File candidateDir: candidateDirs) {
@@ -160,13 +169,13 @@ public class ImageClassifierTest {
 			Image image2000, image2012, image2000Classified, image2012Classified;
 			image2000 = image2012 = image2000Classified = image2012Classified = null;
 			for(File file: files) {
-				if(file.getName().equals("2000-05-21.png")) {
+				if(file.getName().equals("2000-09-71.png")) {
 					image2000 = new Image(file);
-				} else if(file.getName().equals("2012-05-21.png")) {
+				} else if(file.getName().equals("2012-09-71.png")) {
 					image2012 = new Image(file);
-				} else if(file.getName().equals("2000-05-21_classified.png")) {
+				} else if(file.getName().equals("2000-09-71_classified.png")) {
 					image2000Classified = new Image(file);
-				} else if(file.getName().equals("2012-05-21_classified.png")) {
+				} else if(file.getName().equals("2012-09-71_classified.png")) {
 					image2012Classified = new Image(file);
 				}
 			}
@@ -217,12 +226,12 @@ public class ImageClassifierTest {
 		graphics.drawString(caption, x, y);
 		if(needsLegend) setLegend(img, legendOffset, x);
 		System.out.println(image1.getName());
-	    if(image1.getName().equals("2000-05-21")) {
+	    if(image1.getName().equals("2000-09-71")) {
 	    		String yearCaption = "Satellite image from 2000";
 		    int xImage1 = (image1.getWidth() - fontMetrics.stringWidth(yearCaption)) / 2;
 			graphics.drawString(yearCaption, xImage1, y);
 	    } 
-	    if(image2.getName().equals("2012-05-21")) {
+	    if(image2.getName().equals("2012-09-71")) {
     			String yearCaption = "Satellite image from 2012";
 		    int xImage2 = image1.getWidth() + 2 + (image2.getWidth() - fontMetrics.stringWidth(yearCaption)) / 2;
 			graphics.drawString(yearCaption, xImage2, y);
