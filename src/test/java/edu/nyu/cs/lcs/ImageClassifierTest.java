@@ -74,6 +74,14 @@ public class ImageClassifierTest {
 	}
 	
 	@Test
+	public void westBengal2002() throws Exception {
+		File wb = new File(wbBase + "/2002-05-21");
+		File wbCsv = new File(wbBase + "/2002-05-21.csv");
+		FileUtil.regionCSV(wb, wbCsv, getTrainedModel());
+	}
+	
+	@Ignore
+	@Test
 	public void missing2000WestBengal() throws Exception {
 		File wb = new File(wbBase + "/2000-05-21");
 		File wbCsv = new File(wbBase + "/2000-05-21-missing.csv");
