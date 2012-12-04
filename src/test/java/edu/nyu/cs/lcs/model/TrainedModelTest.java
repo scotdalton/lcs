@@ -28,7 +28,7 @@ import edu.nyu.cs.lcs.classifications.Classification;
  * @author Scot Dalton
  *
  */
-@Ignore
+//@Ignore
 public class TrainedModelTest {
 	@Test
 	public void testNewTrainedModel() throws Exception {
@@ -46,6 +46,7 @@ public class TrainedModelTest {
 				trainedModel.classifyImage(desertTestImage));
 	}
 
+	@Ignore
 	@Test
 	public void testInjectedTrainedModel() throws Exception {
 		Injector injector = 
@@ -57,6 +58,7 @@ public class TrainedModelTest {
 		assertSame(trainedModel1, trainedModel2);
 	}
 	
+	@Ignore
 	@Test
 	public void testFeatureStack() {
 		Image image = new Image(TestUtility.IMAGE1);
