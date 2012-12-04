@@ -40,6 +40,7 @@ public enum Classification {
 	DEVELOPED(new DevelopedModule()),
 	DESERT(new DesertModule()),
 	FOREST(new ForestModule()),
+	WATER(new WaterModule()),
 	UNKNOWN(new UnknownModule());
 	
 	@Inject
